@@ -4,14 +4,7 @@ import { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import { trpc } from "../utils/trpc";
 import Champs from "./champs";
 
-interface ChampInfo {
-  name: String;
-  id: String;
-  image: String;
-  url: String;
-}
-
-const User = ({ username }) => {
+const User = ({ username }: any) => {
   const { data, isLoading, isFetched, refetch } =
     trpc.riotApi.getUserByName.useQuery(
       {

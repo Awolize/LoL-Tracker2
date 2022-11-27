@@ -22,15 +22,14 @@ interface RiotImage {
 }
 
 interface ChampInfo {
-  name: String;
-  id: String;
+  name: string;
+  id: string;
   image: RiotImage;
-  url: String;
-  key: String;
-  role: String;
+  key: string;
+  role: string;
 }
 
-const Champs = ({ userId }) => {
+const Champs = ({ userId }: any) => {
   const [championMastery, setChampionMastery] =
     useState<(ChampionMasteryDTO & ChampInfo)[]>();
 
@@ -55,21 +54,23 @@ const Champs = ({ userId }) => {
   useEffect(() => {
     if (championMastery == null && data) {
       const list = Object.keys(championJson.data).map((champName) => {
-        const jsonInfo = championJson.data[champName];
+        const jsonInfo =
+          championJson.data[champName as keyof typeof championJson.data];
         const champ: ChampInfo = {
-          url: jsonInfo.url,
           id: jsonInfo.id,
           key: jsonInfo.key,
           name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
           image: jsonInfo.image,
-          role: rolesJson[`${jsonInfo.id}`] ?? "Unknown",
+          role:
+            rolesJson[jsonInfo.id as keyof typeof championJson.data] ??
+            "Unknown",
         };
 
         // api.DataDragon.getChampion(champ.key).then((res) => {
         //   console.log(res);
         // });
         const personalChampData = data.filter(
-          (champ) => champ.championId == jsonInfo.key
+          (champ) => `${champ.championId}` == jsonInfo.key
         )[0]!;
 
         return { ...champ, ...personalChampData };
@@ -82,7 +83,7 @@ const Champs = ({ userId }) => {
   const listItem = (champ: ChampionMasteryDTO & ChampInfo) => {
     const filteredOut: boolean = champ.championPoints > 10000;
     return (
-      <li className="flex flex-col pb-2" key={champ.key}>
+      <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
 
         <LazyLoadImage
@@ -91,7 +92,7 @@ const Champs = ({ userId }) => {
             opacity: filteredOut ? "40%" : "100%",
           }}
           className={filteredOut ? "grayscale" : "grayscale-0"}
-          alt={champ.name}
+          alt={`${champ.name}`}
           height={100}
           width={100}
         />
