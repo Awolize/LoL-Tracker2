@@ -1,37 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { ChampionMasteryDTO } from "twisted/dist/models-dto";
+import {
+  ChampionMasteryDTO,
+  ChampionsDataDragonDetails,
+} from "twisted/dist/models-dto";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
-// import { LolApi } from "twisted";
-// const api = new LolApi();
 
 import { trpc } from "../utils/trpc";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-const DATA_DRAGON_URL =
-  "https://ddragon.leagueoflegends.com/cdn/12.21.1/img/champion/";
+import { DATA_DRAGON_URL } from "../utils/constants";
+import MyListbox from "./dropdown";
 
-interface RiotImage {
-  full: string;
-  sprite: string;
-  group: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
-interface ChampInfo {
-  name: string;
-  id: string;
-  image: RiotImage;
-  key: string;
+interface Roles {
   role: string;
 }
 
+type CompleteChamptionInfo = ChampionMasteryDTO &
+  ChampionsDataDragonDetails &
+  Roles;
+
 const Champs = ({ userId }: any) => {
   const [championMastery, setChampionMastery] =
-    useState<(ChampionMasteryDTO & ChampInfo)[]>();
+    useState<CompleteChamptionInfo[]>();
 
   const { data, isLoading, isFetched, isFetching, refetch } =
     trpc.riotApi.getMasteryPointsById.useQuery(
@@ -56,32 +47,28 @@ const Champs = ({ userId }: any) => {
       const list = Object.keys(championJson.data).map((champName) => {
         const jsonInfo =
           championJson.data[champName as keyof typeof championJson.data];
-        const champ: ChampInfo = {
-          id: jsonInfo.id,
-          key: jsonInfo.key,
-          name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
-          image: jsonInfo.image,
-          role:
-            rolesJson[jsonInfo.id as keyof typeof championJson.data] ??
-            "Unknown",
-        };
 
-        // api.DataDragon.getChampion(champ.key).then((res) => {
-        //   console.log(res);
-        // });
         const personalChampData = data.filter(
           (champ) => `${champ.championId}` == jsonInfo.key
         )[0]!;
 
-        return { ...champ, ...personalChampData };
+        const champ: CompleteChamptionInfo = {
+          ...jsonInfo,
+          ...personalChampData,
+          name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
+          role:
+            rolesJson[jsonInfo.id as keyof typeof championJson.data] ??
+            "Unknown",
+        };
+        return champ;
       });
 
       setChampionMastery(list);
     }
   }, [data]);
 
-  const listItem = (champ: ChampionMasteryDTO & ChampInfo) => {
-    const filteredOut: boolean = champ.championPoints > 10000;
+  const listItem = (champ: CompleteChamptionInfo) => {
+    const disabled = filteredOut(champ);
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
@@ -89,9 +76,9 @@ const Champs = ({ userId }: any) => {
         <LazyLoadImage
           src={`${DATA_DRAGON_URL}${champ.image.full}`}
           style={{
-            opacity: filteredOut ? "40%" : "100%",
+            opacity: disabled ? "40%" : "100%",
           }}
-          className={filteredOut ? "grayscale" : "grayscale-0"}
+          className={disabled ? "grayscale" : ""}
           alt={`${champ.name}`}
           height={100}
           width={100}
@@ -103,16 +90,27 @@ const Champs = ({ userId }: any) => {
     );
   };
 
+  const [filterPoints, setFilterPoints] = useState(0);
+
+  const filteredOut = (champ: CompleteChamptionInfo) => {
+    const disabled: boolean = champ.championPoints > filterPoints;
+    return disabled;
+  };
+
+  useEffect(() => {}, [filterPoints]);
+
   const markedSize: number =
-    championMastery?.filter((champ) => champ.championPoints > 10000).length ??
-    0;
+    championMastery?.filter((champ) => filteredOut(champ)).length ?? 0;
 
   if (!isLoading && isFetched && championMastery)
     return (
       <>
-        <header className="mt-2 flex  flex-row justify-center gap-2 text-center leading-loose">
+        <header className="mt-2 flex justify-center">
+          <div className="fixed top-8 left-8 z-10 w-32">
+            <MyListbox callback={setFilterPoints} />
+          </div>
           <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
-            <div className="flex h-full flex-col justify-between rounded-lg bg-black  px-4 py-2 text-white ">
+            <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4  py-2 text-center text-white ">
               <p className="text-2xl">
                 {markedSize} / {championMastery?.length}
               </p>
@@ -132,8 +130,8 @@ const Champs = ({ userId }: any) => {
               console.log(role, champsWithRole.length);
 
               const size: number = champsWithRole.length;
-              const markedSize: number = champsWithRole.filter(
-                (champ) => champ.championPoints > 10000
+              const markedSize: number = champsWithRole.filter((champ) =>
+                filteredOut(champ)
               ).length;
               const percentage = (100 * markedSize) / size;
 

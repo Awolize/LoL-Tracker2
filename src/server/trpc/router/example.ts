@@ -25,6 +25,7 @@ export const riotApiRouter = router({
         input.username,
         Constants.Regions.EU_WEST
       );
+
       return response.response;
     }),
 
@@ -37,5 +38,13 @@ export const riotApiRouter = router({
       );
 
       return response.response;
+    }),
+
+  getChampion: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      const response = await api.DataDragon.getChampion(input.id);
+
+      return response.image;
     }),
 });
