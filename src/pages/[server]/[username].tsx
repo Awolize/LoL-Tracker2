@@ -4,7 +4,7 @@ import User from "../../components/user";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { server, username } = router.query;
+  const { username } = router.query;
   console.log(router.query);
 
   return (
