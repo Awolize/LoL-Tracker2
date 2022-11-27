@@ -97,8 +97,6 @@ const Champs = ({ userId }: any) => {
     return disabled;
   };
 
-  useEffect(() => {}, [filterPoints]);
-
   const markedSize: number =
     championMastery?.filter((champ) => filteredOut(champ)).length ?? 0;
 

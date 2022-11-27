@@ -13,14 +13,16 @@ const people = [
 ];
 
 interface Props {
-  callback: Function;
+  callback: (data: number) => void;
 }
 
 const MyListbox = ({ callback }: Props) => {
   const [selected, setSelected] = useState(people[people.length - 3]);
 
   useEffect(() => {
-    callback(selected?.points);
+    if (selected?.points) {
+      callback(selected.points);
+    }
   }, [selected]);
 
   return (
