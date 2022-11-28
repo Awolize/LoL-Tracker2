@@ -24,7 +24,7 @@ const Champs = ({ userId }: any) => {
   const [championMastery, setChampionMastery] =
     useState<CompleteChamptionInfo[]>();
 
-  const { data, isLoading, isFetched, isFetching, refetch } =
+  const { data, isLoading, isFetched, refetch } =
     trpc.riotApi.getMasteryPointsById.useQuery(
       {
         id: userId,

@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { ChampionMasteryDTO } from "twisted/dist/models-dto";
+import React, { useEffect } from "react";
 import { trpc } from "../utils/trpc";
 import Champs from "./champs";
 
 const User = ({ username }: any) => {
-  const { data, isLoading, isFetched, refetch } =
-    trpc.riotApi.getUserByName.useQuery(
-      {
-        username: username,
-      },
-      {
-        enabled: false,
-      }
-    );
+  const { data, isFetched, refetch } = trpc.riotApi.getUserByName.useQuery(
+    {
+      username: username,
+    },
+    {
+      enabled: false,
+    }
+  );
 
   useEffect(() => {
     if (typeof username == "string") {

@@ -21,12 +21,17 @@ export const riotApiRouter = router({
   getUserByName: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
-      const response = await api.Summoner.getByName(
-        input.username,
-        Constants.Regions.EU_WEST
-      );
+      try {
+        const response = await api.Summoner.getByName(
+          input.username,
+          Constants.Regions.EU_WEST
+        );
+        console.log("getUserByName", response);
 
-      return response.response;
+        return response.response;
+      } catch (error) {
+        console.log(error);
+      }
     }),
 
   getMasteryPointsById: publicProcedure
@@ -36,6 +41,7 @@ export const riotApiRouter = router({
         input.id,
         Constants.Regions.EU_WEST
       );
+      console.log("getMasteryPointsById", response);
 
       return response.response;
     }),
@@ -44,6 +50,7 @@ export const riotApiRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       const response = await api.DataDragon.getChampion(input.id);
+      console.log("getChampion response", response);
 
       return response.image;
     }),
