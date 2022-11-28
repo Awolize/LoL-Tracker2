@@ -106,14 +106,14 @@ const Champs = ({ userId }: any) => {
   ): number => {
     switch (sortOrder) {
       case 0:
-        return b.name.localeCompare(a.name);
+        return a.name.localeCompare(b.name);
       case 1:
-        return a.championPoints > b.championPoints ? 1 : -1;
+        return a.championPoints > b.championPoints ? -1 : 1;
       case 2:
         return a.championLevel === b.championLevel
           ? a.championPoints > b.championPoints
-            ? 1
-            : -1
+            ? -1
+            : 1
           : -1;
       default:
         return a.name.localeCompare(b.name);
@@ -171,12 +171,17 @@ const Champs = ({ userId }: any) => {
         <main>
           <div className="flex flex-row gap-2">
             {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-              const champsWithRole = championMastery
-                .filter((champ) => {
-                  return champ.role === role;
-                })
-                .sort(sortAlgorithm)
-                .sort((a, b) => (filteredOut(a) ? 1 : -1));
+              const champsWithRole = championMastery.filter((champ) => {
+                return champ.role === role;
+              });
+
+              const doneChamps = champsWithRole
+                .filter(filteredOut)
+                .sort(sortAlgorithm);
+
+              const todoChamps = champsWithRole
+                .filter((champ) => !filteredOut(champ))
+                .sort(sortAlgorithm);
 
               console.log(champsWithRole);
 
@@ -207,7 +212,8 @@ const Champs = ({ userId }: any) => {
                       gridTemplateColumns: "repeat(auto-fill, 90px)",
                     }}
                   >
-                    {champsWithRole.map((champ) => listItem(champ))}
+                    {todoChamps.map((champ) => listItem(champ))}
+                    {doneChamps.map((champ) => listItem(champ))}
                   </ul>
                 </div>
               );
