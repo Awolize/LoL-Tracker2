@@ -107,11 +107,11 @@ const Champs = ({ userId }: any) => {
       case 0:
         return a.name.localeCompare(b.name);
       case 1:
-        return a.championPoints > b.championPoints ? 0 : 1;
+        return a.championPoints > b.championPoints ? -1 : 1;
       case 2:
         return a.championLevel === b.championLevel
           ? a.championPoints > b.championPoints
-            ? 0
+            ? -1
             : 1
           : 1;
       default:
@@ -175,7 +175,10 @@ const Champs = ({ userId }: any) => {
                   return champ.role === role;
                 })
                 .sort(sortAlgorithm)
-                .sort((a, b) => (filteredOut(a) ? 1 : 0));
+                .sort((a, b) => (filteredOut(a) ? 1 : -1));
+
+              console.log(champsWithRole);
+
               console.log(role, champsWithRole.length);
 
               const size: number = champsWithRole.length;
