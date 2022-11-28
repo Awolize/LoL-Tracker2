@@ -57,6 +57,7 @@ const Champs = ({ userId }: any) => {
           ...personalChampData,
           name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
           championPoints: personalChampData?.championPoints ?? 0,
+          championLevel: personalChampData?.championLevel ?? 0,
           role:
             rolesJson[jsonInfo.id as keyof typeof championJson.data] ??
             "Unknown",
@@ -86,7 +87,9 @@ const Champs = ({ userId }: any) => {
         />
 
         <div className="text-center text-xs">{champ.name}</div>
-        <div className="text-center text-xs">{champ.championPoints}</div>
+        <div className="text-center text-xs">
+          {champ.championLevel} - {champ.championPoints}
+        </div>
       </li>
     );
   };
@@ -110,11 +113,9 @@ const Champs = ({ userId }: any) => {
       case 1:
         return a.championPoints > b.championPoints ? -1 : 1;
       case 2:
-        return a.championLevel === b.championLevel
-          ? a.championPoints > b.championPoints
-            ? -1
-            : 1
-          : -1;
+        if (a.championLevel === b.championLevel)
+          return a.championPoints > b.championPoints ? -1 : 1;
+        else return a.championLevel > b.championLevel ? -1 : 1;
       default:
         return a.name.localeCompare(b.name);
     }
