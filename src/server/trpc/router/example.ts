@@ -26,7 +26,6 @@ export const riotApiRouter = router({
           input.username,
           Constants.Regions.EU_WEST
         );
-        console.log("getUserByName", response);
 
         return response.response;
       } catch (error) {
@@ -41,7 +40,6 @@ export const riotApiRouter = router({
         input.id,
         Constants.Regions.EU_WEST
       );
-      console.log("getMasteryPointsById", response);
 
       return response.response;
     }),
@@ -50,7 +48,6 @@ export const riotApiRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       const response = await api.DataDragon.getChampion(input.id);
-      console.log("getChampion response", response);
 
       return response.image;
     }),
