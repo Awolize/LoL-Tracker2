@@ -16,7 +16,7 @@ export default function ProfilePage() {
         </title>
         <meta
           property="og:title"
-          content={`LoL Mastery Tracker for {username} on {server}`}
+          content={`LoL Mastery Tracker for ${username} on ${server}`}
           key="title"
         />
         <meta property="og:description" content="Generated using Riot API" />
