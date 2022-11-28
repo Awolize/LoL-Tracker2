@@ -15,7 +15,7 @@ const MyListbox = ({ callback, choices, defaultIndex }: Props) => {
     if (selected?.value != null) {
       callback(selected.value);
     }
-  }, [selected?.value]);
+  }, [callback, selected.value]);
 
   return (
     <Listbox value={selected} onChange={setSelected}>
