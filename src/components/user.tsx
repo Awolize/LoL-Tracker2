@@ -18,7 +18,7 @@ const User = ({ username }: { username: string }) => {
       console.log("FETCHING USER INFO BY NAME");
       refetch();
     }
-  }, [username]);
+  }, [refetch, username]);
 
   if (isFetched && data?.id) {
     return <Champs userId={data?.id} />;

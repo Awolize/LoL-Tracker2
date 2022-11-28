@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-
-import {
+import type {
   ChampionMasteryDTO,
   ChampionsDataDragonDetails,
 } from "twisted/dist/models-dto";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
-
 import { trpc } from "../utils/trpc";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { DATA_DRAGON_URL } from "../utils/constants";
@@ -19,8 +17,9 @@ interface Roles {
 type CompleteChamptionInfo = ChampionMasteryDTO &
   ChampionsDataDragonDetails &
   Roles;
+type incompleteCompleteChamptionInfo = ChampionsDataDragonDetails & Roles;
 
-const Champs = ({ userId }: any) => {
+const Champs = ({ userId }: { userId: string }) => {
   const [championMastery, setChampionMastery] =
     useState<CompleteChamptionInfo[]>();
 
@@ -40,19 +39,20 @@ const Champs = ({ userId }: any) => {
       console.log("FETCHING CHAMPION MASTERY BY USER ID");
       refetch();
     }
-  }, [userId]);
+  }, [data, refetch, userId]);
 
   useEffect(() => {
     if (championMastery == null && data) {
+      console.log(data);
       const list = Object.keys(championJson.data).map((champName) => {
         const jsonInfo =
           championJson.data[champName as keyof typeof championJson.data];
 
-        const personalChampData = data.filter(
-          (champ) => `${champ.championId}` == jsonInfo.key
-        )[0]!;
+        const personalChampData = data
+          .filter((champ) => `${champ.championId}` == jsonInfo.key)
+          .at(0);
 
-        const champ: CompleteChamptionInfo = {
+        const champ: CompleteChamptionInfo | incompleteCompleteChamptionInfo = {
           ...jsonInfo,
           ...personalChampData,
           name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
@@ -65,9 +65,9 @@ const Champs = ({ userId }: any) => {
         return champ;
       });
 
-      setChampionMastery(list);
+      setChampionMastery(list as CompleteChamptionInfo[]);
     }
-  }, [data]);
+  }, [championMastery, data]);
 
   const listItem = (champ: CompleteChamptionInfo) => {
     const disabled = filteredOut(champ);
@@ -183,10 +183,6 @@ const Champs = ({ userId }: any) => {
               const todoChamps = champsWithRole
                 .filter((champ) => !filteredOut(champ))
                 .sort(sortAlgorithm);
-
-              console.log(champsWithRole);
-
-              console.log(role, champsWithRole.length);
 
               const size: number = champsWithRole.length;
               const markedSize: number = champsWithRole.filter((champ) =>
