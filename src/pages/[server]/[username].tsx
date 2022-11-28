@@ -23,7 +23,7 @@ export default function ProfilePage() {
         <meta property="og:image" content="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <User username={username} />
+      <User username={username as string} />
     </div>
   );
 }

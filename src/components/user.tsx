@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { trpc } from "../utils/trpc";
 import Champs from "./champs";
 
-const User = ({ username }: any) => {
+const User = ({ username }: { username: string }) => {
   const { data, isFetched, refetch } = trpc.riotApi.getUserByName.useQuery(
     {
       username: username,
