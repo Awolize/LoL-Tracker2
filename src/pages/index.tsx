@@ -1,10 +1,16 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useRef } from "react";
 
 const Home: NextPage = () => {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const usernameRef = useRef<HTMLInputElement>(null);
+
+  function onSubmit(e) {
+    e.preventDefault();
+    router.push(`/EUW/${usernameRef.current?.value}`);
+  }
 
   return (
     <>
@@ -21,20 +27,23 @@ const Home: NextPage = () => {
             Search <span className="text-[hsl(280,100%,70%)]">EU West</span>{" "}
             Summoner Profiles
           </h1>
-          <div className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8">
+          <form
+            className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8"
+            onSubmit={onSubmit}
+          >
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              ref={usernameRef}
               className="w-full rounded bg-gray-700 text-center text-xl text-white placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
             />
-            <Link
+
+            <button
+              type="submit"
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href={"/" + "EUW" + "/" + username}
             >
               <h3 className="justify-center text-center font-bold">Look up</h3>
-            </Link>
-          </div>
+            </button>
+          </form>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {/* {hello.data ? hello.data.greeting : "Loading tRPC query..."} */}
