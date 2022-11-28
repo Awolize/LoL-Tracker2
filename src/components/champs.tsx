@@ -109,7 +109,11 @@ const Champs = ({ userId }: any) => {
       case 1:
         return a.championPoints > b.championPoints ? 0 : 1;
       case 2:
-        return a.championLevel < b.championPoints ? 1 : -1;
+        return a.championLevel === b.championLevel
+          ? a.championPoints > b.championPoints
+            ? 0
+            : 1
+          : 1;
       default:
         return a.name.localeCompare(b.name);
     }
