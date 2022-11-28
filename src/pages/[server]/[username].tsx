@@ -11,12 +11,15 @@ export default function ProfilePage() {
   return (
     <div>
       <Head>
+        <title>
+          LoL Mastery Tracker for {username} on {server}
+        </title>
         <meta
           property="og:title"
           content={`LoL Mastery Tracker for {username} on {server}`}
           key="title"
         />
-        <meta name="og:description" content="Generated using Riot API" />
+        <meta property="og:description" content="Generated using Riot API" />
         <meta property="og:image" content="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

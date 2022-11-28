@@ -10,7 +10,9 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>LoL Mastery Tracker</title>
-        <meta name="description" content="Generated using Riot API" />
+        <meta property="og:title" content="LoL Mastery Tracker" key="title" />
+        <meta property="og:description" content="Generated using Riot API" />
+        <meta property="og:image" content="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
