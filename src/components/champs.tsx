@@ -91,10 +91,28 @@ const Champs = ({ userId }: any) => {
   };
 
   const [filterPoints, setFilterPoints] = useState(0);
+  const [sortOrder, setSortOrder] = useState(0);
+
+  console.log(sortOrder);
 
   const filteredOut = (champ: CompleteChamptionInfo) => {
     const disabled: boolean = champ.championPoints > filterPoints;
     return disabled;
+  };
+  const sortAlgorithm = (
+    a: CompleteChamptionInfo,
+    b: CompleteChamptionInfo
+  ): number => {
+    switch (sortOrder) {
+      case 0:
+        return a.name.localeCompare(b.name);
+      case 1:
+        return a.championPoints > b.championPoints ? 0 : 1;
+      case 2:
+        return a.championLevel < b.championPoints ? 1 : -1;
+      default:
+        return a.name.localeCompare(b.name);
+    }
   };
 
   const markedSize: number =
@@ -105,7 +123,33 @@ const Champs = ({ userId }: any) => {
       <>
         <header className="mt-2 flex justify-center">
           <div className="fixed top-8 left-8 z-10 w-32">
-            <MyListbox callback={setFilterPoints} />
+            <MyListbox
+              callback={setFilterPoints}
+              defaultIndex={4}
+              choices={[
+                { text: "100", value: 100 },
+                { text: "500", value: 500 },
+                { text: "1,000", value: 1000 },
+                { text: "5,000", value: 5000 },
+                { text: "10,000", value: 10000 },
+                { text: "50,000", value: 50000 },
+                { text: "100,000", value: 100000 },
+              ]}
+            />
+          </div>
+          <div className="fixed top-8 left-44 z-10 flex flex-row items-center gap-2">
+            Sort:
+            <div className="w-32">
+              <MyListbox
+                callback={setSortOrder}
+                defaultIndex={0}
+                choices={[
+                  { text: "A-Z", value: 0 },
+                  { text: "Points", value: 1 },
+                  { text: "Level", value: 2 },
+                ]}
+              />
+            </div>
           </div>
           <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
             <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4  py-2 text-center text-white ">
@@ -122,9 +166,12 @@ const Champs = ({ userId }: any) => {
         <main>
           <div className="flex flex-row gap-2">
             {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-              const champsWithRole = championMastery.filter((champ) => {
-                return champ.role === role;
-              });
+              const champsWithRole = championMastery
+                .filter((champ) => {
+                  return champ.role === role;
+                })
+                .sort(sortAlgorithm)
+                .sort((a, b) => (filteredOut(a) ? 1 : 0));
               console.log(role, champsWithRole.length);
 
               const size: number = champsWithRole.length;
