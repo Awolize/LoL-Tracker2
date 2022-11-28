@@ -15,6 +15,7 @@ export default function ProfilePage() {
           LoL Mastery Tracker for {username} on {server}
         </title>
         <meta name="description" content="Generated using Riot API" />
+        <meta property="og:image" content="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <User username={username} />
