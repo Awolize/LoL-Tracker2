@@ -106,7 +106,7 @@ const Champs = ({ userId }: any) => {
   ): number => {
     switch (sortOrder) {
       case 0:
-        return a.name.localeCompare(b.name);
+        return b.name.localeCompare(a.name);
       case 1:
         return a.championPoints > b.championPoints ? 1 : -1;
       case 2:
