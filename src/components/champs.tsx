@@ -88,7 +88,7 @@ const Champs = ({ userId }: any) => {
 
         <div className="text-center text-xs">{champ.name}</div>
         <div className="text-center text-xs">
-          {champ.championLevel} - {champ.championPoints}
+          {champ.championLevel}. {champ.championPoints}
         </div>
       </li>
     );
