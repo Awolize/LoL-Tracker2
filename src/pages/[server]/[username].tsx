@@ -5,13 +5,15 @@ import Head from "next/head";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { username } = router.query;
+  const { server, username } = router.query;
   console.log(router.query);
 
   return (
     <div>
       <Head>
-        <title>LoL Mastery Tracker</title>
+        <title>
+          LoL Mastery Tracker for {username} on {server}
+        </title>
         <meta name="description" content="Generated using Riot API" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
