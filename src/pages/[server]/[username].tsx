@@ -11,9 +11,9 @@ export default function ProfilePage() {
   return (
     <div>
       <Head>
-        <title>
+        {/* <title>
           LoL Mastery Tracker for {username} on {server}
-        </title>
+        </title> */}
         <meta
           property="og:title"
           content={`LoL Mastery Tracker for ${username} on ${server}`}
