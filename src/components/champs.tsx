@@ -9,6 +9,7 @@ import { trpc } from "../utils/trpc";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { DATA_DRAGON_URL } from "../utils/constants";
 import MyListbox from "./dropdown";
+import { Switch } from "@headlessui/react";
 
 interface Roles {
   role: string;
@@ -43,7 +44,6 @@ const Champs = ({ userId }: { userId: string }) => {
 
   useEffect(() => {
     if (championMastery == null && data) {
-      console.log(data);
       const list = Object.keys(championJson.data).map((champName) => {
         const jsonInfo =
           championJson.data[champName as keyof typeof championJson.data];
@@ -71,29 +71,36 @@ const Champs = ({ userId }: { userId: string }) => {
 
   const listItem = (champ: CompleteChamptionInfo) => {
     const disabled = filteredOut(champ);
+    const showAll = disabled && showFinished;
+
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
 
         <div className="relative z-10">
-          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center  bg-blue-800 px-[0.40rem] text-center text-center text-xs leading-5">
-            {champ.championLevel}
-          </span>
+          {showLevels && (
+            <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+              {champ.championLevel}
+            </span>
+          )}
           <LazyLoadImage
             src={`${DATA_DRAGON_URL}${champ.image.full}`}
             style={{
+              zIndex: -1,
               opacity: disabled ? "40%" : "100%",
             }}
             className={` ${disabled ? "grayscale" : ""}`}
             alt={`${champ.name}`}
-            height={100}
-            width={100}
+            height={90}
+            width={90}
+            hidden={showAll}
+            placeholderSrc="/placeholder.png"
           />
         </div>
 
-        <div className="text-center text-xs">{champ.name}</div>
+        <div className="text-center text-xs">{!showAll && champ.name}</div>
         <div className="items-center justify-center text-center text-xs">
-          {champ.championPoints}
+          {!showAll && champ.championPoints}
         </div>
       </li>
     );
@@ -101,8 +108,6 @@ const Champs = ({ userId }: { userId: string }) => {
 
   const [filterPoints, setFilterPoints] = useState(0);
   const [sortOrder, setSortOrder] = useState(0);
-
-  console.log(sortOrder);
 
   const filteredOut = (champ: CompleteChamptionInfo) => {
     const disabled: boolean = champ.championPoints > filterPoints;
@@ -129,47 +134,88 @@ const Champs = ({ userId }: { userId: string }) => {
   const markedSize: number =
     championMastery?.filter((champ) => filteredOut(champ)).length ?? 0;
 
+  const [showLevels, setShowLevels] = useState(false);
+  const [showFinished, setShowFinished] = useState(false);
+
   if (!isLoading && isFetched && championMastery)
     return (
       <>
-        <header className="mt-2 flex justify-center">
-          <div className="fixed top-8 left-8 z-50 w-32">
-            <MyListbox
-              callback={setFilterPoints}
-              defaultIndex={4}
-              choices={[
-                { text: "100", value: 100 },
-                { text: "500", value: 500 },
-                { text: "1,000", value: 1000 },
-                { text: "5,000", value: 5000 },
-                { text: "10,000", value: 10000 },
-                { text: "50,000", value: 50000 },
-                { text: "100,000", value: 100000 },
-              ]}
-            />
-          </div>
-          <div className="fixed top-8 left-44 z-50 flex flex-row items-center gap-2">
-            Sort:
-            <div className="w-32">
+        <header className="relative mt-2 flex justify-center">
+          <div className="absolute top-8 left-4 z-50 float-right flex w-full flex-row items-center gap-4">
+            <div className=" w-32">
               <MyListbox
-                callback={setSortOrder}
-                defaultIndex={0}
+                callback={setFilterPoints}
+                defaultIndex={4}
                 choices={[
-                  { text: "A-Z", value: 0 },
-                  { text: "Points", value: 1 },
-                  { text: "Level", value: 2 },
+                  { text: "100", value: 100 },
+                  { text: "500", value: 500 },
+                  { text: "1,000", value: 1000 },
+                  { text: "5,000", value: 5000 },
+                  { text: "10,000", value: 10000 },
+                  { text: "50,000", value: 50000 },
+                  { text: "100,000", value: 100000 },
                 ]}
               />
             </div>
+            <div className="  flex flex-row items-center gap-2">
+              Sort:
+              <div className="w-32">
+                <MyListbox
+                  callback={setSortOrder}
+                  defaultIndex={0}
+                  choices={[
+                    { text: "A-Z", value: 0 },
+                    { text: "Points", value: 1 },
+                    { text: "Level", value: 2 },
+                  ]}
+                />
+              </div>
+            </div>
+            <div className=" flex flex-row items-center gap-2">
+              <span>Show Levels</span>
+              <Switch
+                checked={showLevels}
+                onChange={setShowLevels}
+                className={`${
+                  showLevels ? "bg-blue-600" : "bg-gray-200"
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span className="sr-only">Enable notifications</span>
+                <span
+                  className={`${
+                    showLevels ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+            <div className=" flex flex-row items-center gap-2">
+              <span>Show finished</span>
+              <Switch
+                checked={showFinished}
+                onChange={setShowFinished}
+                className={`${
+                  showFinished ? "bg-blue-600" : "bg-gray-200"
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span className="sr-only">Enable notifications</span>
+                <span
+                  className={`${
+                    showFinished ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
           </div>
-          <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
-            <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4  py-2 text-center text-white ">
-              <p className="text-2xl">
-                {markedSize} / {championMastery?.length}
-              </p>
-              <p className="text-sm">
-                {((100 * markedSize) / championMastery?.length).toFixed(2)}%{" "}
-              </p>
+          <div>
+            <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
+              <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
+                <p className="text-2xl">
+                  {markedSize} / {championMastery?.length}
+                </p>
+                <p className="text-sm">
+                  {((100 * markedSize) / championMastery?.length).toFixed(2)}%{" "}
+                </p>
+              </div>
             </div>
           </div>
         </header>
