@@ -71,14 +71,14 @@ const Champs = ({ userId }: { userId: string }) => {
 
   const listItem = (champ: CompleteChamptionInfo) => {
     const disabled = filteredOut(champ);
-    const showAll = disabled && showFinished;
+    const hideAll = disabled && !showFinished;
 
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
 
         <div className="relative z-10">
-          {showLevels && !showAll && (
+          {showLevels && !hideAll && (
             <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
               {champ.championLevel}
             </span>
@@ -93,14 +93,14 @@ const Champs = ({ userId }: { userId: string }) => {
             alt={`${champ.name}`}
             height={90}
             width={90}
-            hidden={showAll}
+            hidden={hideAll}
             placeholderSrc="/placeholder.png"
           />
         </div>
 
-        <div className="text-center text-xs">{!showAll && champ.name}</div>
+        <div className="text-center text-xs">{!hideAll && champ.name}</div>
         <div className="items-center justify-center text-center text-xs">
-          {!showAll && champ.championPoints}
+          {!hideAll && champ.championPoints}
         </div>
       </li>
     );
