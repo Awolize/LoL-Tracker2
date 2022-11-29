@@ -133,7 +133,7 @@ const Champs = ({ userId }: { userId: string }) => {
     return (
       <>
         <header className="mt-2 flex justify-center">
-          <div className="fixed top-8 left-8 z-10 w-32">
+          <div className="fixed top-8 left-8 z-50 w-32">
             <MyListbox
               callback={setFilterPoints}
               defaultIndex={4}
@@ -148,7 +148,7 @@ const Champs = ({ userId }: { userId: string }) => {
               ]}
             />
           </div>
-          <div className="fixed top-8 left-44 z-10 flex flex-row items-center gap-2">
+          <div className="fixed top-8 left-44 z-50 flex flex-row items-center gap-2">
             Sort:
             <div className="w-32">
               <MyListbox
