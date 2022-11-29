@@ -144,81 +144,77 @@ const Champs = ({ userId }: { userId: string }) => {
       <>
         <header className="relative mt-2 flex justify-center">
           <div
-            className={`absolute top-6 z-50 flex w-full items-center justify-start px-4 ${
+            className={`absolute top-6 z-50 flex w-full flex-row items-center  justify-start  gap-4 px-4 ${
               alignHeaderRight ? "flex-row-reverse" : "flex-row"
             }`}
           >
-            <div className="flex flex-row-reverse items-center gap-4 px-4">
-              <div className="flex flex-row items-center gap-2">
-                Sort:
-                <div className="w-32">
-                  <MyListbox
-                    callback={setSortOrder}
-                    defaultIndex={0}
-                    choices={[
-                      { text: "A-Z", value: 0 },
-                      { text: "Points", value: 1 },
-                      { text: "Level", value: 2 },
-                    ]}
-                  />
-                </div>
-              </div>
+            <div className="w-32">
+              <MyListbox
+                callback={setFilterPoints}
+                defaultIndex={4}
+                choices={[
+                  { text: "100", value: 100 },
+                  { text: "500", value: 500 },
+                  { text: "1,000", value: 1000 },
+                  { text: "5,000", value: 5000 },
+                  { text: "10,000", value: 10000 },
+                  { text: "50,000", value: 50000 },
+                  { text: "100,000", value: 100000 },
+                ]}
+              />
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              Sort:
               <div className="w-32">
                 <MyListbox
-                  callback={setFilterPoints}
-                  defaultIndex={4}
+                  callback={setSortOrder}
+                  defaultIndex={0}
                   choices={[
-                    { text: "100", value: 100 },
-                    { text: "500", value: 500 },
-                    { text: "1,000", value: 1000 },
-                    { text: "5,000", value: 5000 },
-                    { text: "10,000", value: 10000 },
-                    { text: "50,000", value: 50000 },
-                    { text: "100,000", value: 100000 },
+                    { text: "A-Z", value: 0 },
+                    { text: "Points", value: 1 },
+                    { text: "Level", value: 2 },
                   ]}
                 />
               </div>
             </div>
 
-            <div className="flex flex-row items-center gap-4 px-4">
-              <div className="flex flex-row items-center gap-2">
-                <span>Show Levels</span>
-                <Switch
-                  checked={showLevels}
-                  onChange={setShowLevels}
+            <div className="flex flex-row items-center gap-2">
+              <span>Show Levels</span>
+              <Switch
+                checked={showLevels}
+                onChange={setShowLevels}
+                className={`${
+                  showLevels
+                    ? "bg-blue-600"
+                    : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span className="sr-only">Enable notifications</span>
+                <span
                   className={`${
-                    showLevels
-                      ? "bg-blue-600"
-                      : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
-                  } relative inline-flex h-6 w-11 items-center rounded-full`}
-                >
-                  <span className="sr-only">Enable notifications</span>
-                  <span
-                    className={`${
-                      showLevels ? "translate-x-6" : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                  />
-                </Switch>
-              </div>
-              <div className="flex flex-row items-center gap-2">
-                <span>Show finished</span>
-                <Switch
-                  checked={showFinished}
-                  onChange={setShowFinished}
+                    showLevels ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <span>Show finished</span>
+              <Switch
+                checked={showFinished}
+                onChange={setShowFinished}
+                className={`${
+                  showFinished
+                    ? "bg-blue-600"
+                    : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span className="sr-only">Enable notifications</span>
+                <span
                   className={`${
-                    showFinished
-                      ? "bg-blue-600"
-                      : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
-                  } relative inline-flex h-6 w-11 items-center rounded-full`}
-                >
-                  <span className="sr-only">Enable notifications</span>
-                  <span
-                    className={`${
-                      showFinished ? "translate-x-6" : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                  />
-                </Switch>
-              </div>
+                    showFinished ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                />
+              </Switch>
             </div>
 
             <div className="flex pr-4">
