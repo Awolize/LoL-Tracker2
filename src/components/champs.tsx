@@ -141,8 +141,8 @@ const Champs = ({ userId }: { userId: string }) => {
     return (
       <>
         <header className="relative mt-2 flex justify-center">
-          <div className="absolute top-8 left-4 z-50 float-right flex w-full flex-row items-center gap-4">
-            <div className=" w-32">
+          <div className="absolute top-8 z-50 float-right flex w-full flex-row items-center gap-4 px-4">
+            <div className="w-32">
               <MyListbox
                 callback={setFilterPoints}
                 defaultIndex={4}
