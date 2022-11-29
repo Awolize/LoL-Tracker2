@@ -76,7 +76,7 @@ const Champs = ({ userId }: { userId: string }) => {
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
 
         <div className="relative z-10">
-          <span className="absolute top-[5px] left-[5px] rounded-full bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center  bg-blue-800 px-[0.40rem] text-center text-center text-xs leading-5">
             {champ.championLevel}
           </span>
           <LazyLoadImage
