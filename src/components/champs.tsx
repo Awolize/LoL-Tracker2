@@ -10,6 +10,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { DATA_DRAGON_URL } from "../utils/constants";
 import MyListbox from "./dropdown";
 import { Switch } from "@headlessui/react";
+import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 interface Roles {
   role: string;
@@ -136,12 +137,17 @@ const Champs = ({ userId }: { userId: string }) => {
 
   const [showLevels, setShowLevels] = useState(false);
   const [showFinished, setShowFinished] = useState(false);
+  const [alignHeaderRight, setAlignHeaderRight] = useState(false);
 
   if (!isLoading && isFetched && championMastery)
     return (
       <>
         <header className="relative mt-2 flex justify-center">
-          <div className="absolute top-6 z-50 flex w-full items-center justify-around px-4">
+          <div
+            className={`absolute top-6 z-50 flex w-full items-center justify-start px-4 ${
+              alignHeaderRight ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
             <div className="flex flex-row-reverse items-center gap-4 px-4">
               <div className="flex flex-row items-center gap-2">
                 Sort:
@@ -173,6 +179,7 @@ const Champs = ({ userId }: { userId: string }) => {
                 />
               </div>
             </div>
+
             <div className="flex flex-row items-center gap-4 px-4">
               <div className="flex flex-row items-center gap-2">
                 <span>Show Levels</span>
@@ -180,7 +187,9 @@ const Champs = ({ userId }: { userId: string }) => {
                   checked={showLevels}
                   onChange={setShowLevels}
                   className={`${
-                    showLevels ? "bg-blue-600" : "bg-gray-200"
+                    showLevels
+                      ? "bg-blue-600"
+                      : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span className="sr-only">Enable notifications</span>
@@ -197,7 +206,9 @@ const Champs = ({ userId }: { userId: string }) => {
                   checked={showFinished}
                   onChange={setShowFinished}
                   className={`${
-                    showFinished ? "bg-blue-600" : "bg-gray-200"
+                    showFinished
+                      ? "bg-blue-600"
+                      : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span className="sr-only">Enable notifications</span>
@@ -209,17 +220,34 @@ const Champs = ({ userId }: { userId: string }) => {
                 </Switch>
               </div>
             </div>
+
+            <div className="flex pr-4">
+              <button onClick={() => setAlignHeaderRight((prev) => !prev)}>
+                <span className="absolute inset-y-0 flex items-center pr-2">
+                  {alignHeaderRight ? (
+                    <ChevronLeftIcon
+                      className="h-5 w-5 text-gray-100"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <ChevronRightIcon
+                      className="h-5 w-5 text-gray-100"
+                      aria-hidden="true"
+                    />
+                  )}
+                </span>
+              </button>
+            </div>
           </div>
-          <div>
-            <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
-              <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
-                <p className="text-2xl">
-                  {markedSize} / {championMastery?.length}
-                </p>
-                <p className="text-sm">
-                  {((100 * markedSize) / championMastery?.length).toFixed(2)}%{" "}
-                </p>
-              </div>
+
+          <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
+            <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
+              <p className="text-2xl">
+                {markedSize} / {championMastery?.length}
+              </p>
+              <p className="text-sm">
+                {((100 * markedSize) / championMastery?.length).toFixed(2)}%{" "}
+              </p>
             </div>
           </div>
         </header>
