@@ -13,7 +13,7 @@ export default function ProfilePage() {
       <Head>
         <title>
           LoL Mastery Tracker for {username} on {server}.<br />
-          Generated using Riot API.
+          Brought to you by me!
         </title>
         <meta
           property="og:description"

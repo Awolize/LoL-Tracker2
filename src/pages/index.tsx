@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         <title>LoL Mastery Tracker</title>
         <meta
           property="og:title"
-          content="LoL Mastery Tracker, generated using Riot API"
+          content="LoL Mastery Tracker, brought to you by me!"
           key="title"
         />
         <meta
