@@ -75,22 +75,24 @@ const Champs = ({ userId }: { userId: string }) => {
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         {/* Image doesnt work in production, only loads about 6 images and then times out on the rest, container restrictions (ram,etc)? */}
 
-        <LazyLoadImage
-          src={`${DATA_DRAGON_URL}${champ.image.full}`}
-          style={{
-            opacity: disabled ? "40%" : "100%",
-          }}
-          className={disabled ? "grayscale" : ""}
-          alt={`${champ.name}`}
-          height={100}
-          width={100}
-        />
+        <div className="relative z-10">
+          <span className="absolute top-[5px] left-[5px] rounded-full bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+            {champ.championLevel}
+          </span>
+          <LazyLoadImage
+            src={`${DATA_DRAGON_URL}${champ.image.full}`}
+            style={{
+              opacity: disabled ? "40%" : "100%",
+            }}
+            className={` ${disabled ? "grayscale" : ""}`}
+            alt={`${champ.name}`}
+            height={100}
+            width={100}
+          />
+        </div>
 
         <div className="text-center text-xs">{champ.name}</div>
-        <div className="flex flex-row items-center justify-center gap-2 text-center text-xs">
-          <div className="rounded-xl bg-blue-700 px-1 text-center text-xs">
-            {champ.championLevel}
-          </div>
+        <div className="items-center justify-center text-center text-xs">
           {champ.championPoints}
         </div>
       </li>
