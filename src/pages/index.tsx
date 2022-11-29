@@ -16,8 +16,15 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>LoL Mastery Tracker</title>
-        <meta property="og:title" content="LoL Mastery Tracker" key="title" />
-        <meta property="og:description" content="Generated using Riot API" />
+        <meta
+          property="og:title"
+          content="LoL Mastery Tracker, generated using Riot API"
+          key="title"
+        />
+        <meta
+          property="og:description"
+          content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
+        />
         <meta property="og:image" content="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
