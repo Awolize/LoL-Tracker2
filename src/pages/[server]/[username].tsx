@@ -11,19 +11,15 @@ export default function ProfilePage() {
   return (
     <div>
       <Head>
-        {/* <title>
-          LoL Mastery Tracker for {username} on {server}
-        </title> */}
-        <meta
-          property="og:title"
-          content={`LoL Mastery Tracker for ${username} on ${server}.\nGenerated using Riot API`}
-          key="title"
-        />
+        <title>
+          LoL Mastery Tracker for {username} on {server}.<br />
+          Generated using Riot API.
+        </title>
         <meta
           property="og:description"
           content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
         />
-        <meta property="og:image" content="https://lol.awot.dev/favicon.ico" />
+        <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <User username={username as string} />
