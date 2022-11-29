@@ -1,9 +1,8 @@
 import { router } from "../trpc";
 import { authRouter } from "./auth";
-import { exampleRouter, riotApiRouter } from "./example";
+import { riotApiRouter } from "./riot";
 
 export const appRouter = router({
-  example: exampleRouter,
   riotApi: riotApiRouter,
   auth: authRouter,
 });
