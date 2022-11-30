@@ -38,8 +38,6 @@ export const riotApiRouter = router({
       try {
         const response = await api.DataDragon.getChampion(input.id);
 
-        console.log("hello");
-
         fs.writeFile("champion.json", JSON.stringify(response), (err) => {
           if (err) {
             console.error(err);
@@ -52,4 +50,21 @@ export const riotApiRouter = router({
         console.log(error);
       }
     }),
+
+  getChampions: publicProcedure.query(async () => {
+    try {
+      const response = await api.DataDragon.getChampion();
+
+      fs.writeFile("champion.json", JSON.stringify(response), (err) => {
+        if (err) {
+          console.error(err);
+        }
+        // file written successfully
+      });
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }),
 });

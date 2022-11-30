@@ -189,7 +189,7 @@ const Champs = ({ userId }: { userId: string }) => {
                     : "bg-gradient-to-r from-indigo-500 to-purple-500"
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
-                <span className="sr-only">Enable notifications</span>
+                <span className="sr-only">Show Levels</span>
                 <span
                   className={`${
                     showLevels ? "translate-x-6" : "translate-x-1"
@@ -208,7 +208,7 @@ const Champs = ({ userId }: { userId: string }) => {
                     : "bg-gradient-to-r from-indigo-500 to-purple-500"
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
-                <span className="sr-only">Enable notifications</span>
+                <span className="sr-only">Show finished</span>
                 <span
                   className={`${
                     showFinished ? "translate-x-6" : "translate-x-1"
