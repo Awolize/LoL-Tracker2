@@ -3,7 +3,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import { Constants } from "twisted";
 import api from "../../common/LolApi";
-import fs from "fs";
+// import fs from "fs";
 
 export const riotApiRouter = router({
   getUserByName: publicProcedure
@@ -55,12 +55,12 @@ export const riotApiRouter = router({
     try {
       const response = await api.DataDragon.getChampion();
 
-      fs.writeFile("champion.json", JSON.stringify(response), (err) => {
-        if (err) {
-          console.error(err);
-        }
-        // file written successfully
-      });
+      //   fs.writeFile("champion.json", JSON.stringify(response), (err) => {
+      //     if (err) {
+      //       console.error(err);
+      //     }
+      //     // file written successfully
+      //   });
 
       return response.data;
     } catch (error) {
