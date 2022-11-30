@@ -51,11 +51,6 @@ const Home: NextPage = () => {
               <h3 className="justify-center text-center font-bold">Look up</h3>
             </button>
           </form>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {/* {hello.data ? hello.data.greeting : "Loading tRPC query..."} */}
-            </p>
-          </div>
         </div>
       </main>
     </>

@@ -11,6 +11,7 @@ import { DATA_DRAGON_URL } from "../utils/constants";
 import MyListbox from "./dropdown";
 import { Switch } from "@headlessui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/20/solid";
+import "react-lazy-load-image-component/src/effects/opacity.css";
 
 interface Roles {
   role: string;
@@ -94,8 +95,9 @@ const Champs = ({ userId }: { userId: string }) => {
             alt={`${champ.name}`}
             height={90}
             width={90}
+            effect="opacity"
             hidden={hideAll}
-            placeholderSrc="/placeholder.png"
+            // placeholderSrc="/placeholder.png"
           />
         </div>
 

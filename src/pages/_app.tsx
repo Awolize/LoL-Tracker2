@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { DATA_DRAGON_URL } from "../utils/constants";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const allChampions = trpc.riotApi.getChampions.useQuery();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  //const [images, setImages] = useState<HTMLImageElement[]>([]);
+  const [images, setImages] = useState<HTMLImageElement[]>([]);
 
   useEffect(() => {
     if (allChampions?.data) {
@@ -46,12 +46,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
       };
 
       img.src = `${DATA_DRAGON_URL}${src}`;
+      setImages((curr) => [...curr, img]);
     });
   }
 
+  const ImageContext = createContext(images);
+
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <ImageContext.Provider value={images}>
+        <Component {...pageProps} />
+      </ImageContext.Provider>
     </SessionProvider>
   );
 };
