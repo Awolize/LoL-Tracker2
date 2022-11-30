@@ -38,12 +38,12 @@ export const riotApiRouter = router({
       try {
         const response = await api.DataDragon.getChampion(input.id);
 
-        fs.writeFile("champion.json", JSON.stringify(response), (err) => {
-          if (err) {
-            console.error(err);
-          }
-          // file written successfully
-        });
+        // fs.writeFile("champion.json", JSON.stringify(response), (err) => {
+        //   if (err) {
+        //     console.error(err);
+        //   }
+        //   // file written successfully
+        // });
 
         return response.image;
       } catch (error) {
