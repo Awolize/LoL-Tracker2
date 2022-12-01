@@ -5,13 +5,13 @@ import type {
 } from "twisted/dist/models-dto";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { DATA_DRAGON_URL } from "../utils/constants";
-import MyListbox from "./dropdown";
+import { DATA_DRAGON_URL } from "../../utils/constants";
 import { Switch } from "@headlessui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
+import Dropdown from "./dropdown";
 
 interface Roles {
   role: string;
@@ -21,6 +21,35 @@ type CompleteChamptionInfo = ChampionMasteryDTO &
   ChampionsDataDragonDetails &
   Roles;
 type incompleteCompleteChamptionInfo = ChampionsDataDragonDetails & Roles;
+
+const ChampsWrapper = ({ username }: { username: string }) => {
+  const { data, isFetched, refetch } = trpc.riotApi.getUserByName.useQuery(
+    {
+      username: username,
+    },
+    {
+      enabled: false,
+    }
+  );
+
+  useEffect(() => {
+    if (typeof username == "string") {
+      console.log("username:", username);
+      console.log("FETCHING USER INFO BY NAME");
+      refetch();
+    }
+  }, [refetch, username]);
+
+  if (isFetched && data?.id) {
+    return <Champs userId={data?.id} />;
+  } else {
+    return (
+      <main>Welcome {username} getting your user info information...</main>
+    );
+  }
+};
+
+export default ChampsWrapper;
 
 const Champs = ({ userId }: { userId: string }) => {
   const [championMastery, setChampionMastery] =
@@ -151,7 +180,7 @@ const Champs = ({ userId }: { userId: string }) => {
             }`}
           >
             <div className="w-32">
-              <MyListbox
+              <Dropdown
                 callback={setFilterPoints}
                 defaultIndex={4}
                 choices={[
@@ -168,7 +197,7 @@ const Champs = ({ userId }: { userId: string }) => {
             <div className="flex flex-row items-center gap-2">
               Sort:
               <div className="w-32">
-                <MyListbox
+                <Dropdown
                   callback={setSortOrder}
                   defaultIndex={0}
                   choices={[
@@ -304,5 +333,3 @@ const Champs = ({ userId }: { userId: string }) => {
     return <main>Getting your user info information...</main>;
   }
 };
-
-export default Champs;

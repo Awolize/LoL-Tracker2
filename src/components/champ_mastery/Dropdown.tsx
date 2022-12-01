@@ -8,7 +8,7 @@ interface Props {
   defaultIndex: number;
 }
 
-const MyListbox = ({ callback, choices, defaultIndex }: Props) => {
+const Dropdown = ({ callback, choices, defaultIndex }: Props) => {
   const [selected, setSelected] = useState(choices[defaultIndex]);
 
   useEffect(() => {
@@ -71,4 +71,4 @@ const MyListbox = ({ callback, choices, defaultIndex }: Props) => {
   );
 };
 
-export default MyListbox;
+export default Dropdown;
