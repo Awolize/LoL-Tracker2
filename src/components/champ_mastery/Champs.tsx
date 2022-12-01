@@ -151,9 +151,9 @@ const Champs = ({ userId }: { userId: string }) => {
   ): number => {
     switch (sortOrder) {
       case 0:
-        return a.name.localeCompare(b.name);
-      case 1:
         return a.championPoints > b.championPoints ? -1 : 1;
+      case 1:
+        return a.name.localeCompare(b.name);
       case 2:
         if (a.championLevel === b.championLevel)
           return a.championPoints > b.championPoints ? -1 : 1;
@@ -201,8 +201,8 @@ const Champs = ({ userId }: { userId: string }) => {
                   callback={setSortOrder}
                   defaultIndex={0}
                   choices={[
-                    { text: "A-Z", value: 0 },
-                    { text: "Points", value: 1 },
+                    { text: "Points", value: 0 },
+                    { text: "A-Z", value: 1 },
                     { text: "Level", value: 2 },
                   ]}
                 />
