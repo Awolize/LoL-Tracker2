@@ -20,7 +20,7 @@ type incompleteCompleteChamptionInfo = ChampionsDataDragonDetails & Roles;
 
 const ChampsWrapper = () => {
   const router = useRouter();
-  const { server, username } = router.query;
+  const { username } = router.query;
   const { data, isFetched } = trpc.riotApi.getUserByName.useQuery(
     { username: username as string },
     { enabled: typeof username == "string" }
