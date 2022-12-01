@@ -11,7 +11,7 @@ import { DATA_DRAGON_URL } from "../../utils/constants";
 import { Switch } from "@headlessui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import Dropdown from "./dropdown";
+import Dropdown from "./Dropdown";
 
 interface Roles {
   role: string;

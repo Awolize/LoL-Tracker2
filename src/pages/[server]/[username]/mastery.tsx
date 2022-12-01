@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import ChampsWrapper from "../../../components/champ_mastery/champs";
+import ChampsWrapper from "../../../components/champ_mastery/Champs";
 
 export default function ProfilePage() {
   const router = useRouter();
