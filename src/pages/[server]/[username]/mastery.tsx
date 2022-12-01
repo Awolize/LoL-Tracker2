@@ -18,29 +18,22 @@ interface Roles {
 type CompleteChamptionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 type incompleteCompleteChamptionInfo = ChampionsDataDragonDetails & Roles;
 
-const ChampsWrapper = () => {
+const Champs = () => {
+  const [championMastery, setChampionMastery] = useState<CompleteChamptionInfo[]>();
+
   const router = useRouter();
   const { username } = router.query;
-  const { data, isFetched } = trpc.riotApi.getUserByName.useQuery(
+
+  // Get user information (needed for second request)
+  const summonerData = trpc.riotApi.getUserByName.useQuery(
     { username: username as string },
     { enabled: typeof username == "string" }
   );
 
-  if (isFetched && data?.id) {
-    return <Champs userId={data?.id} />;
-  } else {
-    return <main>Welcome {username} getting your user info information...</main>;
-  }
-};
-
-export default ChampsWrapper;
-
-const Champs = ({ userId }: { userId: string }) => {
-  const [championMastery, setChampionMastery] = useState<CompleteChamptionInfo[]>();
-
+  // get Champion Mastery points
   const { data, isLoading, isFetched } = trpc.riotApi.getMasteryPointsById.useQuery(
-    { id: userId },
-    { enabled: userId != null }
+    { id: summonerData.data?.id ?? "" }, // should never be able to be null/undefined
+    { enabled: summonerData?.data?.id != null && typeof summonerData.data.id == "string" }
   );
 
   useEffect(() => {
@@ -129,7 +122,7 @@ const Champs = ({ userId }: { userId: string }) => {
   const [showFinished, setShowFinished] = useState(false);
   const [alignHeaderRight, setAlignHeaderRight] = useState(false);
 
-  if (!isLoading && isFetched && championMastery)
+  if (isFetched && championMastery) {
     return (
       <>
         <header className="relative mt-2 flex justify-center">
@@ -275,7 +268,13 @@ const Champs = ({ userId }: { userId: string }) => {
         </main>
       </>
     );
-  else {
-    return <main>Getting your user info information...</main>;
+  } else if (summonerData.isFetched && summonerData.data?.id) {
+    return <main>Getting your mastery points...</main>;
+  } else if (username) {
+    return <main>Welcome {username} getting your user info information... & Getting your mastery points...</main>;
+  } else {
+    <></>;
   }
 };
+
+export default Champs;

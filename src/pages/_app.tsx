@@ -11,7 +11,6 @@ import { DATA_DRAGON_URL } from "../utils/constants";
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   const allChampions = trpc.riotApi.getChampions.useQuery();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
 
   useEffect(() => {
     if (allChampions?.data) {
@@ -43,17 +42,12 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
       };
 
       img.src = `${DATA_DRAGON_URL}${src}`;
-      setImages((curr) => [...curr, img]);
     });
   }
 
-  const ImageContext = createContext(images);
-
   return (
     <SessionProvider session={session}>
-      <ImageContext.Provider value={images}>
-        <Component {...pageProps} />
-      </ImageContext.Provider>
+      <Component {...pageProps} />
     </SessionProvider>
   );
 };
