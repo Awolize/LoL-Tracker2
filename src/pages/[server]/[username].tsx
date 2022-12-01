@@ -13,11 +13,7 @@ export default function ProfilePage() {
         <title>
           LoL Mastery Tracker for {username} on {server}.
         </title>
-        <meta
-          property="og:title"
-          content="LoL Mastery Tracker, brought to you by me!"
-          key="title"
-        />
+        <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
         <meta
           property="og:description"
           content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"

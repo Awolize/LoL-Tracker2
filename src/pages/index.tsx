@@ -16,11 +16,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>LoL Mastery Tracker</title>
-        <meta
-          property="og:title"
-          content="LoL Mastery Tracker, brought to you by me!"
-          key="title"
-        />
+        <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
         <meta
           property="og:description"
           content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
@@ -31,13 +27,9 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
-            Search <span className="text-[hsl(280,100%,70%)]">EU West</span>{" "}
-            Summoner Profiles
+            Search <span className="text-[hsl(280,100%,70%)]">EU West</span> Summoner Profiles
           </h1>
-          <form
-            className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8"
-            onSubmit={onSubmit}
-          >
+          <form className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8" onSubmit={onSubmit}>
             <input
               type="text"
               ref={usernameRef}

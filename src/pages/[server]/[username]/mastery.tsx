@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type {
-  ChampionMasteryDTO,
-  ChampionsDataDragonDetails,
-} from "twisted/dist/models-dto";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -18,9 +15,7 @@ interface Roles {
   role: string;
 }
 
-type CompleteChamptionInfo = ChampionMasteryDTO &
-  ChampionsDataDragonDetails &
-  Roles;
+type CompleteChamptionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 type incompleteCompleteChamptionInfo = ChampionsDataDragonDetails & Roles;
 
 const ChampsWrapper = () => {
@@ -34,33 +29,26 @@ const ChampsWrapper = () => {
   if (isFetched && data?.id) {
     return <Champs userId={data?.id} />;
   } else {
-    return (
-      <main>Welcome {username} getting your user info information...</main>
-    );
+    return <main>Welcome {username} getting your user info information...</main>;
   }
 };
 
 export default ChampsWrapper;
 
 const Champs = ({ userId }: { userId: string }) => {
-  const [championMastery, setChampionMastery] =
-    useState<CompleteChamptionInfo[]>();
+  const [championMastery, setChampionMastery] = useState<CompleteChamptionInfo[]>();
 
-  const { data, isLoading, isFetched } =
-    trpc.riotApi.getMasteryPointsById.useQuery(
-      { id: userId },
-      { enabled: userId != null }
-    );
+  const { data, isLoading, isFetched } = trpc.riotApi.getMasteryPointsById.useQuery(
+    { id: userId },
+    { enabled: userId != null }
+  );
 
   useEffect(() => {
     if (championMastery == null && data) {
       const list = Object.keys(championJson.data).map((champName) => {
-        const jsonInfo =
-          championJson.data[champName as keyof typeof championJson.data];
+        const jsonInfo = championJson.data[champName as keyof typeof championJson.data];
 
-        const personalChampData = data
-          .filter((champ) => `${champ.championId}` == jsonInfo.key)
-          .at(0);
+        const personalChampData = data.filter((champ) => `${champ.championId}` == jsonInfo.key).at(0);
 
         // build champ objects
         const champ: CompleteChamptionInfo | incompleteCompleteChamptionInfo = {
@@ -69,9 +57,7 @@ const Champs = ({ userId }: { userId: string }) => {
           name: jsonInfo.name == "Nunu & Willump" ? "Nunu" : jsonInfo.name,
           championPoints: personalChampData?.championPoints ?? 0,
           championLevel: personalChampData?.championLevel ?? 0,
-          role:
-            rolesJson[jsonInfo.id as keyof typeof championJson.data] ??
-            "Unknown",
+          role: rolesJson[jsonInfo.id as keyof typeof championJson.data] ?? "Unknown",
         };
         return champ;
       });
@@ -111,9 +97,7 @@ const Champs = ({ userId }: { userId: string }) => {
         </div>
 
         <div className="text-center text-xs">{!hideAll && champ.name}</div>
-        <div className="items-center justify-center text-center text-xs">
-          {!hideAll && champ.championPoints}
-        </div>
+        <div className="items-center justify-center text-center text-xs">{!hideAll && champ.championPoints}</div>
       </li>
     );
   };
@@ -125,26 +109,21 @@ const Champs = ({ userId }: { userId: string }) => {
     const disabled: boolean = champ.championPoints > filterPoints;
     return disabled;
   };
-  const sortAlgorithm = (
-    a: CompleteChamptionInfo,
-    b: CompleteChamptionInfo
-  ): number => {
+  const sortAlgorithm = (a: CompleteChamptionInfo, b: CompleteChamptionInfo): number => {
     switch (sortOrder) {
       case 0:
         return a.championPoints > b.championPoints ? -1 : 1;
       case 1:
         return a.name.localeCompare(b.name);
       case 2:
-        if (a.championLevel === b.championLevel)
-          return a.championPoints > b.championPoints ? -1 : 1;
+        if (a.championLevel === b.championLevel) return a.championPoints > b.championPoints ? -1 : 1;
         else return a.championLevel > b.championLevel ? -1 : 1;
       default:
         return a.name.localeCompare(b.name);
     }
   };
 
-  const markedSize: number =
-    championMastery?.filter((champ) => filteredOut(champ)).length ?? 0;
+  const markedSize: number = championMastery?.filter((champ) => filteredOut(champ)).length ?? 0;
 
   const [showLevels, setShowLevels] = useState(false);
   const [showFinished, setShowFinished] = useState(false);
@@ -164,7 +143,10 @@ const Champs = ({ userId }: { userId: string }) => {
                 callback={setFilterPoints}
                 defaultIndex={4}
                 choices={[
-                  { text: "All", value: Number.MAX_SAFE_INTEGER },
+                  {
+                    text: "All",
+                    value: Number.MAX_SAFE_INTEGER,
+                  },
                   { text: "100", value: 100 },
                   { text: "500", value: 500 },
                   { text: "1,000", value: 1000 },
@@ -197,9 +179,7 @@ const Champs = ({ userId }: { userId: string }) => {
                 checked={showLevels}
                 onChange={setShowLevels}
                 className={`${
-                  showLevels
-                    ? "bg-blue-600"
-                    : "bg-gradient-to-r from-indigo-500 to-purple-500"
+                  showLevels ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
                 <span className="sr-only">Show Levels</span>
@@ -216,9 +196,7 @@ const Champs = ({ userId }: { userId: string }) => {
                 checked={showFinished}
                 onChange={setShowFinished}
                 className={`${
-                  showFinished
-                    ? "bg-blue-600"
-                    : "bg-gradient-to-r from-indigo-500 to-purple-500"
+                  showFinished ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
                 <span className="sr-only">Show finished</span>
@@ -234,15 +212,9 @@ const Champs = ({ userId }: { userId: string }) => {
               <button onClick={() => setAlignHeaderRight((prev) => !prev)}>
                 <span className="absolute inset-y-0 flex items-center pr-2">
                   {alignHeaderRight ? (
-                    <ChevronLeftIcon
-                      className="h-5 w-5 text-gray-100"
-                      aria-hidden="true"
-                    />
+                    <ChevronLeftIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
                   ) : (
-                    <ChevronRightIcon
-                      className="h-5 w-5 text-gray-100"
-                      aria-hidden="true"
-                    />
+                    <ChevronRightIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
                   )}
                 </span>
               </button>
@@ -254,9 +226,7 @@ const Champs = ({ userId }: { userId: string }) => {
               <p className="text-2xl">
                 {markedSize} / {championMastery?.length}
               </p>
-              <p className="text-sm">
-                {((100 * markedSize) / championMastery?.length).toFixed(2)}%{" "}
-              </p>
+              <p className="text-sm">{((100 * markedSize) / championMastery?.length).toFixed(2)}% </p>
             </div>
           </div>
         </header>
@@ -268,18 +238,12 @@ const Champs = ({ userId }: { userId: string }) => {
                 return champ.role === role;
               });
 
-              const doneChamps = champsWithRole
-                .filter(filteredOut)
-                .sort(sortAlgorithm);
+              const doneChamps = champsWithRole.filter(filteredOut).sort(sortAlgorithm);
 
-              const todoChamps = champsWithRole
-                .filter((champ) => !filteredOut(champ))
-                .sort(sortAlgorithm);
+              const todoChamps = champsWithRole.filter((champ) => !filteredOut(champ)).sort(sortAlgorithm);
 
               const size: number = champsWithRole.length;
-              const markedSize: number = champsWithRole.filter((champ) =>
-                filteredOut(champ)
-              ).length;
+              const markedSize: number = champsWithRole.filter((champ) => filteredOut(champ)).length;
               const percentage = (100 * markedSize) / size;
 
               return (

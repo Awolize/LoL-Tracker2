@@ -8,10 +8,7 @@ import "../styles/globals.css";
 import { createContext, useEffect, useState } from "react";
 import { DATA_DRAGON_URL } from "../utils/constants";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   const allChampions = trpc.riotApi.getChampions.useQuery();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
