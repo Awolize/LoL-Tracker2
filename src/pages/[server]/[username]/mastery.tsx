@@ -31,7 +31,7 @@ const Champs = () => {
   );
 
   // get Champion Mastery points
-  const { data, isLoading, isFetched } = trpc.riotApi.getMasteryPointsById.useQuery(
+  const { data, isFetched } = trpc.riotApi.getMasteryPointsById.useQuery(
     { id: summonerData.data?.id ?? "" }, // should never be able to be null/undefined
     { enabled: summonerData?.data?.id != null && typeof summonerData.data.id == "string" }
   );
@@ -134,7 +134,7 @@ const Champs = () => {
             <div className="w-32">
               <Dropdown
                 callback={setFilterPoints}
-                defaultIndex={4}
+                defaultIndex={5}
                 choices={[
                   {
                     text: "All",
