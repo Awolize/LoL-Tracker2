@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
@@ -6,6 +6,12 @@ import Link from "next/link";
 export default function ProfilePage() {
   const router = useRouter();
   const { server, username } = router.query;
+
+  useEffect(() => {
+    if (username) {
+      router.push(router.asPath + "/mastery");
+    }
+  });
 
   return (
     <div>
@@ -27,7 +33,9 @@ export default function ProfilePage() {
           <span className="text-center">
             {server} {username}
           </span>
-          <Link href={router.asPath + "/mastery"}>Mastery Points Tracker</Link>
+          <Link href={router.asPath + "/mastery"} className="underline">
+            Mastery Points Tracker
+          </Link>
           <Link href={router.asPath + "/mastery"}>todo</Link>
           <Link href={router.asPath + "/mastery"}>todo</Link>
           <Link href={router.asPath + "/mastery"}>todo</Link>

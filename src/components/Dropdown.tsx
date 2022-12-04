@@ -1,21 +1,45 @@
-import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { Fragment, useEffect, useState } from "react";
 
 interface Props {
   callback: (data: number) => void;
   choices: { text: string; value: number }[];
-  defaultIndex: number;
+  saveName?: string;
 }
 
-const Dropdown = ({ callback, choices, defaultIndex }: Props) => {
-  const [selected, setSelected] = useState(choices[defaultIndex]);
+const Dropdown = ({ callback, choices, saveName }: Props) => {
+  const [selected, setSelected] = useState(choices[0]);
+
+  useEffect(() => {
+    console.log("reload");
+
+    if (saveName != null) {
+      const storedValue = JSON.parse(window.localStorage.getItem(saveName) ?? "0");
+      console.log("storedValue", storedValue);
+      for (let storedIndex = 0; storedIndex < choices.length; storedIndex++) {
+        const element = choices[storedIndex];
+        if (element == null) continue;
+        if (element.value === storedValue) {
+          console.log("storedIndex", storedIndex);
+
+          setSelected(choices[storedIndex]);
+          break;
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (selected?.value != null) {
       callback(selected.value);
+      if (saveName != null) {
+        console.log("saving:", selected.value.toString());
+
+        window.localStorage.setItem(saveName, selected.value.toString());
+      }
     }
-  }, [callback, selected?.value]);
+  }, [selected?.value]);
 
   return (
     <Listbox value={selected} onChange={setSelected}>
