@@ -1,6 +1,7 @@
 import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import type { NextPage, InferGetServerSidePropsType } from "next";
+import Head from "next/head";
 import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/opacity.css";
@@ -73,6 +74,19 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
   return (
     <>
+      <Head>
+        <title>
+          LoL Mastery Tracker for {props.username} on {props.server}.
+        </title>
+        <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
+        <meta
+          property="og:description"
+          content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
+        />
+        <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
       <header className="relative mt-2 flex justify-center">
         <div
           className={`absolute top-6 z-50 flex w-full flex-row items-center  justify-start  gap-4 px-4 ${
@@ -263,7 +277,7 @@ export const getServerSideProps = async (context) => {
     })
     .filter(Boolean);
 
-  return { props: { champData: completeChampsData } };
+  return { props: { username, server, champData: completeChampsData } };
 };
 
 export default Mastery;
