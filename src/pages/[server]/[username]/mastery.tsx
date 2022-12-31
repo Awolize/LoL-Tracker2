@@ -1,17 +1,18 @@
 import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
-import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi, Constants } from "twisted";
-import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import Dropdown from "../../../components/Dropdown";
 import { filteredOut, sortAlgorithm } from "../../../utils/champsUtils";
 import { DATA_DRAGON_URL } from "../../../utils/constants";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
+
+import type { NextPage, InferGetServerSidePropsType } from "next";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 
 interface Roles {
   role: string;
