@@ -261,7 +261,9 @@ export const getServerSideProps = async (context) => {
       const personalChampData = apiChampsData.filter((champ) => champ.championId.toString() == element.key).at(0);
       if (personalChampData) {
         return {
-          ...element,
+          image: element.image,
+          id: element.id,
+          key: element.key,
           ...personalChampData,
           championPoints: personalChampData?.championPoints ?? 0,
           championLevel: personalChampData?.championLevel ?? 0,
