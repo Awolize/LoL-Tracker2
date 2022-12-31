@@ -7,7 +7,7 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import Dropdown from "../../../components/Dropdown";
 import { filteredOut, regionToConstant, sortAlgorithm } from "../../../utils/champsUtils";
-import { DATA_DRAGON_URL } from "../../../utils/constants";
+import { CHALLENGE_CHOICES, DATA_DRAGON_URL } from "../../../utils/constants";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
 
@@ -26,7 +26,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
   const [filterPoints, setFilterPoints] = useState(0);
   const [sortOrder, setSortOrder] = useState(0);
-  const [showLevels, setShowLevels] = useState(false);
+  const [selectedChallenge, setSelectedChallenge] = useState(0);
   const [showFinished, setShowFinished] = useState(false);
   const markedSize: number = championMastery.filter((champ) => filteredOut(champ, filterPoints)).length ?? 0;
   const [alignHeaderRight, setAlignHeaderRight] = useState(false);
@@ -35,14 +35,27 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
+    const handleChallenge = (challenge: number) => {
+      if (challenge == CHALLENGE_CHOICES.Levels.value) {
+        return (
+          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+            {champ.championLevel}
+          </span>
+        );
+      }
+      if (challenge == CHALLENGE_CHOICES.SPlus.value) {
+        return (
+          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+            {champ.championLevel}
+          </span>
+        );
+      }
+    };
+
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         <div className="relative z-10">
-          {showLevels && !hide && (
-            <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
-              {champ.championLevel}
-            </span>
-          )}
+          {selectedChallenge > 0 && !hide && handleChallenge(selectedChallenge)}
           {!hide && (
             <Image
               src={`${DATA_DRAGON_URL}${champ.image.full}`}
@@ -129,24 +142,16 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
               />
             </div>
           </div>
-
           <div className="flex flex-row items-center gap-2">
-            <span>Show Levels</span>
-            <Switch
-              checked={showLevels}
-              onChange={setShowLevels}
-              className={`${
-                showLevels ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
-              } relative inline-flex h-6 w-11 items-center rounded-full`}
-            >
-              <span className="sr-only">Show Levels</span>
-              <span
-                className={`${
-                  showLevels ? "translate-x-6" : "translate-x-1"
-                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            <div className="w-32">
+              <Dropdown
+                callback={setSelectedChallenge}
+                saveName="selectedChallenge"
+                choices={Object.values(CHALLENGE_CHOICES)}
               />
-            </Switch>
+            </div>
           </div>
+
           <div className="flex flex-row items-center gap-2">
             <span>Show finished</span>
             <Switch
@@ -164,7 +169,6 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
               />
             </Switch>
           </div>
-
           <div className="flex pr-4">
             <button onClick={() => setAlignHeaderRight((prev) => !prev)}>
               <span className="absolute inset-y-0 flex items-center pr-2">

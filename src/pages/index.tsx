@@ -9,7 +9,7 @@ const Home: NextPage = () => {
 
   function onSubmit(e) {
     e.preventDefault();
-    router.push(`/EUW/${usernameRef.current?.value}`);
+    router.push(`/EUW/${usernameRef.current?.value}/mastery`);
   }
 
   return (
