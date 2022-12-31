@@ -17,4 +17,11 @@ const config = {
     domains: ["ddragon.leagueoflegends.com"],
   },
 };
+
+// // eslint-disable-next-line @typescript-eslint/no-var-requires
+// const withBundleAnalyzer = require("@next/bundle-analyzer")({
+//   enabled: true,
+// });
+// module.exports = withBundleAnalyzer(config);
+
 export default config;
