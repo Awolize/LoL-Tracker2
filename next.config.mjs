@@ -13,5 +13,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["ddragon.leagueoflegends.com"],
+  },
 };
 export default config;

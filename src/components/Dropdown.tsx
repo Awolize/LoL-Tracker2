@@ -12,8 +12,6 @@ const Dropdown = ({ callback, choices, saveName }: Props) => {
   const [selected, setSelected] = useState(choices[0]);
 
   useEffect(() => {
-    console.log("reload");
-
     if (saveName != null) {
       const storedValue = JSON.parse(window.localStorage.getItem(saveName) ?? "0");
       console.log("storedValue", storedValue);
@@ -44,7 +42,7 @@ const Dropdown = ({ callback, choices, saveName }: Props) => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       <div className="relative mt-1">
-        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-gray-900 py-2 pl-3 pr-10 text-left text-sm text-gray-100 shadow-md">
+        <Listbox.Button className="relative w-full cursor-default rounded bg-gray-900 py-2 pl-3 pr-10 text-left text-sm text-gray-100 shadow-md">
           <span className="block truncate">{selected?.text}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronUpDownIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
