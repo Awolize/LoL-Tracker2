@@ -4,9 +4,9 @@ import Head from "next/head";
 import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { LolApi, Constants } from "twisted";
+import { LolApi } from "twisted";
 import Dropdown from "../../../components/Dropdown";
-import { filteredOut, sortAlgorithm } from "../../../utils/champsUtils";
+import { filteredOut, regionToConstant, sortAlgorithm } from "../../../utils/champsUtils";
 import { DATA_DRAGON_URL } from "../../../utils/constants";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
@@ -242,14 +242,15 @@ export const getServerSideProps = async (context) => {
   const { server, username } = params;
   console.log("server, username:", server, username);
 
+  const region = regionToConstant(server);
+
   const api = new LolApi();
 
   const getChampionsAndMastery = async (username) => {
-    const getByNameResponse = await api.Summoner.getByName(username, Constants.Regions.EU_WEST);
+    const getByNameResponse = await api.Summoner.getByName(username, region);
     const id = getByNameResponse.response.id;
-
-    const response2 = await api.Champion.masteryBySummoner(id, Constants.Regions.EU_WEST);
-    return response2.response;
+    const masteryBySummonerResponse = await api.Champion.masteryBySummoner(id, region);
+    return masteryBySummonerResponse.response;
   };
 
   const apiChampsData = await getChampionsAndMastery(username);

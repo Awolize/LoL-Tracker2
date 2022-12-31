@@ -1,3 +1,4 @@
+import { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
@@ -31,3 +32,26 @@ interface Roles {
 }
 
 type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
+
+export const regionToConstant = (region: string) => {
+  const regionMap = {
+    BR: Regions.BRAZIL,
+    EUNE: Regions.EU_EAST,
+    EUW: Regions.EU_WEST,
+    KR: Regions.KOREA,
+    LA1: Regions.LAT_NORTH,
+    LA2: Regions.LAT_SOUTH,
+    NA: Regions.AMERICA_NORTH,
+    OC: Regions.OCEANIA,
+    TR: Regions.TURKEY,
+    RU: Regions.RUSSIA,
+    JP: Regions.JAPAN,
+    PBE: Regions.PBE,
+  };
+
+  if (!regionMap[region]) {
+    throw new Error(`Invalid region: ${region}`);
+  }
+
+  return regionMap[region];
+};
