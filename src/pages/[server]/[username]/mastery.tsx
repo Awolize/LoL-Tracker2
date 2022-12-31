@@ -2,7 +2,7 @@ import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
 import React, { useState } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import Image from "next/image";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import Dropdown from "../../../components/Dropdown";
@@ -33,34 +33,35 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
   const listItem = (champ: CompleteChampionInfo) => {
     const disabled = filteredOut(champ, filterPoints);
-    const hideAll = disabled && !showFinished;
+    const hide = disabled && !showFinished;
 
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         <div className="relative z-10">
-          {showLevels && !hideAll && (
+          {showLevels && !hide && (
             <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
               {champ.championLevel}
             </span>
           )}
-          <LazyLoadImage
-            src={`${DATA_DRAGON_URL}${champ.image.full}`}
-            style={{
-              zIndex: -1,
-              opacity: disabled ? "40%" : "100%",
-            }}
-            className={` ${disabled ? "grayscale" : ""}`}
-            alt={`${champ.name}`}
-            height={90}
-            width={90}
-            effect="opacity"
-            hidden={hideAll}
-            // placeholderSrc="/placeholder.png"
-          />
+          {!hide && (
+            <Image
+              src={`${DATA_DRAGON_URL}${champ.image.full}`}
+              style={{
+                zIndex: -1,
+                opacity: disabled ? "40%" : "100%",
+              }}
+              className={` ${disabled ? "grayscale" : ""}`}
+              alt={`${champ.name}`}
+              height={90}
+              width={90}
+              // hidden={hideAll}
+              // placeholderSrc="/placeholder.png"
+            />
+          )}
         </div>
 
-        <div className="text-center text-xs">{!hideAll && champ.name}</div>
-        <div className="items-center justify-center text-center text-xs">{!hideAll && champ.championPoints}</div>
+        <div className="text-center text-xs">{!hide && champ.name}</div>
+        <div className="items-center justify-center text-center text-xs">{!hide && champ.championPoints}</div>
       </li>
     );
   };
