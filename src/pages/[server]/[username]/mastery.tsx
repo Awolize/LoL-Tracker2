@@ -80,18 +80,24 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
   function renderChallenge(challenge: ChallengeV1DTO, index: number) {
     const descriptions = ["Win a game without dying", "Earn an S+ grade", "Win a game"];
 
-    const title =
-      challengesThresholds[index] !== undefined
-        ? Object.entries(challengesThresholds[index]!)
-            ?.sort((a, b) => a[1] - b[1])
-            .map((threshold) => threshold[1])
-            .join(" ")
-        : "";
+    const values = Object.entries(challengesThresholds[index]!).map((threshold) => ({
+      value: threshold[1],
+      style: "text-gray-500",
+    }));
+    values.push({ value: challenge.value, style: "text-gray-200" });
+    values.sort((a, b) => a.value - b.value);
+    const title = values.join(" ");
 
     return (
       <>
         <div title={title}>{descriptions[index]}</div>
-        <span className="text-gray-100">{challenge.value}</span>
+        <div className="flex gap-1">
+          {values.map((v) => (
+            <span key={v.value} className={v.style}>
+              {v.value}
+            </span>
+          ))}
+        </div>
       </>
     );
   }
@@ -216,7 +222,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           <div className="flex flex-col gap-0">
             <div className="text-md">Different champions</div>
             {challenges.length == 3 ? (
-              <div className="grid grid-cols-2 text-xs gap-x-2 text-gray-400">
+              <div className="grid grid-cols-2 text-xs gap-x-1 text-gray-400">
                 {renderChallenge(challenges[0]!, 0)}
                 {renderChallenge(challenges[1]!, 1)}
                 {renderChallenge(challenges[2]!, 2)}
