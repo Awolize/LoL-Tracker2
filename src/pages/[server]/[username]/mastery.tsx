@@ -31,7 +31,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
   const [sortOrder, setSortOrder] = useState(0);
   const [showLevel, setShowLevel] = useState(false);
   const [showFinished, setShowFinished] = useState(false);
-  const [hideChampionsMode, setHideChampionsMode] = useState();
+  const [hideChampionsMode, setHideChampionsMode] = useState(false);
   const markedSize: number = championMastery.filter((champ) => filteredOut(champ, filterPoints)).length ?? 0;
   const [alignHeaderRight, setAlignHeaderRight] = useState(false);
 
