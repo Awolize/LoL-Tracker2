@@ -112,7 +112,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="relative mt-2 flex flex-row gap-8">
+      <header className="relative mt-2 flex flex-row gap-8 z-50 px-5">
         <div
           className={`w-full min-w-fit flex items-center justify-start gap-4 ${
             alignHeaderRight ? "flex-row-reverse" : "flex-row"
@@ -216,7 +216,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           <div className="flex flex-col gap-0">
             <div className="text-md">Different champions</div>
             {challenges.length == 3 ? (
-              <div className="grid grid-cols-2 text-xs gap-x-2 text-gray-600">
+              <div className="grid grid-cols-2 text-xs gap-x-2 text-gray-400">
                 {renderChallenge(challenges[0]!, 0)}
                 {renderChallenge(challenges[1]!, 1)}
                 {renderChallenge(challenges[2]!, 2)}
