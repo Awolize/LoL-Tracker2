@@ -13,6 +13,7 @@ import rolesJson from "./roles.json";
 
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
+import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
 interface Roles {
   role: string;
@@ -76,19 +77,23 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     return [pass, fail];
   }
 
-  function renderChallenge(challenge, index) {
+  function renderChallenge(challenge: ChallengeV1DTO, index: number) {
     const descriptions = [
       "Win a game without dying with different champions",
       "Earn an S+ grade on different champions",
       "Win a game with different champions",
     ];
+
+    const title =
+      challengesThresholds[index] !== undefined
+        ? Object.entries(challengesThresholds[index]!)
+            ?.sort((a, b) => a[1] - b[1])
+            .map((threshold) => threshold[1])
+            .join(" ")
+        : "";
+
     return (
-      <div
-        title={Object.entries(challengesThresholds[index])
-          .sort((th1, th2) => th1[1] > th2[1])
-          .map((threshold) => threshold[1])
-          .join(" ")}
-      >
+      <div title={title}>
         {descriptions[index]}: <span className="text-gray-100">{challenge.value}</span>
       </div>
     );
@@ -188,9 +193,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
           {challenges.length == 3 ? (
             <div className="flex flex-col text-xs gap-0 text-gray-600">
-              {renderChallenge(challenges[0], 0)}
-              {renderChallenge(challenges[1], 1)}
-              {renderChallenge(challenges[2], 2)}
+              {renderChallenge(challenges[0]!, 0)}
+              {renderChallenge(challenges[1]!, 1)}
+              {renderChallenge(challenges[2]!, 2)}
             </div>
           ) : (
             <></>
@@ -295,10 +300,10 @@ export const getServerSideProps = async (context) => {
 
   const getChallengesThresholds = async () => {
     const challengeIds = [202303, 210001, 401106];
-    const thresholdsList = [];
+    const thresholdsList: { [key: string]: number }[] = [];
     for (const challengeId of challengeIds) {
-      const thresholds = (await api.Challenges.getChallengeConfig(challengeId, region)).response.thresholds;
-      thresholdsList.push(thresholds);
+      const thresholds = (await api.Challenges.getChallengeConfig(challengeId, region)).response;
+      thresholdsList.push(thresholds.thresholds);
     }
     return thresholdsList;
   };

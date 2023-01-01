@@ -46,7 +46,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-lazy-load-image-component: 1.5.6_biqbaboplfbrettd7655fr4n2y
   superjson: 1.9.1
-  twisted: github.com/Awolize/twisted/a4c04764e7a46bb1aa40965934db5e1e1e1febf3
+  twisted: github.com/Awolize/twisted/3f5870dcb8612a5e4d9f34a24a9e4af9f51ab62b
   zod: 3.20.2
 
 devDependencies:
@@ -2646,8 +2646,8 @@ packages:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
     dev: false
 
-  github.com/Awolize/twisted/a4c04764e7a46bb1aa40965934db5e1e1e1febf3:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/a4c04764e7a46bb1aa40965934db5e1e1e1febf3}
+  github.com/Awolize/twisted/3f5870dcb8612a5e4d9f34a24a9e4af9f51ab62b:
+    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/3f5870dcb8612a5e4d9f34a24a9e4af9f51ab62b}
     name: twisted
     version: 1.52.0
     engines: {node: '>=8.6.0'}
