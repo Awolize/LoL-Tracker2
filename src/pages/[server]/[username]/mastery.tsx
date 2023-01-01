@@ -286,9 +286,19 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
             <div className="flex h-full flex-col justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
               <p className="text-2xl">
-                {markedSize} / {championMastery?.length}
+                {markedSize} / {championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length}
+                {championMastery.length !=
+                championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length
+                  ? "*"
+                  : ""}
               </p>
-              <p className="text-sm">{((100 * markedSize) / championMastery?.length).toFixed(2)}% </p>
+              <p className="text-sm">
+                {(
+                  (100 * markedSize) /
+                  championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length
+                ).toFixed(2)}
+                %{" "}
+              </p>
             </div>
           </div>
         </div>
@@ -319,7 +329,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
             doneChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
             todoChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
-            const size: number = champsWithRole.length;
+            const size: number = champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId)).length;
             const markedSize: number = champsWithRole.filter((champ) => {
               if (champ == undefined) return false;
               return filteredOut(champ, filterPoints);
@@ -331,6 +341,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 <div className="text-md flex flex-row justify-center gap-8 align-bottom ">
                   <h4 className="my-auto p-2  ">
                     {markedSize} / {size}
+                    {champsWithRole.length != size ? "*" : ""}
                   </h4>
                   <div className="mb-2 bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 pb-[3px]">
                     <div className="flex h-full flex-col justify-between bg-black text-gray-200 ">
