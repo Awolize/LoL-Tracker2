@@ -82,7 +82,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
     const values = Object.entries(challengesThresholds[index]!).map((threshold) => ({
       value: threshold[1],
-      style: "text-gray-500",
+      style: "text-gray-400",
     }));
     values.push({ value: challenge.value, style: "text-gray-200" });
     values.sort((a, b) => a.value - b.value);
