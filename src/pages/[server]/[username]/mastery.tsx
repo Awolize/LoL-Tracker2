@@ -202,7 +202,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           )}
 
           <div className="flex pr-4">
-            <button onClick={() => setAlignHeaderRight((prev) => !prev)}>
+            <button onClick={() => setAlignHeaderRight((prev) => !prev)} accessKey="s" aria-label="change side">
               <span className="absolute inset-y-0 flex items-center pr-2">
                 {alignHeaderRight ? (
                   <ChevronLeftIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
