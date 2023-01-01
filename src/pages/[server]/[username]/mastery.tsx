@@ -78,11 +78,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
   }
 
   function renderChallenge(challenge: ChallengeV1DTO, index: number) {
-    const descriptions = [
-      "Win a game without dying with different champions",
-      "Earn an S+ grade on different champions",
-      "Win a game with different champions",
-    ];
+    const descriptions = ["Win a game without dying", "Earn an S+ grade", "Win a game"];
 
     const title =
       challengesThresholds[index] !== undefined
@@ -93,9 +89,10 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         : "";
 
     return (
-      <div title={title}>
-        {descriptions[index]}: <span className="text-gray-100">{challenge.value}</span>
-      </div>
+      <>
+        <div title={title}>{descriptions[index]}</div>
+        <span className="text-gray-100">{challenge.value}</span>
+      </>
     );
   }
 
@@ -115,9 +112,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="relative mt-2 flex justify-center">
+      <header className="relative mt-2 flex flex-row gap-8">
         <div
-          className={`absolute top-6 z-50 flex w-full flex-row items-center  justify-start  gap-4 px-4 ${
+          className={`flex w-full items-center justify-start gap-4 px-4 ${
             alignHeaderRight ? "flex-row-reverse" : "flex-row"
           }`}
         >
@@ -191,16 +188,6 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
             </Switch>
           </div>
 
-          {challenges.length == 3 ? (
-            <div className="flex flex-col text-xs gap-0 text-gray-600">
-              {renderChallenge(challenges[0]!, 0)}
-              {renderChallenge(challenges[1]!, 1)}
-              {renderChallenge(challenges[2]!, 2)}
-            </div>
-          ) : (
-            <></>
-          )}
-
           <div className="flex pr-4">
             <button onClick={() => setAlignHeaderRight((prev) => !prev)} accessKey="s" aria-label="change side">
               <span className="absolute inset-y-0 flex items-center pr-2">
@@ -214,12 +201,29 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           </div>
         </div>
 
-        <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
-          <div className="flex h-full flex-col  justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
-            <p className="text-2xl">
-              {markedSize} / {championMastery?.length}
-            </p>
-            <p className="text-sm">{((100 * markedSize) / championMastery?.length).toFixed(2)}% </p>
+        <div className="w-80">
+          <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
+            <div className="flex h-full flex-col justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
+              <p className="text-2xl">
+                {markedSize} / {championMastery?.length}
+              </p>
+              <p className="text-sm">{((100 * markedSize) / championMastery?.length).toFixed(2)}% </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex w-full ">
+          <div className="flex flex-col gap-0">
+            <div className="text-md">Different champions</div>
+            {challenges.length == 3 ? (
+              <div className="grid grid-cols-2 text-xs gap-x-2 text-gray-600">
+                {renderChallenge(challenges[0]!, 0)}
+                {renderChallenge(challenges[1]!, 1)}
+                {renderChallenge(challenges[2]!, 2)}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </header>
