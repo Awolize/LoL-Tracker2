@@ -114,7 +114,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
       <header className="relative mt-2 flex flex-row gap-8">
         <div
-          className={`flex w-full items-center justify-start gap-4 px-4 ${
+          className={`w-full min-w-fit flex items-center justify-start gap-4 ${
             alignHeaderRight ? "flex-row-reverse" : "flex-row"
           }`}
         >
@@ -201,7 +201,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           </div>
         </div>
 
-        <div className="w-80">
+        <div className="w-80 min-w-fit">
           <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
             <div className="flex h-full flex-col justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
               <p className="text-2xl">
@@ -212,7 +212,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           </div>
         </div>
 
-        <div className="flex w-full ">
+        <div className="flex w-full min-w-fit">
           <div className="flex flex-col gap-0">
             <div className="text-md">Different champions</div>
             {challenges.length == 3 ? (
