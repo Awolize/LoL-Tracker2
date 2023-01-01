@@ -325,7 +325,13 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
               return champ?.role === role;
             });
 
-            const [doneChamps, todoChamps] = partition(champsWithRole, (champ) => filteredOut(champ, filterPoints));
+            const champsWithRoleHiddenExcluded = hideChampionsMode
+              ? champsWithRole
+              : champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId));
+
+            const [doneChamps, todoChamps] = partition(champsWithRoleHiddenExcluded, (champ) =>
+              filteredOut(champ, filterPoints)
+            );
             doneChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
             todoChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
