@@ -7,7 +7,7 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import Dropdown from "../../../components/Dropdown";
 import { filteredOut, regionToConstant, sortAlgorithm } from "../../../utils/champsUtils";
-import { CHALLENGE_CHOICES, DATA_DRAGON_URL } from "../../../utils/constants";
+import { DATA_DRAGON_URL } from "../../../utils/constants";
 import championJson from "./champions.json";
 import rolesJson from "./roles.json";
 
@@ -23,10 +23,12 @@ type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Ro
 const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
   const champs = props.champData;
   const championMastery = props.champData;
+  const challenges = props.challenges;
+  const challengesThresholds = props.challengesThresholds;
 
   const [filterPoints, setFilterPoints] = useState(0);
   const [sortOrder, setSortOrder] = useState(0);
-  const [selectedChallenge, setSelectedChallenge] = useState(0);
+  const [showLevel, setShowLevel] = useState(false);
   const [showFinished, setShowFinished] = useState(false);
   const markedSize: number = championMastery.filter((champ) => filteredOut(champ, filterPoints)).length ?? 0;
   const [alignHeaderRight, setAlignHeaderRight] = useState(false);
@@ -35,27 +37,14 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
-    const handleChallenge = (challenge: number) => {
-      if (challenge == CHALLENGE_CHOICES.Levels.value) {
-        return (
-          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
-            {champ.championLevel}
-          </span>
-        );
-      }
-      if (challenge == CHALLENGE_CHOICES.SPlus.value) {
-        return (
-          <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
-            {champ.championLevel}
-          </span>
-        );
-      }
-    };
-
     return (
       <li className="flex flex-col pb-2" key={champ.key as React.Key}>
         <div className="relative z-10">
-          {selectedChallenge > 0 && !hide && handleChallenge(selectedChallenge)}
+          {showLevel && !hide && (
+            <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+              {champ.championLevel}
+            </span>
+          )}
           {!hide && (
             <Image
               src={`${DATA_DRAGON_URL}${champ.image.full}`}
@@ -85,6 +74,24 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
       fail: CompleteChampionInfo[] = [];
     array.forEach((e: CompleteChampionInfo, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
     return [pass, fail];
+  }
+
+  function renderChallenge(challenge, index) {
+    const descriptions = [
+      "Win a game without dying with different champions",
+      "Earn an S+ grade on different champions",
+      "Win a game with different champions",
+    ];
+    return (
+      <div
+        title={Object.entries(challengesThresholds[index])
+          .sort((th1, th2) => th1[1] > th2[1])
+          .map((threshold) => threshold[1])
+          .join(" ")}
+      >
+        {descriptions[index]}: <span className="text-gray-100">{challenge.value}</span>
+      </div>
+    );
   }
 
   return (
@@ -142,14 +149,23 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
               />
             </div>
           </div>
+
           <div className="flex flex-row items-center gap-2">
-            <div className="w-32">
-              <Dropdown
-                callback={setSelectedChallenge}
-                saveName="selectedChallenge"
-                choices={Object.values(CHALLENGE_CHOICES)}
+            <span>Show Levels</span>
+            <Switch
+              checked={showLevel}
+              onChange={setShowLevel}
+              className={`${
+                showLevel ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
+              } relative inline-flex h-6 w-11 items-center rounded-full`}
+            >
+              <span className="sr-only">Show Levels</span>
+              <span
+                className={`${
+                  showLevel ? "translate-x-6" : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
-            </div>
+            </Switch>
           </div>
 
           <div className="flex flex-row items-center gap-2">
@@ -169,6 +185,17 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
               />
             </Switch>
           </div>
+
+          {challenges.length == 3 ? (
+            <div className="flex flex-col text-xs gap-0 text-gray-600">
+              {renderChallenge(challenges[0], 0)}
+              {renderChallenge(challenges[1], 1)}
+              {renderChallenge(challenges[2], 2)}
+            </div>
+          ) : (
+            <></>
+          )}
+
           <div className="flex pr-4">
             <button onClick={() => setAlignHeaderRight((prev) => !prev)}>
               <span className="absolute inset-y-0 flex items-center pr-2">
@@ -251,20 +278,47 @@ export const getServerSideProps = async (context) => {
 
   const api = new LolApi();
 
-  const getChampionsAndMastery = async (username) => {
-    const getByNameResponse = await api.Summoner.getByName(username, region);
-    const id = getByNameResponse.response.id;
-    const masteryBySummonerResponse = await api.Champion.masteryBySummoner(id, region);
-    return masteryBySummonerResponse.response;
+  const masteryBySummoner = async (user) => {
+    return await (
+      await api.Champion.masteryBySummoner(user.id, region)
+    ).response;
   };
 
-  const apiChampsData = await getChampionsAndMastery(username);
+  const getChallengesData = async (user) => {
+    const response = await api.Challenges.getPlayerData(user.puuid, region);
+    const savedChallenges = [202303, 210001, 401106];
+    const filteredChallenges = response.response.challenges.filter((challenge) =>
+      savedChallenges.includes(challenge.challengeId)
+    );
+    return filteredChallenges;
+  };
+
+  const getChallengesThresholds = async () => {
+    const challengeIds = [202303, 210001, 401106];
+    const thresholdsList = [];
+    for (const challengeId of challengeIds) {
+      const thresholds = (await api.Challenges.getChallengeConfig(challengeId, region)).response.thresholds;
+      thresholdsList.push(thresholds);
+    }
+    return thresholdsList;
+  };
+
+  const getByNameResponse = await api.Summoner.getByName(username, region);
+  const user = getByNameResponse.response;
+
+  const [championMasteries, playerChallenges, challengesThresholds] = await Promise.all([
+    masteryBySummoner(user),
+    getChallengesData(user),
+    getChallengesThresholds(),
+  ]);
+
+  //   const apiChampsData = await getChampionsAndMastery(username);
   const completeChampsData = Object.keys(championJson.data)
     .map((champName) => {
       const element: ChampionsDataDragonDetails = championJson.data[champName];
       const role = rolesJson[champName as keyof typeof championJson.data] ?? "Unknown";
 
-      const personalChampData = apiChampsData.filter((champ) => champ.championId.toString() == element.key).at(0);
+      const personalChampData = championMasteries.filter((champ) => champ.championId.toString() == element.key).at(0);
       if (personalChampData) {
         return {
           image: element.image,
@@ -287,7 +341,15 @@ export const getServerSideProps = async (context) => {
     })
     .filter(Boolean);
 
-  return { props: { username, server, champData: completeChampsData } };
+  return {
+    props: {
+      username,
+      server,
+      champData: completeChampsData,
+      challenges: playerChallenges,
+      challengesThresholds: challengesThresholds,
+    },
+  };
 };
 
 export default Mastery;
