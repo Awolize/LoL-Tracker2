@@ -1,7 +1,7 @@
 import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
@@ -31,15 +31,48 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
   const [sortOrder, setSortOrder] = useState(0);
   const [showLevel, setShowLevel] = useState(false);
   const [showFinished, setShowFinished] = useState(false);
+  const [hideChampionsMode, setHideChampionsMode] = useState();
   const markedSize: number = championMastery.filter((champ) => filteredOut(champ, filterPoints)).length ?? 0;
   const [alignHeaderRight, setAlignHeaderRight] = useState(false);
+
+  const [hiddenChamps, setHiddenChamps] = useState(new Set<number>());
+
+  useEffect(() => {
+    // check if the hiddenChamps item is present in local storage
+    const hiddenChampsString = localStorage.getItem("hiddenChamps");
+    if (hiddenChampsString) {
+      // if present, set the hiddenChamps state to the value stored in local storage
+      setHiddenChamps(new Set(JSON.parse(hiddenChampsString)));
+    }
+  }, []);
+
+  const handleChampionClick = (championId: number) => {
+    console.log(championId);
+    console.log(hideChampionsMode);
+
+    if (hideChampionsMode === true) {
+      if (hiddenChamps.has(championId)) {
+        hiddenChamps.delete(championId);
+      } else {
+        hiddenChamps.add(championId);
+      }
+      setHiddenChamps(new Set(hiddenChamps));
+
+      // save the hiddenChamps set to local storage
+      localStorage.setItem("hiddenChamps", JSON.stringify([...hiddenChamps]));
+    }
+  };
 
   const listItem = (champ: CompleteChampionInfo) => {
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
     return (
-      <li className="flex flex-col pb-2" key={champ.key as React.Key}>
+      <li
+        className="flex flex-col pb-2"
+        key={champ.key as React.Key}
+        onClick={() => handleChampionClick(champ.championId)}
+      >
         <div className="relative z-10">
           {showLevel && !hide && (
             <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
@@ -53,7 +86,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 zIndex: -1,
                 opacity: disabled ? "40%" : "100%",
               }}
-              className={` ${disabled ? "grayscale" : ""}`}
+              className={`${hiddenChamps.has(champ.championId) ? "grayscale brightness-50" : ""} ${
+                disabled ? "grayscale" : ""
+              }`}
               alt={`${champ.name}`}
               height={90}
               width={90}
@@ -84,7 +119,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
       value: threshold[1],
       style: "text-gray-400",
     }));
-    values.push({ value: challenge.value, style: "text-gray-200" });
+    values.push({ value: challenge.value, style: "text-gray-100" });
     values.sort((a, b) => a.value - b.value);
     const title = values.join(" ");
 
@@ -93,7 +128,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <div title={title}>{descriptions[index]}</div>
         <div className="flex gap-1">
           {values.map((v) => (
-            <span key={v.value} className={v.style}>
+            <span key={`${v.value}-${v.style}`} className={v.style}>
               {v.value}
             </span>
           ))}
@@ -191,6 +226,46 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                   showFinished ? "translate-x-6" : "translate-x-1"
                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
               />
+            </Switch>
+          </div>
+
+          <div className="flex flex-row items-center gap-2">
+            <Switch checked={hideChampionsMode} onChange={setHideChampionsMode}>
+              <span className="sr-only">Show finished</span>
+              <span className={`justify-center items-center content-center w-full h-full transform transition`}>
+                {hideChampionsMode ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                    />
+                  </svg>
+                )}
+              </span>
             </Switch>
           </div>
 
