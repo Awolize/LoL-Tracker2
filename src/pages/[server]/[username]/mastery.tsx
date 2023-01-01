@@ -418,6 +418,7 @@ export const getServerSideProps = async (context) => {
       const role = rolesJson[champName as keyof typeof championJson.data] ?? "Unknown";
 
       const personalChampData = championMasteries.filter((champ) => champ.championId.toString() == element.key).at(0);
+
       if (personalChampData) {
         return {
           image: element.image,
@@ -434,6 +435,7 @@ export const getServerSideProps = async (context) => {
           ...element,
           championPoints: 0,
           championLevel: 0,
+          championId: parseInt(element.key, 10),
           role,
         } as CompleteChampionInfo;
       }
