@@ -222,10 +222,8 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           <div className="flex flex-col gap-0">
             <div className="text-md">Different champions</div>
             {challenges.length == 3 ? (
-              <div className="grid grid-cols-2 text-xs gap-x-1 text-gray-400">
-                {renderChallenge(challenges[0]!, 0)}
-                {renderChallenge(challenges[1]!, 1)}
-                {renderChallenge(challenges[2]!, 2)}
+              <div className="grid grid-cols-2 text-xs text-gray-400">
+                {challenges.map((el, index) => renderChallenge(el, index))}
               </div>
             ) : (
               <></>
