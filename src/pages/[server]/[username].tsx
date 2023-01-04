@@ -7,11 +7,11 @@ export default function ProfilePage() {
   const router = useRouter();
   const { server, username } = router.query;
 
-  useEffect(() => {
-    if (username) {
-      router.push(router.asPath + "/mastery");
-    }
-  });
+  //   useEffect(() => {
+  //     if (username) {
+  //       router.push(router.asPath + "/mastery");
+  //     }
+  //   });
 
   return (
     <div>

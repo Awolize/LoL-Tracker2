@@ -375,6 +375,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 };
 
 export const getServerSideProps = async (context) => {
+  const { res } = context;
+  res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
+
   const { params } = context;
   const { server, username } = params;
   console.log("server, username:", server, username);
