@@ -7,15 +7,16 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-  reactStrictMode: true,
-  swcMinify: true,
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
-  images: {
-    domains: ["ddragon.leagueoflegends.com"],
-  },
+    reactStrictMode: true,
+    swcMinify: true,
+    i18n: {
+        locales: ["en"],
+        defaultLocale: "en",
+    },
+    images: {
+        domains: ["ddragon.leagueoflegends.com"],
+    },
+
 };
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
