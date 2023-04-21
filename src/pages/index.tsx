@@ -10,6 +10,7 @@ const Home: NextPage = () => {
   function onSubmit(e) {
     e.preventDefault();
     router.push(`/EUW/${usernameRef.current?.value}/mastery`);
+    console.log(`Redirecting to "/EUW/${usernameRef.current?.value}/mastery..."`);
   }
 
   return (
