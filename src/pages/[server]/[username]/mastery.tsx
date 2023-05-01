@@ -24,6 +24,7 @@ type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Ro
 const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
   const champs = props.champData;
   const championMastery = props.champData;
+  const patch = props.patch;
   const challenges = props.challenges;
   const challengesThresholds = props.challengesThresholds;
 
@@ -305,7 +306,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
         <div className="flex w-full min-w-fit">
           <div className="flex flex-col gap-0">
-            <div className="text-md">Different champions</div>
+            <div className="text-md">Different champions ({patch})</div>
             {challenges.length == 3 ? (
               <div className="grid grid-cols-2 text-xs text-gray-400">
                 {challenges.map((el, index) => renderChallenge(el, index))}
@@ -420,13 +421,20 @@ export const getServerSideProps = async (context) => {
     getChallengesThresholds(),
   ]);
 
-  //   const apiChampsData = await getChampionsAndMastery(username);
+  // const apiChampsData = await getChampionsAndMastery(username);
+  let patch = "";
   const completeChampsData = Object.keys(championJson.data)
     .map((champName) => {
       const element: ChampionsDataDragonDetails = championJson.data[champName];
       const role = rolesJson[champName as keyof typeof championJson.data] ?? "Unknown";
 
       const personalChampData = championMasteries.filter((champ) => champ.championId.toString() == element.key).at(0);
+
+      if (patch === "") {
+        if (element?.version) {
+          patch = element?.version;
+        }
+      }
 
       if (personalChampData) {
         return {
@@ -458,6 +466,7 @@ export const getServerSideProps = async (context) => {
       champData: completeChampsData,
       challenges: playerChallenges,
       challengesThresholds: challengesThresholds,
+      patch,
     },
   };
 };
