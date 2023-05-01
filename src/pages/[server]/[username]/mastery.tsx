@@ -429,8 +429,7 @@ export const getServerSideProps = async (context) => {
 
   const completeChampsData = Object.keys(championsDD.data)
     .map((champName) => {
-      const element: ChampionsDataDragonDetails | undefined = championsDD.data[champName];
-      if (element === undefined) return;
+      const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
       const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
 
       const personalChampData = championMasteries.filter((champ) => champ.championId.toString() == element.key).at(0);
