@@ -16,7 +16,6 @@ const config = {
     images: {
         domains: ["ddragon.leagueoflegends.com"],
     },
-
 };
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires
