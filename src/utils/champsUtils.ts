@@ -140,16 +140,16 @@ const updateSummoner = (
     prisma.summoner
         .upsert({
             where: {
-                summonerId: user.id,
                 puuid: user.puuid,
-                accountId: user.accountId,
             },
             update: {
+                summonerId: user.id,
                 server: region,
                 username: user.name,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
                 championData: {
                     createMany: {
                         data: championMasteryData.map((mastery) => ({
