@@ -64,7 +64,7 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
 
         // Check if the summoner exists in the database
         const dbUser = await prisma.summoner.findUnique({
-            where: { summonerId: user.id },
+            where: { puuid: user.puuid },
             include: {
                 championData: true,
             },
