@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Summoner {
-  summonerId    String            @id @unique
+  summonerId    String
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   server        String
@@ -20,7 +20,7 @@ model Summoner {
   puuid         String            @unique()
   summonerLevel Int
   revisionDate  DateTime
-  accountId     String            @unique()
+  accountId     String
   championData  ChampionMastery[]
 }
 
@@ -34,10 +34,10 @@ model ChampionMastery {
   lastPlayTime                 DateTime
   championPointsUntilNextLevel Int
   championPointsSinceLastLevel Int
-  summonerId                   String
-  summoner                     Summoner @relation(fields: [summonerId], references: [summonerId])
+  puuid                        String
+  summoner                     Summoner @relation(fields: [puuid], references: [puuid])
 
-  @@unique([championId, summonerId])
+  @@unique([championId, puuid])
 }
 
 model ChampionDetails {
