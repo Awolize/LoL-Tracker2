@@ -397,7 +397,6 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 };
 
 import { z } from "zod";
-import { Regions } from "twisted/dist/constants";
 
 const paramsSchema = z.object({
     server: z.string(),
@@ -428,7 +427,7 @@ export const getServerSideProps = async (context) => {
             const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
             const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
 
-            const personalChampData = championMasteries
+            const personalChampData = championMasteries!
                 .filter((champ) => champ.championId.toString() == element.key)
                 .at(0);
 

@@ -57,8 +57,60 @@ export const regionToConstant = (region: string) => {
     return regionMap[region];
 };
 
-export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) =>
-    (await api.Champion.masteryBySummoner(user.id, region)).response;
+import { ChampionMastery, PrismaClient } from "@prisma/client";
+export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
+    try {
+        const prisma = new PrismaClient();
+
+        // Check if the summoner exists in the database
+        const dbUser = await prisma.summoner.findUnique({
+            where: { summonerId: user.id },
+            include: {
+                championData: true,
+            },
+        });
+
+        if (dbUser) {
+            console.log(`Summoner found in database: ${dbUser.username}`);
+        }
+
+        // If the summoner is not found in the database, fetch their data from the Riot API and save it to the database
+
+        const championMasteryData = dbUser
+            ? dbUser.championData
+            : (await api.Champion.masteryBySummoner(user.id, region)).response;
+
+        if (!dbUser) {
+            console.log(`Summoner not found in database. Fetching data from API...`);
+            updateSummoner(prisma, user, region, championMasteryData);
+        } else {
+            const updateSum = async () => {
+                console.log(`Summoner found in database. Updating records...`);
+                const championMasteryData2 = (await api.Champion.masteryBySummoner(user.id, region)).response;
+                updateSummoner(prisma, user, region, championMasteryData2);
+                console.log(`Summoner found in database. Updating records... Done`);
+            };
+            updateSum();
+        }
+
+        const championMastery: ChampionMasteryDTO[] = championMasteryData.map((mastery) => ({
+            summonerId: user.id,
+            championId: mastery.championId,
+            championLevel: mastery.championLevel,
+            championPoints: mastery.championPoints,
+            lastPlayTime: new Date(mastery.lastPlayTime).getTime(),
+            championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
+            championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
+            chestGranted: mastery.chestGranted,
+            tokensEarned: mastery.tokensEarned,
+        }));
+
+        return championMastery;
+    } catch (error) {
+        console.log(`Error fetching champion mastery data for summoner ${user.name}: ${error}`);
+        throw error;
+    }
+};
 
 export const getChallengesData = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
     const response = await api.Challenges.getPlayerData(user.puuid, region);
@@ -77,4 +129,40 @@ export const getChallengesThresholds = async (api: LolApi, region: Regions) => {
         thresholdsList.push(thresholds.thresholds);
     }
     return thresholdsList;
+};
+
+const updateSummoner = (
+    prisma,
+    user: SummonerV4DTO,
+    region: Regions,
+    championMasteryData: ChampionMastery[] | ChampionMasteryDTO[]
+) => {
+    prisma.summoner
+        .upsert({
+            data: {
+                summonerId: user.id,
+                server: region,
+                username: user.name,
+                profileIconId: user.profileIconId,
+                puuid: user.puuid,
+                summonerLevel: user.summonerLevel,
+                revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
+                championData: {
+                    createMany: {
+                        data: championMasteryData.map((mastery) => ({
+                            championId: mastery.championId,
+                            championLevel: mastery.championLevel,
+                            championPoints: mastery.championPoints,
+                            lastPlayTime: new Date(mastery.lastPlayTime),
+                            championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
+                            championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
+                            chestGranted: mastery.chestGranted,
+                            tokensEarned: mastery.tokensEarned,
+                        })),
+                    },
+                },
+            },
+        })
+        .then((newSummoner) => console.log(`New summoner added to database: ${newSummoner.username}`));
 };

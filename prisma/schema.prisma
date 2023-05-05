@@ -2,23 +2,82 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model User {
-    id            String   @id @default(cuid())
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
-    profileIconId Int
-    name          String
-    puuid         String   @unique()
-    summonerLevel Int
-    revisionDate  DateTime
-    summonerId    String   @unique()
-    accountId     String   @unique()
+model Summoner {
+  summonerId    String            @id @unique
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  server        String
+  username      String
+  profileIconId Int
+  puuid         String            @unique()
+  summonerLevel Int
+  revisionDate  DateTime
+  accountId     String            @unique()
+  championData  ChampionMastery[]
+}
+
+model ChampionMastery {
+  championId                   Int
+  updatedAt                    DateTime @updatedAt
+  championLevel                Int
+  championPoints               Int
+  chestGranted                 Boolean
+  tokensEarned                 Int
+  lastPlayTime                 DateTime
+  championPointsUntilNextLevel Int
+  championPointsSinceLastLevel Int
+  summonerId                   String
+  summoner                     Summoner @relation(fields: [summonerId], references: [summonerId])
+
+  @@unique([championId, summonerId])
+}
+
+model ChampionDetails {
+  id                   Int      @id @unique
+  version              String
+  key                  String
+  name                 String
+  title                String
+  blurb                String
+  attack               Int
+  defense              Int
+  magic                Int
+  difficulty           Int
+  full                 String
+  sprite               String
+  group                String
+  x                    Int
+  y                    Int
+  w                    Int
+  h                    Int
+  tags                 String[]
+  partype              String
+  hp                   Int
+  hpperlevel           Int
+  mp                   Int
+  mpperlevel           Int
+  movespeed            Int
+  armor                Int
+  armorperlevel        Int
+  spellblock           Int
+  spellblockperlevel   Int
+  attackrange          Int
+  hpregen              Int
+  hpregenperlevel      Int
+  mpregen              Int
+  mpregenperlevel      Int
+  crit                 Int
+  critperlevel         Int
+  attackdamage         Int
+  attackdamageperlevel Int
+  attackspeedperlevel  Float
+  attackspeed          Float
 }
