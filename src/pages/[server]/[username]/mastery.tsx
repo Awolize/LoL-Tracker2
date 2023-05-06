@@ -214,7 +214,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 </div>
 
                 <div className="fixed top-1 right-3">
-                    <span className="text-gray-400">{patch}</span>
+                    <span className="text-gray-400">V{patch}</span>
                 </div>
             </header>
             <main>
