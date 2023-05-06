@@ -151,9 +151,12 @@ const updateSummoner = (
                 revisionDate: new Date(user.revisionDate),
                 accountId: user.accountId,
                 championData: {
-                    createMany: {
-                        data: championMasteryData.map((mastery) => ({
+                    upsert: championMasteryData.map((mastery) => ({
+                        where: {
                             championId: mastery.championId,
+                            puuid: user.puuid,
+                        },
+                        update: {
                             championLevel: mastery.championLevel,
                             championPoints: mastery.championPoints,
                             lastPlayTime: new Date(mastery.lastPlayTime),
@@ -161,16 +164,27 @@ const updateSummoner = (
                             championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
                             chestGranted: mastery.chestGranted,
                             tokensEarned: mastery.tokensEarned,
-                        })),
-                    },
+                        },
+                        create: {
+                            championId: mastery.championId,
+                            puuid: user.puuid,
+                            championLevel: mastery.championLevel,
+                            championPoints: mastery.championPoints,
+                            lastPlayTime: new Date(mastery.lastPlayTime),
+                            championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
+                            championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
+                            chestGranted: mastery.chestGranted,
+                            tokensEarned: mastery.tokensEarned,
+                        },
+                    })),
                 },
             },
             create: {
+                puuid: user.puuid,
                 summonerId: user.id,
                 server: region,
                 username: user.name,
                 profileIconId: user.profileIconId,
-                puuid: user.puuid,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
                 accountId: user.accountId,
