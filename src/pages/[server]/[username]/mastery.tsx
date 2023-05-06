@@ -42,6 +42,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const [sortOrder, setSortOrder] = useState(0);
     const [showLevel, setShowLevel] = useState(false);
     const [showFinished, setShowFinished] = useState(false);
+    const [showChests, setShowChests] = useState(false);
     const [hideChampionsMode, setHideChampionsMode] = useState(false);
     const markedSize: number = championMastery.filter((champ) => filteredOut(champ, filterPoints)).length ?? 0;
     const [alignHeaderRight, setAlignHeaderRight] = useState(false);
@@ -159,6 +160,8 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                     <SwitchWithLabel label="Show finished" checked={showFinished} onChange={setShowFinished} />
 
+                    <SwitchWithLabel label="Show chests" checked={showChests} onChange={setShowChests} />
+
                     <ToggleEye label="Custom visibility" checked={hideChampionsMode} onChange={setHideChampionsMode} />
 
                     <div className="flex pr-4">
@@ -254,6 +257,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                             handleChampionClick={handleChampionClick}
                                             filterPoints={filterPoints}
                                             showFinished={showFinished}
+                                            showChest={showChests}
                                             showLevel={showLevel}
                                             hiddenChamps={hiddenChamps}
                                         />
@@ -265,6 +269,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                             handleChampionClick={handleChampionClick}
                                             filterPoints={filterPoints}
                                             showFinished={showFinished}
+                                            showChest={showChests}
                                             showLevel={showLevel}
                                             hiddenChamps={hiddenChamps}
                                         />
