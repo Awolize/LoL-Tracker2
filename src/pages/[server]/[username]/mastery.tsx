@@ -1,4 +1,3 @@
-import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
@@ -101,7 +100,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     }
 
     return (
-        <>
+        <div>
             <Head>
                 <title>
                     LoL Mastery Tracker for {props.username} on {props.server}.
@@ -276,7 +275,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     })}
                 </div>
             </main>
-        </>
+        </div>
     );
 };
 

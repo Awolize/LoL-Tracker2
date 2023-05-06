@@ -49,7 +49,7 @@ const Home: NextPage = () => {
                     <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem] ">
                         Search{" "}
                         <div className="inline-block">
-                            <MyListbox selectedServer={selectedServer} setSelectedServer={setSelectedServer} />
+                            <ServerListSelector selectedServer={selectedServer} setSelectedServer={setSelectedServer} />
                         </div>{" "}
                         Summoner Profile
                     </h1>
@@ -103,7 +103,7 @@ const LoadingComponent = () => {
     );
 };
 
-function MyListbox({ selectedServer, setSelectedServer }) {
+function ServerListSelector({ selectedServer, setSelectedServer }) {
     return (
         <Listbox value={selectedServer} onChange={setSelectedServer}>
             <Listbox.Button className={"flex items-end"}>
@@ -122,7 +122,7 @@ function MyListbox({ selectedServer, setSelectedServer }) {
                             );
                         } else {
                             return (
-                                <Listbox.Option key={server.id} value={server} disabled={server.disabled}>
+                                <Listbox.Option key={server.name} value={server} disabled={server.disabled}>
                                     <button type="button" className="hover:text-[hsl(280,100%,70%)]">
                                         {server.name}
                                     </button>
