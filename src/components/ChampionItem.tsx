@@ -26,6 +26,8 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
+    if (hide) return <></>;
+
     return (
         <li
             className="flex flex-col pb-2"
@@ -33,12 +35,12 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
             onClick={() => handleChampionClick(champ.championId)}
         >
             <div className="relative z-10">
-                {showLevel && !hide && (
+                {showLevel && (
                     <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
                         {champ.championLevel}
                     </span>
                 )}
-                {showChest && !champ.chestGranted && !hide && (
+                {showChest && !champ.chestGranted && (
                     <span className="absolute top-[3px] right-[3px] flex h-6 w-6 items-center justify-center px-[0.20rem] ">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -66,27 +68,26 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                         </svg>
                     </span>
                 )}
-                {!hide && (
-                    <Image
-                        src={`${DATA_DRAGON_URL}${champ.image.full}`}
-                        style={{
-                            zIndex: -1,
-                            opacity: disabled ? "40%" : "100%",
-                        }}
-                        className={`${hiddenChamps.has(champ.championId) ? "grayscale brightness-50" : ""} ${
-                            disabled ? "grayscale" : ""
-                        }`}
-                        alt={`${champ.name}`}
-                        height={90}
-                        width={90}
-                        // hidden={hideAll}
-                        // placeholderSrc="/placeholder.png"
-                    />
-                )}
+
+                <Image
+                    src={`${DATA_DRAGON_URL}${champ.image.full}`}
+                    style={{
+                        zIndex: -1,
+                        opacity: disabled ? "40%" : "100%",
+                    }}
+                    className={`${hiddenChamps.has(champ.championId) ? "grayscale brightness-50" : ""} ${
+                        disabled ? "grayscale" : ""
+                    }`}
+                    alt={`${champ.name}`}
+                    height={90}
+                    width={90}
+                    // hidden={hideAll}
+                    // placeholderSrc="/placeholder.png"
+                />
             </div>
 
-            <div className="text-center text-xs">{!hide && champ.name}</div>
-            <div className="items-center justify-center text-center text-xs">{!hide && champ.championPoints}</div>
+            <div className="text-center text-xs">{champ.name}</div>
+            <div className="items-center justify-center text-center text-xs">{champ.championPoints}</div>
         </li>
     );
 };
