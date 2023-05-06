@@ -245,7 +245,13 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                         return (
                             <div className="w-full p-4" key={role}>
-                                <RoleHeader role={role} markedSize={markedSize} size={size} percentage={percentage} />
+                                <RoleHeader
+                                    role={role}
+                                    finishedSize={markedSize}
+                                    hasHidden={champsWithRole.length !== size}
+                                    size={size}
+                                    percentage={percentage}
+                                />
                                 <ul
                                     className="grid justify-between"
                                     style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
