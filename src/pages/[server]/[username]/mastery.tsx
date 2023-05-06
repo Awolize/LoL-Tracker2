@@ -1,8 +1,6 @@
-import { Switch } from "@headlessui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import Dropdown from "../../../components/Dropdown";
@@ -11,21 +9,27 @@ import {
     getChallengesData,
     getChallengesThresholds,
     masteryBySummoner,
+    partition,
     regionToConstant,
     sortAlgorithm,
 } from "../../../utils/champsUtils";
-import { DATA_DRAGON_URL } from "../../../utils/constants";
 import rolesJson from "./roles.json";
+
+import { z } from "zod";
+import ChampionItem from "../../../components/ChampionItem";
+import RoleHeader from "../../../components/RoleHeader";
 
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
+import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
+import { ToggleEye } from "../../../components/ToggleEye";
 
 interface Roles {
     role: string;
 }
 
-type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
+export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 
 const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
     const champs = props.champData;
@@ -70,55 +74,6 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         }
     };
 
-    const listItem = (champ: CompleteChampionInfo) => {
-        const disabled = filteredOut(champ, filterPoints);
-        const hide = disabled && !showFinished;
-
-        return (
-            <li
-                className="flex flex-col pb-2"
-                key={champ.key as React.Key}
-                onClick={() => handleChampionClick(champ.championId)}
-            >
-                <div className="relative z-10">
-                    {showLevel && !hide && (
-                        <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
-                            {champ.championLevel}
-                        </span>
-                    )}
-                    {!hide && (
-                        <Image
-                            src={`${DATA_DRAGON_URL}${champ.image.full}`}
-                            style={{
-                                zIndex: -1,
-                                opacity: disabled ? "40%" : "100%",
-                            }}
-                            className={`${hiddenChamps.has(champ.championId) ? "grayscale brightness-50" : ""} ${
-                                disabled ? "grayscale" : ""
-                            }`}
-                            alt={`${champ.name}`}
-                            height={90}
-                            width={90}
-                            // hidden={hideAll}
-                            // placeholderSrc="/placeholder.png"
-                        />
-                    )}
-                </div>
-
-                <div className="text-center text-xs">{!hide && champ.name}</div>
-                <div className="items-center justify-center text-center text-xs">{!hide && champ.championPoints}</div>
-            </li>
-        );
-    };
-
-    //Partition function
-    function partition(array, filter) {
-        const pass: CompleteChampionInfo[] = [],
-            fail: CompleteChampionInfo[] = [];
-        array.forEach((e: CompleteChampionInfo, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
-        return [pass, fail];
-    }
-
     function renderChallenge(challenge: ChallengeV1DTO, index: number) {
         const descriptions = ["Win a game without dying", "Earn an S+ grade", "Win a game"];
 
@@ -145,7 +100,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     }
 
     return (
-        <>
+        <div>
             <Head>
                 <title>
                     LoL Mastery Tracker for {props.username} on {props.server}.
@@ -200,87 +155,11 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         </div>
                     </div>
 
-                    <div className="flex flex-row items-center gap-2">
-                        <span>Show Levels</span>
-                        <Switch
-                            checked={showLevel}
-                            onChange={setShowLevel}
-                            className={`${
-                                showLevel ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                            <span className="sr-only">Show Levels</span>
-                            <span
-                                className={`${
-                                    showLevel ? "translate-x-6" : "translate-x-1"
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                        </Switch>
-                    </div>
+                    <SwitchWithLabel label="Show Levels" checked={showLevel} onChange={setShowLevel} />
 
-                    <div className="flex flex-row items-center gap-2">
-                        <span>Show finished</span>
-                        <Switch
-                            checked={showFinished}
-                            onChange={setShowFinished}
-                            className={`${
-                                showFinished ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                            <span className="sr-only">Show finished</span>
-                            <span
-                                className={`${
-                                    showFinished ? "translate-x-6" : "translate-x-1"
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                        </Switch>
-                    </div>
+                    <SwitchWithLabel label="Show finished" checked={showFinished} onChange={setShowFinished} />
 
-                    <div className="flex flex-row items-center gap-2">
-                        <Switch checked={hideChampionsMode} onChange={setHideChampionsMode}>
-                            <span className="sr-only">Show finished</span>
-                            <span
-                                className={`justify-center items-center content-center w-full h-full transform transition`}
-                            >
-                                {hideChampionsMode ? (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-6 h-6"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                                        />
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                        />
-                                    </svg>
-                                ) : (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth={1.5}
-                                        stroke="currentColor"
-                                        className="w-6 h-6"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
-                                        />
-                                    </svg>
-                                )}
-                            </span>
-                        </Switch>
-                    </div>
+                    <ToggleEye label="Custom visibility" checked={hideChampionsMode} onChange={setHideChampionsMode} />
 
                     <div className="flex pr-4">
                         <button
@@ -314,8 +193,8 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                 {(
                                     (100 * markedSize) /
                                     championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length
-                                ).toFixed(2)}
-                                %{" "}
+                                ).toFixed(2)}{" "}
+                                %
                             </p>
                         </div>
                     </div>
@@ -323,9 +202,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                 <div className="flex w-full min-w-fit">
                     <div className="flex flex-col gap-0">
-                        <div className="text-md">
-                            Different champions (<span className="text-gray-400">{patch}</span>)
-                        </div>
+                        <div className="text-md">Different champions</div>
                         {challenges.length == 3 ? (
                             <div className="grid grid-cols-2 text-xs text-gray-400">
                                 {challenges.map((el, index) => renderChallenge(el, index))}
@@ -335,15 +212,17 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         )}
                     </div>
                 </div>
+
+                <div className="fixed top-1 right-3">
+                    <span className="text-gray-400">{patch}</span>
+                </div>
             </header>
             <main>
                 <div className="flex flex-row gap-2">
                     {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
                         if (!champs[0]) return;
 
-                        const champsWithRole = champs.filter((champ) => {
-                            return champ?.role === role;
-                        });
+                        const champsWithRole = champs.filter((champ) => champ?.role === role);
 
                         const champsWithRoleHiddenExcluded = hideChampionsMode
                             ? champsWithRole
@@ -355,48 +234,50 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         doneChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
                         todoChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
-                        const size: number = champsWithRole.filter(
-                            (champ) => !hiddenChamps.has(champ.championId)
+                        const size = champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId)).length;
+                        const markedSize = champsWithRole.filter(
+                            (champ) => champ && filteredOut(champ, filterPoints)
                         ).length;
-                        const markedSize: number = champsWithRole.filter((champ) => {
-                            if (champ == undefined) return false;
-                            return filteredOut(champ, filterPoints);
-                        }).length;
                         const percentage = (100 * markedSize) / size;
 
                         return (
                             <div className="w-full p-4" key={role}>
-                                <div className="text-md flex flex-row justify-center gap-8 align-bottom ">
-                                    <h4 className="my-auto p-2  ">
-                                        {markedSize} / {size}
-                                        {champsWithRole.length != size ? "*" : ""}
-                                    </h4>
-                                    <div className="mb-2 bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 pb-[3px]">
-                                        <div className="flex h-full flex-col justify-between bg-black text-gray-200 ">
-                                            <h4 className="text-xl font-bold">{role}</h4>
-                                        </div>
-                                    </div>
-                                    <h4 className="my-auto p-2 ">{percentage.toFixed(1)}%</h4>
-                                </div>
+                                <RoleHeader role={role} markedSize={markedSize} size={size} percentage={percentage} />
                                 <ul
                                     className="grid justify-between"
-                                    style={{
-                                        gridTemplateColumns: "repeat(auto-fill, 90px)",
-                                    }}
+                                    style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
                                 >
-                                    {todoChamps?.map((champ) => listItem(champ as CompleteChampionInfo))}
-                                    {doneChamps?.map((champ) => listItem(champ as CompleteChampionInfo))}
+                                    {todoChamps?.map((champ) => (
+                                        <ChampionItem
+                                            key={`${champ.championId}-todo`}
+                                            champ={champ}
+                                            handleChampionClick={handleChampionClick}
+                                            filterPoints={filterPoints}
+                                            showFinished={showFinished}
+                                            showLevel={showLevel}
+                                            hiddenChamps={hiddenChamps}
+                                        />
+                                    ))}
+                                    {doneChamps?.map((champ) => (
+                                        <ChampionItem
+                                            key={`${champ.championId}-done`}
+                                            champ={champ}
+                                            handleChampionClick={handleChampionClick}
+                                            filterPoints={filterPoints}
+                                            showFinished={showFinished}
+                                            showLevel={showLevel}
+                                            hiddenChamps={hiddenChamps}
+                                        />
+                                    ))}
                                 </ul>
                             </div>
                         );
                     })}
                 </div>
             </main>
-        </>
+        </div>
     );
 };
-
-import { z } from "zod";
 
 const paramsSchema = z.object({
     server: z.string(),
