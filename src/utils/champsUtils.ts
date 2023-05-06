@@ -112,6 +112,14 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
     }
 };
 
+//Partition function
+export const partition = (array, filter) => {
+    const pass: CompleteChampionInfo[] = [],
+        fail: CompleteChampionInfo[] = [];
+    array.forEach((e: CompleteChampionInfo, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
+    return [pass, fail];
+};
+
 export const getChallengesData = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
     const response = await api.Challenges.getPlayerData(user.puuid, region);
     const savedChallenges = [202303, 210001, 401106];
