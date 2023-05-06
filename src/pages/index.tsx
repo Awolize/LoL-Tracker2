@@ -1,4 +1,4 @@
-import { Listbox, Menu } from "@headlessui/react";
+import { Listbox } from "@headlessui/react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";

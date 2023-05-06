@@ -2,7 +2,7 @@ import React from "react";
 import { filteredOut } from "../utils/champsUtils";
 import Image from "next/image";
 import { DATA_DRAGON_URL } from "../utils/constants";
-import { CompleteChampionInfo } from "../pages/[server]/[username]/mastery";
+import type { CompleteChampionInfo } from "../pages/[server]/[username]/mastery";
 
 interface ChampionItemProps {
     champ: CompleteChampionInfo;
