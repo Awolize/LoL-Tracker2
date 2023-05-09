@@ -344,47 +344,47 @@ export const getServerSideProps = async (context) => {
 
     const { response: user } = await api.Summoner.getByName(username, region);
 
-    const [championMasteries, playerChallenges, challengesThresholds] = await Promise.all([
-        masteryBySummoner(api, region, user),
+    const [{ completeChampsData, patch }, playerChallenges, challengesThresholds] = await Promise.all([
+        masteryBySummoner(api, region, user).then(async (championMasteries) => {
+            const championsDD = await api.DataDragon.getChampion();
+            return {
+                completeChampsData: Object.keys(championsDD.data)
+                    .map((champName) => {
+                        const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
+                        const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
+
+                        const personalChampData = championMasteries!
+                            .filter((champ) => champ.championId.toString() == element.key)
+                            .at(0);
+
+                        if (personalChampData) {
+                            return {
+                                image: element.image,
+                                id: element.id,
+                                key: element.key,
+                                ...personalChampData,
+                                championPoints: personalChampData?.championPoints ?? 0,
+                                championLevel: personalChampData?.championLevel ?? 0,
+                                role: role,
+                                name: element.name === "Nunu & Willump" ? "Nunu" : element.name,
+                            } as CompleteChampionInfo;
+                        } else {
+                            return {
+                                ...element,
+                                championPoints: 0,
+                                championLevel: 0,
+                                championId: parseInt(element.key, 10),
+                                role,
+                            } as CompleteChampionInfo;
+                        }
+                    })
+                    .filter(Boolean),
+                patch: championsDD.version,
+            };
+        }),
         getChallengesData(api, region, user),
         getChallengesThresholds(api, region),
     ]);
-
-    // const apiChampsData = await getChampionsAndMastery(username);
-    const championsDD = await api.DataDragon.getChampion();
-    const patch = championsDD.version;
-
-    const completeChampsData = Object.keys(championsDD.data)
-        .map((champName) => {
-            const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
-            const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
-
-            const personalChampData = championMasteries!
-                .filter((champ) => champ.championId.toString() == element.key)
-                .at(0);
-
-            if (personalChampData) {
-                return {
-                    image: element.image,
-                    id: element.id,
-                    key: element.key,
-                    ...personalChampData,
-                    championPoints: personalChampData?.championPoints ?? 0,
-                    championLevel: personalChampData?.championLevel ?? 0,
-                    role: role,
-                    name: element.name === "Nunu & Willump" ? "Nunu" : element.name,
-                } as CompleteChampionInfo;
-            } else {
-                return {
-                    ...element,
-                    championPoints: 0,
-                    championLevel: 0,
-                    championId: parseInt(element.key, 10),
-                    role,
-                } as CompleteChampionInfo;
-            }
-        })
-        .filter(Boolean);
 
     return {
         props: {
