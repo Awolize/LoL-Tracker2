@@ -37,6 +37,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const patch = props.patch;
     const challenges = props.challenges;
     const challengesThresholds = props.challengesThresholds;
+    const username = props.username;
 
     const [filterPoints, setFilterPoints] = useState(0);
     const [sortOrder, setSortOrder] = useState(0);
@@ -50,28 +51,44 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const [hiddenChamps, setHiddenChamps] = useState(new Set<number>());
 
     useEffect(() => {
-        // check if the hiddenChamps item is present in local storage
+        // Check if the hiddenChamps item is present in local storage
         const hiddenChampsString = localStorage.getItem("hiddenChamps");
         if (hiddenChampsString) {
-            // if present, set the hiddenChamps state to the value stored in local storage
-            setHiddenChamps(new Set(JSON.parse(hiddenChampsString)));
+            const savedHiddenChamps = JSON.parse(hiddenChampsString);
+            // Check if the saved data contains hidden champs for the current username
+            if (savedHiddenChamps[username]) {
+                // If present, set the hiddenChamps state to the value stored in local storage
+                setHiddenChamps(new Set(savedHiddenChamps[username]));
+            }
         }
     }, []);
 
     const handleChampionClick = (championId: number) => {
-        console.log(championId);
-        console.log(hideChampionsMode);
-
         if (hideChampionsMode === true) {
-            if (hiddenChamps.has(championId)) {
-                hiddenChamps.delete(championId);
-            } else {
-                hiddenChamps.add(championId);
-            }
-            setHiddenChamps(new Set(hiddenChamps));
+            // Create a copy of the current hidden champs set
+            const updatedHiddenChamps = new Set(hiddenChamps);
 
-            // save the hiddenChamps set to local storage
-            localStorage.setItem("hiddenChamps", JSON.stringify([...hiddenChamps]));
+            if (updatedHiddenChamps.has(championId)) {
+                updatedHiddenChamps.delete(championId);
+            } else {
+                updatedHiddenChamps.add(championId);
+            }
+
+            setHiddenChamps(updatedHiddenChamps);
+
+            let hiddenChampsString = localStorage.getItem("hiddenChamps");
+            if (!hiddenChampsString) {
+                hiddenChampsString = JSON.stringify({
+                    [username]: [],
+                });
+            }
+            const savedHiddenChamps = JSON.parse(hiddenChampsString);
+
+            // Update the hidden champs data with the new value for the current username
+            savedHiddenChamps[username] = [...updatedHiddenChamps];
+
+            // Save the updated hidden champs data back to local storage
+            localStorage.setItem("hiddenChamps", JSON.stringify(savedHiddenChamps));
         }
     };
 
