@@ -57,7 +57,7 @@ export const regionToConstant = (region: string) => {
     return regionMap[region];
 };
 
-import { ChampionMastery, PrismaClient } from "@prisma/client";
+import { ChampionMastery, Prisma, PrismaClient } from "@prisma/client";
 export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
     try {
         const prisma = new PrismaClient();
@@ -140,7 +140,11 @@ export const getChallengesThresholds = async (api: LolApi, region: Regions) => {
 };
 
 const updateSummoner = (
-    prisma,
+    prisma: PrismaClient<
+        Prisma.PrismaClientOptions,
+        never,
+        Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+    >,
     user: SummonerV4DTO,
     region: Regions,
     championMasteryData: ChampionMastery[] | ChampionMasteryDTO[]
@@ -161,8 +165,10 @@ const updateSummoner = (
                 championData: {
                     upsert: championMasteryData.map((mastery) => ({
                         where: {
-                            championId: mastery.championId,
-                            puuid: user.puuid,
+                            championId_puuid: {
+                                championId: mastery.championId,
+                                puuid: user.puuid,
+                            },
                         },
                         update: {
                             championLevel: mastery.championLevel,

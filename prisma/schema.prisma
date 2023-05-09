@@ -11,13 +11,13 @@ datasource db {
 }
 
 model Summoner {
+  puuid         String            @unique()
   summonerId    String
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   server        String
   username      String
   profileIconId Int
-  puuid         String            @unique()
   summonerLevel Int
   revisionDate  DateTime
   accountId     String
