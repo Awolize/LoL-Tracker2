@@ -53,8 +53,20 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     useEffect(() => {
         // Check if the hiddenChamps item is present in local storage
         const hiddenChampsString = localStorage.getItem("hiddenChamps");
+
         if (hiddenChampsString) {
-            const savedHiddenChamps = JSON.parse(hiddenChampsString);
+            let savedHiddenChamps = JSON.parse(hiddenChampsString);
+
+            // Check if the saved data is an array (old format)
+            if (Array.isArray(savedHiddenChamps)) {
+                // Migrate the old format to the new object structure
+                savedHiddenChamps = {
+                    [username]: savedHiddenChamps,
+                };
+
+                // Save the migrated data back to local storage
+                localStorage.setItem("hiddenChamps", JSON.stringify(savedHiddenChamps));
+            }
 
             // Check if the saved data contains hidden champs for the current username
             if (savedHiddenChamps[username]) {
