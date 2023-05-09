@@ -55,11 +55,22 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         const hiddenChampsString = localStorage.getItem("hiddenChamps");
         if (hiddenChampsString) {
             const savedHiddenChamps = JSON.parse(hiddenChampsString);
+
             // Check if the saved data contains hidden champs for the current username
             if (savedHiddenChamps[username]) {
                 // If present, set the hiddenChamps state to the value stored in local storage
                 setHiddenChamps(new Set(savedHiddenChamps[username]));
+            } else {
+                // If not present, create an empty entry for the current username
+                savedHiddenChamps[username] = [];
+                localStorage.setItem("hiddenChamps", JSON.stringify(savedHiddenChamps));
             }
+        } else {
+            // If hiddenChamps data doesn't exist in local storage, create it with an empty entry for the current username
+            const hiddenChampsData = {
+                [username]: [],
+            };
+            localStorage.setItem("hiddenChamps", JSON.stringify(hiddenChampsData));
         }
     }, []);
 
