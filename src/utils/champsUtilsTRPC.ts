@@ -41,7 +41,7 @@ export const masteryBySummoner = async (
 
         if (!dbUser) {
             console.log(`Summoner not found in database. Fetching data from API...`);
-            updateSummonerDb(prisma, user, region, championMasteryData);
+            await updateSummonerDb(prisma, user, region, championMasteryData);
         } else {
             console.log(`Summoner found in database. Updating records...`);
             const championMasteryData2 = (await api.Champion.masteryBySummoner(user.id, region)).response;

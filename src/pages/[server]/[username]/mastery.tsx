@@ -269,7 +269,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         {refreshQuery.isFetching ? (
                             <>Working... </>
                         ) : refreshQuery.dataUpdatedAt !== 0 ? (
-                            <>{new Date(refreshQuery.dataUpdatedAt).toLocaleTimeString()}</>
+                            <>
+                                {new Date(refreshQuery.dataUpdatedAt).toLocaleTimeString()} {window.location.reload()}
+                            </>
                         ) : (
                             <>{"<- Update"}</>
                         )}
