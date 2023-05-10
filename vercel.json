@@ -1,10 +1,7 @@
 {
     "functions": {
         "pages/**/*.tsx": {
-            "maxDuration": 60
-        },
-        "utils/**/*.ts": {
-            "maxDuration": 60
+            "maxDuration": 10
         }
     }
 }

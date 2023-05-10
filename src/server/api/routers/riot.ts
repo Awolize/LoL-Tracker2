@@ -2,12 +2,13 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { Constants } from "twisted";
-import api from "../../common/LolApi";
+import { updateSummoner } from "../../../utils/champsUtilsTRPC";
+import { regionToConstant } from "../../../utils/champsUtils";
 
 export const riotApiRouter = createTRPCRouter({
-    getUserByName: publicProcedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
+    getUserByName: publicProcedure.input(z.object({ username: z.string() })).query(async ({ input, ctx }) => {
         try {
-            const response = await api.Summoner.getByName(input.username, Constants.Regions.EU_WEST);
+            const response = await ctx.lolApi.Summoner.getByName(input.username, Constants.Regions.EU_WEST);
 
             return response.response;
         } catch (error) {
@@ -15,29 +16,13 @@ export const riotApiRouter = createTRPCRouter({
         }
     }),
 
-    getMasteryPointsById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
-        const response = await api.Champion.masteryBySummoner(input.id, Constants.Regions.EU_WEST);
+    refreshSummoner: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const region = regionToConstant(input.server.toUpperCase());
 
-        return response.response;
-    }),
+            updateSummoner(ctx.prisma, ctx.lolApi, input.username, region);
 
-    getChampion: publicProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
-        try {
-            const response = await api.DataDragon.getChampion(input.id);
-
-            return response.image;
-        } catch (error) {
-            console.log(error);
-        }
-    }),
-
-    getChampions: publicProcedure.query(async () => {
-        try {
-            const response = await api.DataDragon.getChampion();
-
-            return response.data;
-        } catch (error) {
-            console.log(error);
-        }
-    }),
+            return true;
+        }),
 });

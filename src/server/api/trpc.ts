@@ -19,6 +19,7 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 import { prisma } from "../db";
+import { lolApi } from "../lolApi";
 
 type CreateContextOptions = Record<string, never>;
 
@@ -34,6 +35,7 @@ type CreateContextOptions = Record<string, never>;
 const createInnerTRPCContext = async (_opts: CreateContextOptions) => {
     return {
         prisma,
+        lolApi,
     };
 };
 

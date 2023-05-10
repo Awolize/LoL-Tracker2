@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import "react-lazy-load-image-component/src/effects/opacity.css";
@@ -24,6 +24,7 @@ import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dis
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
 import { ToggleEye } from "../../../components/ToggleEye";
+import { api } from "../../../utils/api";
 
 interface Roles {
     role: string;
@@ -38,6 +39,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const challenges = props.challenges;
     const challengesThresholds = props.challengesThresholds;
     const username = props.username;
+    const server = props.server;
 
     const [filterPoints, setFilterPoints] = useState(0);
     const [sortOrder, setSortOrder] = useState(0);
@@ -49,6 +51,8 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const [alignHeaderRight, setAlignHeaderRight] = useState(false);
 
     const [hiddenChamps, setHiddenChamps] = useState(new Set<number>());
+
+    const refreshQuery = api.riotApi.refreshSummoner.useQuery({ server, username }, { enabled: false });
 
     useEffect(() => {
         // Check if the hiddenChamps item is present in local storage
@@ -203,6 +207,14 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     <SwitchWithLabel label="Show chests" checked={showChests} onChange={setShowChests} />
 
                     <ToggleEye label="Custom visibility" checked={hideChampionsMode} onChange={setHideChampionsMode} />
+
+                    <button
+                        onClick={() => {
+                            refreshQuery.refetch();
+                        }}
+                    >
+                        <RefreshIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
+                    </button>
 
                     <div className="flex pr-4">
                         <button

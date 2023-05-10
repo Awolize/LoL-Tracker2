@@ -1,5 +1,6 @@
-import { LolApi } from "twisted";
+import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
+import { PrismaClient } from "@prisma/client";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails, SummonerV4DTO } from "twisted/dist/models-dto";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
@@ -57,7 +58,6 @@ export const regionToConstant = (region: string) => {
     return regionMap[region];
 };
 
-import { ChampionMastery, Prisma, PrismaClient } from "@prisma/client";
 export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
     try {
         const prisma = new PrismaClient();
@@ -79,20 +79,6 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
         const championMasteryData = dbUser
             ? dbUser.championData
             : (await api.Champion.masteryBySummoner(user.id, region)).response;
-
-        if (!dbUser) {
-            console.log(`Summoner not found in database. Fetching data from API...`);
-            updateSummoner(prisma, user, region, championMasteryData);
-        } else {
-            const updateSum = async () => {
-                console.log(`Summoner found in database. Updating records...`);
-                const championMasteryData2 = (await api.Champion.masteryBySummoner(user.id, region)).response;
-                console.log(`Summoner found in database. updating ${championMasteryData2.length} champs`);
-                await updateSummoner(prisma, user, region, championMasteryData2);
-                console.log(`Summoner found in database. Updating records... Done`);
-            };
-            updateSum();
-        }
 
         const championMastery: ChampionMasteryDTO[] = championMasteryData.map((mastery) => ({
             summonerId: user.id,
@@ -138,80 +124,4 @@ export const getChallengesThresholds = async (api: LolApi, region: Regions) => {
         thresholdsList.push(thresholds.thresholds);
     }
     return thresholdsList;
-};
-
-const updateSummoner = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
-    user: SummonerV4DTO,
-    region: Regions,
-    championMasteryData: ChampionMastery[] | ChampionMasteryDTO[]
-) => {
-    try {
-        // Step 1: Upsert Summoner
-        const upsertedSummoner = await prisma.summoner.upsert({
-            where: {
-                puuid: user.puuid,
-            },
-            update: {
-                summonerId: user.id,
-                server: region,
-                username: user.name,
-                profileIconId: user.profileIconId,
-                summonerLevel: user.summonerLevel,
-                revisionDate: new Date(user.revisionDate),
-                accountId: user.accountId,
-            },
-            create: {
-                puuid: user.puuid,
-                summonerId: user.id,
-                server: region,
-                username: user.name,
-                profileIconId: user.profileIconId,
-                summonerLevel: user.summonerLevel,
-                revisionDate: new Date(user.revisionDate),
-                accountId: user.accountId,
-            },
-        });
-
-        console.log(`New summoner added/updated: ${upsertedSummoner.username}`);
-
-        // Step 2: Upsert Champion Mastery Data
-        const upsertedChampionMasteryData = await Promise.all(
-            championMasteryData.map((mastery) =>
-                prisma.championMastery.upsert({
-                    where: {
-                        championId_puuid: {
-                            championId: mastery.championId,
-                            puuid: user.puuid,
-                        },
-                    },
-                    update: {
-                        championLevel: mastery.championLevel,
-                        championPoints: mastery.championPoints,
-                        lastPlayTime: new Date(mastery.lastPlayTime),
-                        championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
-                        championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-                        chestGranted: mastery.chestGranted,
-                        tokensEarned: mastery.tokensEarned,
-                    },
-                    create: {
-                        championId: mastery.championId,
-                        puuid: user.puuid,
-                        championLevel: mastery.championLevel,
-                        championPoints: mastery.championPoints,
-                        lastPlayTime: new Date(mastery.lastPlayTime),
-                        championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
-                        championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-                        chestGranted: mastery.chestGranted,
-                        tokensEarned: mastery.tokensEarned,
-                    },
-                })
-            )
-        );
-
-        // Step 3: Logging
-        console.log(`New summoner ${upsertedSummoner.username}, updated: ${upsertedChampionMasteryData.length}`);
-    } catch (error) {
-        console.log("Error:", error);
-    }
 };
