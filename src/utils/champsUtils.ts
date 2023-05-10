@@ -71,7 +71,7 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
         });
 
         if (dbUser) {
-            console.log(`Summoner found in database: ${dbUser.username}`);
+            console.log(`Summoner found in database: ${dbUser.username}, ${dbUser.championData.length}`);
         }
 
         // If the summoner is not found in the database, fetch their data from the Riot API and save it to the database
@@ -87,7 +87,8 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
             const updateSum = async () => {
                 console.log(`Summoner found in database. Updating records...`);
                 const championMasteryData2 = (await api.Champion.masteryBySummoner(user.id, region)).response;
-                updateSummoner(prisma, user, region, championMasteryData2);
+                console.log(`Summoner found in database. updating ${championMasteryData2.length} champs`);
+                await updateSummoner(prisma, user, region, championMasteryData2);
                 console.log(`Summoner found in database. Updating records... Done`);
             };
             updateSum();
@@ -172,6 +173,8 @@ const updateSummoner = async (
             },
         });
 
+        console.log(`New summoner added/updated: ${upsertedSummoner.username}`);
+
         // Step 2: Upsert Champion Mastery Data
         const upsertedChampionMasteryData = await Promise.all(
             championMasteryData.map((mastery) =>
@@ -207,11 +210,8 @@ const updateSummoner = async (
         );
 
         // Step 3: Logging
-        console.log(`New summoner added to database: ${upsertedSummoner.username}`);
-
-        // Step 4: Handle Champion Mastery Upsert Results
-        // You can process the upsertedChampionMasteryData as needed
+        console.log(`New summoner ${upsertedSummoner.username}, updated: ${upsertedChampionMasteryData.length}`);
     } catch (error) {
-        console.log(error);
+        console.log("Error:", error);
     }
 };
