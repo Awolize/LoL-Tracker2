@@ -208,14 +208,6 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                     <ToggleEye label="Custom visibility" checked={hideChampionsMode} onChange={setHideChampionsMode} />
 
-                    <button
-                        onClick={() => {
-                            refreshQuery.refetch();
-                        }}
-                    >
-                        <RefreshIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
-                    </button>
-
                     <div className="flex pr-4">
                         <button
                             onClick={() => setAlignHeaderRight((prev) => !prev)}
@@ -255,7 +247,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     </div>
                 </div>
 
-                <div className="flex w-full min-w-fit">
+                <div className="flex w-full min-w-fit justify-between">
                     <div className="flex flex-col gap-0">
                         <div className="text-md">Different champions</div>
                         {challenges.length == 3 ? (
@@ -266,10 +258,26 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                             <></>
                         )}
                     </div>
-                </div>
 
-                <div className="fixed top-1 right-3">
-                    <span className="text-gray-400">V{patch}</span>
+                    <button
+                        onClick={() => {
+                            refreshQuery.refetch();
+                        }}
+                        className="flex flex-row gap-2 items-center"
+                    >
+                        <RefreshIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
+                        {refreshQuery.isFetching ? (
+                            <>Working... </>
+                        ) : refreshQuery.dataUpdatedAt !== 0 ? (
+                            <>{new Date(refreshQuery.dataUpdatedAt).toLocaleTimeString()}</>
+                        ) : (
+                            <>{"<- Update"}</>
+                        )}
+                    </button>
+
+                    <div className="fixed top-1 right-3">
+                        <span className="text-gray-400">V{patch}</span>
+                    </div>
                 </div>
             </header>
             <main>
