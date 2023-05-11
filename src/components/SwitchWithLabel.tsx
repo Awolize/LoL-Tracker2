@@ -9,7 +9,7 @@ export const SwitchWithLabel = ({ label, checked, onChange }) => {
                 checked={checked}
                 onChange={onChange}
                 className={`${
-                    checked ? "bg-blue-600" : "bg-gradient-to-r from-indigo-500 to-purple-500"
+                    checked ? "bg-gradient-to-r from-indigo-500 to-purple-500" : "bg-blue-600"
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
             >
                 <span className="sr-only">{label}</span>
