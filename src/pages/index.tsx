@@ -1,8 +1,10 @@
-import { Listbox } from "@headlessui/react";
+import { useRef, useState } from "react";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+
+import { Listbox } from "@headlessui/react";
 
 const servers = [
     { id: 3, name: "EUW", disabled: false },

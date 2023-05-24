@@ -1,6 +1,6 @@
-import type { LolApi } from "twisted";
-import { Regions } from "twisted/dist/constants";
 import type { ChampionMastery, Prisma, PrismaClient } from "@prisma/client";
+import type { LolApi } from "twisted";
+import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, SummonerV4DTO } from "twisted/dist/models-dto";
 
 export const updateSummoner = async (

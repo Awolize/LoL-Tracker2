@@ -7,7 +7,8 @@
         "dev": "next dev",
         "postinstall": "prisma generate",
         "lint": "next lint",
-        "start": "next start"
+        "start": "next start",
+        "lint:fix": "eslint --fix --ext .ts,.tsx ./"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.14",
@@ -41,6 +42,10 @@
         "autoprefixer": "^10.4.14",
         "eslint": "^8.39.0",
         "eslint-config-next": "13.3.4",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-import-resolver-typescript": "^3.5.5",
+        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-prettier": "^4.2.1",
         "postcss": "^8.4.23",
         "prettier": "^2.8.8",
         "prettier-plugin-tailwindcss": "^0.2.8",

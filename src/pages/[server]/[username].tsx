@@ -1,12 +1,15 @@
 import React from "react";
-import { useRouter } from "next/router";
+
+import type { InferGetServerSidePropsType, NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { regionToConstant } from "../../utils/champsUtils";
-import { z } from "zod";
-import { LolApi } from "twisted";
-import { InferGetServerSidePropsType, NextPage } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { LolApi } from "twisted";
+import { z } from "zod";
+
+import { regionToConstant } from "../../utils/champsUtils";
 import { DATA_DRAGON_PROFIL_ICON, DATA_DRAGON_URL_SHORT } from "../../utils/constants";
 
 const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {

@@ -1,5 +1,6 @@
-import { env } from "../env/server.mjs";
 import { LolApi } from "twisted";
+
+import { env } from "../env/server.mjs";
 
 declare global {
     // eslint-disable-next-line no-var

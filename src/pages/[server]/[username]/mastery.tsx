@@ -1,9 +1,23 @@
-import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+
+import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
+
+import React, { useEffect, useState } from "react";
+
+import type { NextPage, InferGetServerSidePropsType } from "next";
+
 import { LolApi } from "twisted";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
+import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
+import { z } from "zod";
+
+import ChampionItem from "../../../components/ChampionItem";
 import Dropdown from "../../../components/Dropdown";
+import RoleHeader from "../../../components/RoleHeader";
+import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
+import { ToggleEye } from "../../../components/ToggleEye";
+import { api } from "../../../utils/api";
 import {
     filteredOut,
     getChallengesData,
@@ -13,18 +27,8 @@ import {
     regionToConstant,
     sortAlgorithm,
 } from "../../../utils/champsUtils";
+
 import rolesJson from "./roles.json";
-
-import { z } from "zod";
-import ChampionItem from "../../../components/ChampionItem";
-import RoleHeader from "../../../components/RoleHeader";
-
-import type { NextPage, InferGetServerSidePropsType } from "next";
-import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
-import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
-import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
-import { ToggleEye } from "../../../components/ToggleEye";
-import { api } from "../../../utils/api";
 
 interface Roles {
     role: string;

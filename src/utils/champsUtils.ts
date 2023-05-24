@@ -1,6 +1,6 @@
+import { PrismaClient } from "@prisma/client";
 import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
-import { PrismaClient } from "@prisma/client";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails, SummonerV4DTO } from "twisted/dist/models-dto";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {

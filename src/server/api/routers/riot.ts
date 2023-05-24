@@ -1,9 +1,9 @@
+import { Constants } from "twisted";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import { Constants } from "twisted";
-import { updateSummoner } from "../../../utils/champsUtilsTRPC";
 import { regionToConstant } from "../../../utils/champsUtils";
+import { updateSummoner } from "../../../utils/champsUtilsTRPC";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const riotApiRouter = createTRPCRouter({
     getUserByName: publicProcedure.input(z.object({ username: z.string() })).query(async ({ input, ctx }) => {
