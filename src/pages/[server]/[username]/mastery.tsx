@@ -1,12 +1,10 @@
+import React, { useEffect, useState } from "react";
+
+import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
 import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-
-import React, { useEffect, useState } from "react";
-
-import type { NextPage, InferGetServerSidePropsType } from "next";
-
 import { LolApi } from "twisted";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";

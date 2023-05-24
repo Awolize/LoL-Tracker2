@@ -16,7 +16,9 @@
  * processing a request
  *
  */
+import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import superjson from "superjson";
 
 import { prisma } from "../db";
 import { lolApi } from "../lolApi";
@@ -54,8 +56,6 @@ export const createTRPCContext = async (_opts: CreateNextContextOptions) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-import { initTRPC } from "@trpc/server";
-import superjson from "superjson";
 
 const t = initTRPC.context<Awaited<ReturnType<typeof createTRPCContext>>>().create({
     transformer: superjson,
