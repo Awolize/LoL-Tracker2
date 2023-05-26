@@ -13,6 +13,7 @@
     ],
 
     "rules": {
+        "prettier/prettier": "off",
         "@typescript-eslint/consistent-type-imports": "warn",
         "import/no-unresolved": "error",
         "import/order": [

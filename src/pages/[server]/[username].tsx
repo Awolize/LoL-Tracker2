@@ -62,7 +62,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                                 <Link href={router.asPath + "/mastery"} className="underline">
                                     Mastery Points Tracker
                                 </Link>
-                                <div className="text-sm ">
+                                <div className="text-sm">
                                     Tailored for the challenge{" "}
                                     <span className="italic font-bold">Catch &apos;em all</span>, but also works with{" "}
                                     <span className="italic font-bold">Master yourself</span> and{" "}
@@ -70,10 +70,10 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                                 </div>
                             </div>
                             <div>
-                                <Link href={router.asPath + "/mastery"} className="underline">
+                                <Link href={router.asPath + "/different"} className="underline">
                                     Champion Tracker
                                 </Link>
-                                <div className="text-sm ">
+                                <div className="text-sm">
                                     Manually keep track of specific heroes. For challenges such as{" "}
                                     <span className="italic font-bold">All Random All Champions</span>, with{" "}
                                     <span className="italic font-bold">Jack of All Champs</span>, and{" "}
