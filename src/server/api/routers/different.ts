@@ -15,7 +15,7 @@ export const differentApiRouter = createTRPCRouter({
                     // upsertMany hack
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
-                        data: data.map((challenge) => {
+                        data: data.map((challenge: any) => {
                             // There is one challenge that got an endtimestamp (id: 600012)
                             //  "name":"Challenges are Here!"
 
