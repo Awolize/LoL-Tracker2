@@ -21,7 +21,7 @@ export const differentApiRouter = createTRPCRouter({
                             // Remove localization that isn't en_US
                             return {
                                 ...challenge,
-                                endTimestamp: challenge.endTimestamp ? new Date(challenge.endTimestamp) : null,
+                                endTimestamp: challenge.endTimestamp! ? new Date(challenge.endTimestamp!) : null,
                                 localizedNames: { en_US: challenge.localizedNames.en_US },
                             };
                         }),
