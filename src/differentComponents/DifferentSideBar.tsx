@@ -36,20 +36,20 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
             refreshQuery.refetch();
         };
 
-        const itemClasses = `${small ? "px-2" : "px-4"} duration-300 py-2 cursor-pointer ${
+        const itemClasses = `${small ? "px-2" : "px-4"} duration-300 py-2 cursor-pointer text-center ${
             selected ? "bg-gray-800" : ""
         }`;
         return (
-            <div className={itemClasses} onClick={handleClick}>
+            <button className={itemClasses} onClick={handleClick}>
                 Update db
-            </div>
+            </button>
         );
     };
 
     return (
         <nav
-            className={`bg-slate-900 h-full py-8 ${
-                drawerOpen ? "pl-5 pr-8 w-72" : "px-2 w-20"
+            className={`bg-slate-900 h-full py-4 ${
+                drawerOpen ? "pl-2 pr-2 w-72" : "px-2 w-20"
             } duration-300 relative rounded-r-lg`}
         >
             {drawerOpen ? (
@@ -65,14 +65,14 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
             )}
 
             <div className="flex flex-col h-full">
+                <p className="text-center mb-2 border-b border-gray-600 ">Challenges</p>
                 <input
                     type="text"
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="bg-gray-800 rounded px-2 py-1 mt-4 mb-2"
+                    className="bg-gray-800 rounded px-2 py-1 my-1"
                 />
-
                 <ul className="flex flex-col gap-1 overflow-y-auto">
                     {filteredChallenges?.map((item) => (
                         <Item
@@ -115,9 +115,13 @@ const Item = ({
     const text = localized.name;
     const description = localized.description;
 
-    const itemClasses = `${small ? "px-2" : "px-4"} duration-300 py-2 cursor-pointer ${selected ? "bg-gray-800" : ""}`;
     return (
-        <li className={itemClasses} onClick={handleClick}>
+        <li
+            className={`${small ? "px-2" : "px-4"} duration-300 py-2 cursor-pointer rounded-sm ${
+                selected ? "bg-gray-800" : ""
+            }`}
+            onClick={handleClick}
+        >
             <p className="text-sm">{text}</p>
             <p className="text-xs opacity-50">{description}</p>
         </li>

@@ -53,7 +53,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
             </Head>
 
             <div className="h-screen w-screen flex">
-                <aside>
+                <aside className="z-10">
                     <DifferentSideBar
                         server={server}
                         username={username}
@@ -67,15 +67,15 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                         <DifferentHeader finished={100} total={champs.length} patch={patch} />
                     </header>
 
-                    <div className="flex-1  overflow-y-auto border-t-2 border-gray-800">
-                        <main className="flex-grow overflow-y-auto flex flex-row p-7 gap-2 ">
+                    <div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
+                        <main className="flex-grow overflow-y-auto flex flex-row gap-2 ">
                             {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
                                 if (!champs[0]) return;
 
                                 const champsWithRole = champs.filter((champ) => champ?.role === role);
 
                                 return (
-                                    <div className="w-full p-4" key={role}>
+                                    <div className="w-full px-4" key={role}>
                                         <DifferentRoleHeader role={role} />
                                         <ul
                                             className="grid justify-between"
