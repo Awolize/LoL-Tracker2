@@ -30,7 +30,7 @@ export const differentApiRouter = createTRPCRouter({
                         skipDuplicates: true,
                     }),
                     ctx.prisma.challengeLocalization.createMany({
-                        data: data.map((challenge) => {
+                        data: data.map((challenge: any) => {
                             const enUSLocalization = challenge.localizedNames.en_US;
 
                             return {
