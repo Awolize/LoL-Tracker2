@@ -15,13 +15,13 @@ export const differentApiRouter = createTRPCRouter({
                     // upsertMany hack
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
-                        data: data.map((challenge) => {
+                        data: data.map((challenge: any) => {
                             // There is one challenge that got an endtimestamp (id: 600012)
                             //  "name":"Challenges are Here!"
                             // Remove localization that isn't en_US
                             return {
                                 ...challenge,
-                                endTimestamp: challenge.endTimestamp! ? new Date(challenge.endTimestamp!) : null,
+                                endTimestamp: challenge.endTimestamp ? new Date(challenge.endTimestamp) : null,
                                 localizedNames: { en_US: challenge.localizedNames.en_US },
                             };
                         }),
