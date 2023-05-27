@@ -81,3 +81,12 @@ model ChampionDetails {
   attackspeedperlevel  Float
   attackspeed          Float
 }
+
+model ChallengesConfig {
+  id             Int       @id
+  localizedNames Json
+  state          String
+  leaderboard    Boolean
+  endTimestamp   DateTime?
+  thresholds     Json
+}

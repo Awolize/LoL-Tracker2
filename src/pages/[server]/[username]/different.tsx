@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
+import type { Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
@@ -11,6 +14,8 @@ import { z } from "zod";
 import { DifferentChampionItem } from "../../../differentComponents/DifferentChampionItem";
 import { DifferentHeader } from "../../../differentComponents/DifferentHeader";
 import { DifferentRoleHeader } from "../../../differentComponents/DifferentRoleHeader";
+import { DifferentSideBar } from "../../../differentComponents/DifferentSideBar";
+import { api } from "../../../utils/api";
 import {
     getChallengesData,
     getChallengesThresholds,
@@ -27,11 +32,12 @@ interface Roles {
 export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 
 const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
-    const champs = props.champData;
-    const championMastery = props.champData;
-    const patch = props.patch;
     const challenges = props.challenges;
     const challengesThresholds = props.challengesThresholds;
+
+    const { username, server, patch, champData: champs } = props;
+
+    const [selectedItem, setSelectedItem] = useState(null);
 
     return (
         <div>
@@ -51,28 +57,36 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
 
             <DifferentHeader finished={100} total={champs.length} patch={patch} />
 
-            <main>
-                <div className="flex flex-row gap-2">
-                    {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-                        if (!champs[0]) return;
+            <main className="flex">
+                <DifferentSideBar
+                    server={server}
+                    username={username}
+                    selectedItem={selectedItem}
+                    setSelectedItem={setSelectedItem}
+                />
+                <section className="flex-1">
+                    <div className="flex flex-row  p-7 gap-2">
+                        {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
+                            if (!champs[0]) return;
 
-                        const champsWithRole = champs.filter((champ) => champ?.role === role);
+                            const champsWithRole = champs.filter((champ) => champ?.role === role);
 
-                        return (
-                            <div className="w-full p-4" key={role}>
-                                <DifferentRoleHeader role={role} />
-                                <ul
-                                    className="grid justify-between"
-                                    style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
-                                >
-                                    {champsWithRole?.map((champ) => (
-                                        <DifferentChampionItem key={`${champ.championId}-todo`} champ={champ} />
-                                    ))}
-                                </ul>
-                            </div>
-                        );
-                    })}
-                </div>
+                            return (
+                                <div className="w-full p-4" key={role}>
+                                    <DifferentRoleHeader role={role} />
+                                    <ul
+                                        className="grid justify-between"
+                                        style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
+                                    >
+                                        {champsWithRole?.map((champ) => (
+                                            <DifferentChampionItem key={`${champ.championId}-todo`} champ={champ} />
+                                        ))}
+                                    </ul>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
             </main>
         </div>
     );
