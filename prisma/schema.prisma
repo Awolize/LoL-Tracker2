@@ -83,10 +83,26 @@ model ChampionDetails {
 }
 
 model ChallengesConfig {
-  id             Int       @id
-  localizedNames Json
+  id             Int                     @id
   state          String
   leaderboard    Boolean
   endTimestamp   DateTime?
   thresholds     Json
+  localizedNames ChallengeLocalization[]
+}
+
+enum Language {
+  en_US
+  // Add more languages as needed
+}
+
+model ChallengeLocalization {
+  id               Int
+  language         Language
+  description      String
+  name             String
+  shortDescription String
+  ChallengesConfig ChallengesConfig? @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@unique([id, language])
 }

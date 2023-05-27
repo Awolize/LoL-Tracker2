@@ -15,17 +15,32 @@ export const differentApiRouter = createTRPCRouter({
                     // upsertMany hack
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
-                        data: data.map((challenge: any) => {
+                        data: data.map((challenge) => {
                             // There is one challenge that got an endtimestamp (id: 600012)
                             //  "name":"Challenges are Here!"
-                            // Remove localization that isn't en_US
+
                             return {
-                                ...challenge,
+                                id: challenge.id,
+                                leaderboard: challenge.leaderboard,
+                                state: challenge.state,
+                                thresholds: challenge.thresholds,
                                 endTimestamp: challenge.endTimestamp ? new Date(challenge.endTimestamp) : null,
-                                localizedNames: { en_US: challenge.localizedNames.en_US },
                             };
                         }),
                         skipDuplicates: true,
+                    }),
+                    ctx.prisma.challengeLocalization.createMany({
+                        data: data.map((challenge) => {
+                            const enUSLocalization = challenge.localizedNames.en_US;
+
+                            return {
+                                id: challenge.id,
+                                language: "en_US",
+                                name: enUSLocalization ? enUSLocalization.name : "",
+                                description: enUSLocalization ? enUSLocalization.description : "",
+                                shortDescription: enUSLocalization ? enUSLocalization.shortDescription : "",
+                            };
+                        }),
                     }),
                 ]);
             } catch (error) {
@@ -47,6 +62,7 @@ export const differentApiRouter = createTRPCRouter({
                     id: { gte: 10 },
                 },
             });
+
             const keystones = await ctx.prisma.challengesConfig.findMany({
                 select: {
                     id: true,
