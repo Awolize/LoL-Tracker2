@@ -1,7 +1,19 @@
+import { Constants } from "twisted";
+import { RegionGroups, regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { regionToConstant } from "../../../utils/champsUtils";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+
+async function getUserByNameAndServer(ctx, username, server) {
+    try {
+        const response = await ctx.lolApi.Summoner.getByName(username, server);
+
+        return response.response;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 export const differentApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
@@ -73,5 +85,63 @@ export const differentApiRouter = createTRPCRouter({
                 },
             });
             return { data, keystones };
+        }),
+
+    updateGames: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
+        .query(async ({ input, ctx }) => {
+            try {
+                const region = regionToConstant(input.server.toUpperCase());
+
+                const user = await getUserByNameAndServer(ctx, input.username, Constants.Regions.EU_WEST);
+
+                // MatchQueryV5DTO {
+                //     count?: number;
+                //     queue?: number;
+                //     start?: number;
+                //     type?: string;
+                //     startTime?: number;
+                //     endTime?: number;
+                // }
+
+                const gameIdsResponse = await ctx.lolApi.MatchV5.list(user.puuid, regionToRegionGroup(region), {
+                    count: input.count,
+                });
+
+                const gameIds = gameIdsResponse.response;
+
+                if (gameIds[0]) {
+                    const gameReponse = await ctx.lolApi.MatchV5.get(gameIds[0], regionToRegionGroup(region));
+
+                    console.log(gameIdsResponse.response);
+                    console.log(gameIdsResponse.response.at(0));
+                    console.log(JSON.stringify(gameReponse.response));
+
+                    return gameReponse.response;
+                }
+            } catch (error) {
+                console.log("error:", JSON.stringify(error));
+            }
+        }),
+    updateJackOfAllChamps: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const region = regionToConstant(input.server.toUpperCase());
+
+            return {};
+        }),
+    updateInvincible: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const region = regionToConstant(input.server.toUpperCase());
+
+            return {};
+        }),
+    updatePerfectionist: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const region = regionToConstant(input.server.toUpperCase());
+
+            return {};
         }),
 });
