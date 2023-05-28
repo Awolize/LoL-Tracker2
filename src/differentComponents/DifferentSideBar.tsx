@@ -16,7 +16,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const refreshQuery = api.differentApi.updateChallengeConfig.useQuery({ server, username }, { enabled: false });
     const refreshQuery2 = api.differentApi.updateGames.useQuery(
-        { server, username, count: 3 },
+        { server, username, count: 20 },
         {
             enabled: false,
             onSuccess(data) {
@@ -24,6 +24,11 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
             },
         }
     );
+    const refreshQuery3 = api.differentApi.updateJackOfAllChamps.useQuery({ server, username }, { enabled: false });
+    if (refreshQuery3.data) {
+        console.log(refreshQuery3.data);
+    }
+
     const { data: challenges } = api.differentApi.getChallenges.useQuery({ server, username });
 
     // Filter challenges based on search term
@@ -61,6 +66,18 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         return (
             <button className={itemClasses} onClick={handleClick}>
                 Update games
+            </button>
+        );
+    };
+    const LastItem3 = ({ selected }) => {
+        const handleClick = () => {
+            refreshQuery3.refetch();
+        };
+
+        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
+        return (
+            <button className={itemClasses} onClick={handleClick}>
+                Update jack of all champs
             </button>
         );
     };
@@ -105,6 +122,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
                     </ul>
                     <LastItem selected />
                     <LastItem2 selected />
+                    <LastItem3 selected />
                 </div>
             )}
         </nav>

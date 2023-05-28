@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
+import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
@@ -12,13 +13,8 @@ import { DifferentChampionItem } from "../../../differentComponents/DifferentCha
 import { DifferentHeader } from "../../../differentComponents/DifferentHeader";
 import { DifferentRoleHeader } from "../../../differentComponents/DifferentRoleHeader";
 import { DifferentSideBar } from "../../../differentComponents/DifferentSideBar";
-import { api } from "../../../utils/api";
-import {
-    getChallengesData,
-    getChallengesThresholds,
-    masteryBySummoner,
-    regionToConstant,
-} from "../../../utils/champsUtils";
+import { getUserByNameAndServer } from "../../../server/api/differentHelper";
+import { regionToConstant } from "../../../utils/champsUtils";
 
 import rolesJson from "./roles.json";
 
@@ -30,10 +26,8 @@ export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetai
 
 const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
     const challenges = props.challenges;
-    const challengesThresholds = props.challengesThresholds;
 
     const { username, server, patch, champData: champs } = props;
-
     const [selectedItem, setSelectedItem] = useState(null);
 
     return (
@@ -81,9 +75,22 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                                             className="grid justify-between"
                                             style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
                                         >
-                                            {champsWithRole?.map((champ) => (
-                                                <DifferentChampionItem key={`${champ.championId}-todo`} champ={champ} />
-                                            ))}
+                                            {champsWithRole?.map((champ) => {
+                                                const jacks = challenges?.jackOfAllChamps.map((el) => el.key) ?? [];
+                                                const hide = jacks.includes(champ.key);
+
+                                                if (hide) {
+                                                    console.log(champ.name);
+                                                }
+
+                                                return (
+                                                    <DifferentChampionItem
+                                                        key={`${champ.id}-todo`}
+                                                        hide={hide}
+                                                        champ={champ}
+                                                    />
+                                                );
+                                            })}
                                         </ul>
                                     </div>
                                 );
@@ -106,62 +113,53 @@ export const getServerSideProps = async (context) => {
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
     const { server, username } = paramsSchema.parse(params);
     const region = regionToConstant(server.toUpperCase());
-    const api = new LolApi();
 
-    const { response: user } = await api.Summoner.getByName(username, region);
+    const prisma = new PrismaClient();
+    const lolApi = new LolApi();
 
-    const [{ completeChampsData, patch }, playerChallenges, challengesThresholds] = await Promise.all([
-        masteryBySummoner(api, region, user).then(async (championMasteries) => {
-            const championsDD = await api.DataDragon.getChampion();
+    const user = await getUserByNameAndServer({ prisma, lolApi }, username, region);
+
+    const championsDD = await prisma.championDetails.findMany();
+
+    const completeChampsData = championsDD
+        .map((champion) => {
+            const role = rolesJson[champion.key] ?? "Bottom";
+
             return {
-                completeChampsData: Object.keys(championsDD.data)
-                    .map((champName) => {
-                        const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
-                        const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
-
-                        const personalChampData = championMasteries!
-                            .filter((champ) => champ.championId.toString() == element.key)
-                            .at(0);
-
-                        if (personalChampData) {
-                            return {
-                                image: element.image,
-                                id: element.id,
-                                key: element.key,
-                                ...personalChampData,
-                                championPoints: personalChampData?.championPoints ?? 0,
-                                championLevel: personalChampData?.championLevel ?? 0,
-                                role: role,
-                                name: element.name === "Nunu & Willump" ? "Nunu" : element.name,
-                            } as CompleteChampionInfo;
-                        } else {
-                            return {
-                                ...element,
-                                championPoints: 0,
-                                championLevel: 0,
-                                championId: parseInt(element.key, 10),
-                                role,
-                            } as CompleteChampionInfo;
-                        }
-                    })
-                    .filter(Boolean),
-                patch: championsDD.version,
+                ...champion,
+                role: role,
+                name: champion.name === "Nunu & Willump" ? "Nunu" : champion.name,
+                image: {
+                    full: champion.full,
+                    sprite: champion.sprite,
+                    group: champion.group,
+                    x: champion.x,
+                    y: champion.y,
+                    w: champion.w,
+                    h: champion.h,
+                },
             };
-        }),
-        getChallengesData(api, region, user),
-        getChallengesThresholds(api, region),
-    ]);
+        })
+        .filter(Boolean);
 
     // const apiChampsData = await getChampionsAndMastery(username);
+
+    const challenges = await prisma.challenges.findFirst({
+        where: {
+            puuid: user.puuid,
+        },
+        include: {
+            jackOfAllChamps: true,
+        },
+    });
 
     return {
         props: {
             username,
             server,
             champData: completeChampsData,
-            challenges: playerChallenges,
-            challengesThresholds: challengesThresholds,
-            patch,
+            patch: championsDD[0]?.version,
+            challenges: challenges,
         },
     };
 };

@@ -2,18 +2,20 @@ import React from "react";
 
 import Image from "next/image";
 
-import type { CompleteChampionInfo } from "../pages/[server]/[username]/mastery";
+import type { ChampionDetails } from "@prisma/client";
+
 import { DATA_DRAGON_URL } from "../utils/constants";
 
-export const DifferentChampionItem = ({ champ }: { champ: CompleteChampionInfo }) => {
+export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails; hide: boolean }) => {
     return (
         <li className="flex flex-col pb-2" key={champ.key as React.Key}>
             <div className="relative z-10">
                 <Image
-                    src={`${DATA_DRAGON_URL}${champ.image.full}`}
+                    src={`${DATA_DRAGON_URL}${champ.full}`}
                     style={{
                         zIndex: -1,
                     }}
+                    className={`${hide && "grayscale brightness-50"}`}
                     alt={`${champ.name}`}
                     height={90}
                     width={90}
@@ -23,7 +25,6 @@ export const DifferentChampionItem = ({ champ }: { champ: CompleteChampionInfo }
             </div>
 
             <div className="text-center text-xs">{champ.name}</div>
-            <div className="items-center justify-center text-center text-xs">{champ.championPoints}</div>
         </li>
     );
 };

@@ -10,8 +10,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Match {
+  gameId       String     @id
+  server       String
+  participants Summoner[] @relation("MatchSummoners")
+  MatchInfo    MatchInfo?
+}
+
+model MatchInfo {
+  gameId             String   @id
+  gameCreation       DateTime
+  gameDuration       Int
+  gameEndTimestamp   DateTime
+  gameMode           String
+  gameName           String
+  gameStartTimestamp DateTime
+  gameType           String
+  gameVersion        String
+  mapId              Int
+  participants       Json
+  platformId         String
+  queueId            Int
+  teams              Json
+  tournamentCode     String
+  match              Match    @relation(fields: [gameId], references: [gameId], onDelete: Cascade)
+}
+
+model Challenges {
+  puuid           String            @id @unique
+  summoner        Summoner          @relation(fields: [puuid], references: [puuid])
+  jackOfAllChamps ChampionDetails[] @relation("ChallengeHeroes")
+}
+
 model Summoner {
-  puuid         String            @unique()
+  puuid         String            @id @unique
   summonerId    String
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
@@ -22,27 +54,13 @@ model Summoner {
   revisionDate  DateTime
   accountId     String
   championData  ChampionMastery[]
-}
-
-model ChampionMastery {
-  championId                   Int
-  updatedAt                    DateTime @updatedAt
-  championLevel                Int
-  championPoints               Int
-  chestGranted                 Boolean
-  tokensEarned                 Int
-  lastPlayTime                 DateTime
-  championPointsUntilNextLevel Int
-  championPointsSinceLastLevel Int
-  puuid                        String
-  summoner                     Summoner @relation(fields: [puuid], references: [puuid])
-
-  @@unique([championId, puuid])
+  matches       Match[]           @relation("MatchSummoners")
+  challenges    Challenges?
 }
 
 model ChampionDetails {
   id                   Int      @id @unique
-  version              String
+  version              String?
   key                  String
   name                 String
   title                String
@@ -60,26 +78,44 @@ model ChampionDetails {
   h                    Int
   tags                 String[]
   partype              String
-  hp                   Int
-  hpperlevel           Int
-  mp                   Int
-  mpperlevel           Int
-  movespeed            Int
-  armor                Int
-  armorperlevel        Int
-  spellblock           Int
-  spellblockperlevel   Int
-  attackrange          Int
-  hpregen              Int
-  hpregenperlevel      Int
-  mpregen              Int
-  mpregenperlevel      Int
-  crit                 Int
-  critperlevel         Int
-  attackdamage         Int
-  attackdamageperlevel Int
+  hp                   Float
+  hpperlevel           Float
+  mp                   Float
+  mpperlevel           Float
+  movespeed            Float
+  armor                Float
+  armorperlevel        Float
+  spellblock           Float
+  spellblockperlevel   Float
+  attackrange          Float
+  hpregen              Float
+  hpregenperlevel      Float
+  mpregen              Float
+  mpregenperlevel      Float
+  crit                 Float
+  critperlevel         Float
+  attackdamage         Float
+  attackdamageperlevel Float
   attackspeedperlevel  Float
   attackspeed          Float
+
+  Challenges Challenges[] @relation("ChallengeHeroes")
+}
+
+model ChampionMastery {
+  championId                   Int
+  updatedAt                    DateTime @updatedAt
+  championLevel                Int
+  championPoints               Int
+  chestGranted                 Boolean
+  tokensEarned                 Int
+  lastPlayTime                 DateTime
+  championPointsUntilNextLevel Int
+  championPointsSinceLastLevel Int
+  puuid                        String
+  summoner                     Summoner @relation(fields: [puuid], references: [puuid])
+
+  @@unique([championId, puuid])
 }
 
 model ChallengesConfig {
