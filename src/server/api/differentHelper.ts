@@ -18,7 +18,10 @@ export async function getUserByNameAndServer(
     try {
         const user = await ctx.prisma.summoner.findFirst({
             where: {
-                username: username,
+                username: {
+                    mode: "insensitive",
+                    equals: username,
+                },
                 server: server,
             },
         });

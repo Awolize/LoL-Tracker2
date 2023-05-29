@@ -146,12 +146,11 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         );
     }
 
+    const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
     return (
         <div>
             <Head>
-                <title>
-                    LoL Mastery Tracker for {props.username} on {props.server}.
-                </title>
+                <title>{title}</title>
                 <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
                 <meta
                     property="og:description"

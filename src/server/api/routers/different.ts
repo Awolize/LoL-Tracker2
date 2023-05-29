@@ -13,7 +13,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 export const differentApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .mutation(async ({ input, ctx }) => {
             const region = regionToConstant(input.server.toUpperCase());
             const data = (await ctx.lolApi.Challenges.getConfig(region)).response;
 
@@ -82,7 +82,7 @@ export const differentApiRouter = createTRPCRouter({
 
     updateGames: publicProcedure
         .input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
-        .query(async ({ input, ctx }) => {
+        .mutation(async ({ input, ctx }) => {
             try {
                 const region = regionToConstant(input.server.toUpperCase());
 
@@ -217,12 +217,15 @@ export const differentApiRouter = createTRPCRouter({
         }),
     updateJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .mutation(async ({ input, ctx }) => {
             const region = regionToConstant(input.server.toUpperCase());
 
             const user = await ctx.prisma.summoner.findFirst({
                 where: {
-                    username: input.username,
+                    username: {
+                        mode: "insensitive",
+                        equals: input.username,
+                    },
                 },
             });
 

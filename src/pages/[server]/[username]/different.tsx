@@ -31,12 +31,11 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
 
     const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ server, username });
 
+    const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
     return (
         <div className="flex h-screen w-screen">
             <Head>
-                <title>
-                    LoL Mastery Tracker for {props.username} on {props.server}.
-                </title>
+                <title>{title}</title>
                 <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
                 <meta
                     property="og:description"

@@ -19,13 +19,11 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
     const { server, username, profileIconId, summonerLevel, patch } = props;
 
     const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${profileIconId}.png`;
-
+    const title = `LoL Mastery Tracker for ${username} on ${server}.`;
     return (
         <div>
             <Head>
-                <title>
-                    LoL Mastery Tracker for {username} on {server}.
-                </title>
+                <title>{title}</title>
                 <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
                 <meta
                     property="og:description"

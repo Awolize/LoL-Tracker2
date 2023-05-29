@@ -13,23 +13,17 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     const handleItemClick = (itemId) => {
         setSelectedItem(itemId);
     };
+    const utils = api.useContext();
 
-    const refreshQuery = api.differentApi.updateChallengeConfig.useQuery({ server, username }, { enabled: false });
-    const refreshQuery2 = api.differentApi.updateGames.useQuery(
-        { server, username, count: 10 },
-        {
-            enabled: false,
-            onSuccess(data) {
-                console.log(data);
-            },
-        }
-    );
-    const refreshQuery3 = api.differentApi.updateJackOfAllChamps.useQuery({ server, username }, { enabled: false });
-    if (refreshQuery3.data) {
-        console.log(refreshQuery3.data);
-    }
+    const refreshQuery = api.differentApi.updateChallengeConfig.useMutation();
+    const refreshQuery2 = api.differentApi.updateGames.useMutation();
+    const refreshQuery3 = api.differentApi.updateJackOfAllChamps.useMutation({
+        onSettled: () => {
+            utils.differentApi.getChallengesConfig.invalidate();
+        },
+    });
 
-    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ server, username });
+    const { data: challenges, status } = api.differentApi.getChallengesConfig.useQuery({ server, username });
 
     // Filter challenges based on search term
     const filteredChallenges = challenges?.data.filter((item) => {
@@ -47,7 +41,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const LastItem = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery.refetch();
+            refreshQuery.mutate({ server, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -59,7 +53,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const LastItem2 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery2.refetch();
+            refreshQuery2.mutate({ server, username, count: 1000 });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -71,7 +65,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const LastItem3 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery3.refetch();
+            refreshQuery3.mutate({ server, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
