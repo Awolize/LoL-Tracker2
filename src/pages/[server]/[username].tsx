@@ -6,17 +6,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { PrismaClient } from "@prisma/client";
 import { LolApi } from "twisted";
 import { z } from "zod";
 
+import { getUserByNameAndServer } from "../../server/api/differentHelper";
 import { regionToConstant } from "../../utils/champsUtils";
 import { DATA_DRAGON_PROFIL_ICON, DATA_DRAGON_URL_SHORT } from "../../utils/constants";
 
 const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
     const router = useRouter();
-    const { server, username, user, patch } = props;
+    const { server, username, profileIconId, summonerLevel, patch } = props;
 
-    const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${user.profileIconId}.png`;
+    const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${profileIconId}.png`;
 
     return (
         <div>
@@ -40,7 +42,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                         <div className="absolute left-0">
                             <Image
                                 src={profileIconUrl}
-                                alt={`${user.profileIconId}`}
+                                alt={`${profileIconId}`}
                                 height={90}
                                 width={90}
                                 // hidden={hideAll}
@@ -51,7 +53,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                             <div className="text-6xl">{username}</div>
                             <div className="items-center flex flex-row justify-between ">
                                 <div className="text-sm font-bold ">{server}</div>
-                                <div className="text-sm font-bold ">{user.summonerLevel}</div>
+                                <div className="text-sm font-bold ">{summonerLevel}</div>
                             </div>
                         </div>
                     </div>
@@ -71,7 +73,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                             </div>
                             <div>
                                 <Link href={router.asPath + "/different"} className="underline">
-                                    Champion Tracker
+                                    [WIP] Champion Tracker
                                 </Link>
                                 <div className="text-sm">
                                     Manually keep track of specific heroes. For challenges such as{" "}
@@ -101,10 +103,12 @@ export const getServerSideProps = async (context) => {
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
     const { server, username } = paramsSchema.parse(params);
     const region = regionToConstant(server.toUpperCase());
-    const api = new LolApi();
+    const prisma = new PrismaClient();
+    const lolApi = new LolApi();
 
-    const { response: user } = await api.Summoner.getByName(username, region);
-    const patch = (await api.DataDragon.getVersions()).at(0);
+    const user = await getUserByNameAndServer({ prisma, lolApi }, username, region);
+
+    const patch = (await prisma.championDetails.findMany())[0]?.version;
 
     // const apiChampsData = await getChampionsAndMastery(username);
 
@@ -112,7 +116,8 @@ export const getServerSideProps = async (context) => {
         props: {
             username,
             server,
-            user,
+            profileIconId: user.profileIconId,
+            summonerLevel: user.summonerLevel,
             patch,
         },
     };

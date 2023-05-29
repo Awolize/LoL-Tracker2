@@ -55,11 +55,9 @@ export const differentApiRouter = createTRPCRouter({
             }
         }),
 
-    getChallenges: publicProcedure
+    getChallengesConfig: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
         .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
-
             const data = await ctx.prisma.challengesConfig.findMany({
                 select: {
                     id: true,
@@ -110,29 +108,23 @@ export const differentApiRouter = createTRPCRouter({
                         start: start,
                         startTime: new Date("2022-05-11T00:00:00Z").getTime() / 1000,
                     });
+                    if (matchIdsResponse.response.length === 0) break;
 
                     matchIds.push(...matchIdsResponse.response);
                     start += count;
                     totalCount -= count;
                 }
 
-                // Type guard
-                function isSummoner(user: Summoner | SummonerV4DTO): user is Summoner {
-                    return (user as Summoner).username !== undefined;
-                }
-
-                console.log(
-                    "Fetching",
-                    matchIds.length,
-                    "matches. For user",
-                    isSummoner(user) ? user.username : user.name
-                );
+                console.log("Fetching", matchIds.length, "matches. For user", user.username);
 
                 const successfullyAddedGameIds: string[] = [];
                 const skipAddedGameIds: string[] = [];
                 const failedGameIds: string[] = [];
 
                 for (let index = 0; index < matchIds.length; index++) {
+                    // Delay for 5000 milliseconds (0.2 times per second)
+                    await new Promise((resolve) => setTimeout(resolve, 5000));
+
                     const matchId = matchIds[index];
 
                     const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
@@ -142,7 +134,7 @@ export const differentApiRouter = createTRPCRouter({
                         if (!matchId || !gameId || !gameServer) continue;
 
                         // Create the Match record
-                        const existingGame = await ctx.prisma.match.findUnique({
+                        const existingGame = await ctx.prisma.match.findFirst({
                             where: {
                                 gameId: gameId,
                             },
@@ -152,8 +144,6 @@ export const differentApiRouter = createTRPCRouter({
                             continue;
                         }
 
-                        // Delay for 5000 milliseconds (0.2 times per second)
-                        await new Promise((resolve) => setTimeout(resolve, 5000));
                         const gameResponse = await ctx.lolApi.MatchV5.get(matchId, regionToRegionGroup(gameServer));
                         const game = gameResponse.response;
 
@@ -191,6 +181,7 @@ export const differentApiRouter = createTRPCRouter({
                                 },
                             },
                         });
+
                         successfullyAddedGameIds.push(gameId);
                     } catch (error) {
                         if (!gameId) {
@@ -208,6 +199,7 @@ export const differentApiRouter = createTRPCRouter({
                             console.error("something went wrong on gameId:", gameId);
                             console.warn("retry");
                             index--;
+                            console.log(user.username, "progress:", index, "/", matchIds.length);
                         }
 
                         failedGameIds.push(gameId);
@@ -330,6 +322,27 @@ export const differentApiRouter = createTRPCRouter({
             });
 
             return { numberOfGames: matches.length, uniqueWins: uniqueWins.size, uniqueLoses: uniqueLoses.size };
+        }),
+    getJackOfAllChamps: publicProcedure
+        .input(z.object({ username: z.string(), server: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const region = regionToConstant(input.server.toUpperCase());
+            const user = await getUserByNameAndServer(ctx, input.username, region);
+
+            const getJackOfAllChamps = async (puuid) => {
+                return (
+                    await ctx.prisma.challenges.findFirst({
+                        where: {
+                            puuid: puuid,
+                        },
+                        include: {
+                            jackOfAllChamps: true,
+                        },
+                    })
+                )?.jackOfAllChamps;
+            };
+
+            return await getJackOfAllChamps(user.puuid);
         }),
     updateChampions: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))

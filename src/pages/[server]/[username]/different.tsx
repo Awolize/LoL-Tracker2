@@ -14,6 +14,7 @@ import { DifferentHeader } from "../../../differentComponents/DifferentHeader";
 import { DifferentRoleHeader } from "../../../differentComponents/DifferentRoleHeader";
 import { DifferentSideBar } from "../../../differentComponents/DifferentSideBar";
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
+import { api } from "../../../utils/api";
 import { regionToConstant } from "../../../utils/champsUtils";
 
 import rolesJson from "./roles.json";
@@ -25,10 +26,10 @@ interface Roles {
 export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 
 const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
-    const challenges = props.challenges;
-
     const { username, server, patch, champData: champs } = props;
     const [selectedItem, setSelectedItem] = useState(null);
+
+    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ server, username });
 
     return (
         <div className="flex h-screen w-screen">
@@ -76,19 +77,11 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                                             style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
                                         >
                                             {champsWithRole?.map((champ) => {
-                                                const jacks = challenges?.jackOfAllChamps.map((el) => el.key) ?? [];
+                                                const jacks = selectedChallenge.data?.map((el) => el.key) ?? [];
                                                 const hide = jacks.includes(champ.key);
 
-                                                if (hide) {
-                                                    console.log(champ.name);
-                                                }
-
                                                 return (
-                                                    <DifferentChampionItem
-                                                        key={`${champ.id}-todo`}
-                                                        hide={hide}
-                                                        champ={champ}
-                                                    />
+                                                    <DifferentChampionItem key={champ.key} hide={hide} champ={champ} />
                                                 );
                                             })}
                                         </ul>
@@ -142,24 +135,12 @@ export const getServerSideProps = async (context) => {
         })
         .filter(Boolean);
 
-    // const apiChampsData = await getChampionsAndMastery(username);
-
-    const challenges = await prisma.challenges.findFirst({
-        where: {
-            puuid: user.puuid,
-        },
-        include: {
-            jackOfAllChamps: true,
-        },
-    });
-
     return {
         props: {
             username,
             server,
             champData: completeChampsData,
             patch: championsDD[0]?.version,
-            challenges: challenges,
         },
     };
 };

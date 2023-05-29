@@ -16,7 +16,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const refreshQuery = api.differentApi.updateChallengeConfig.useQuery({ server, username }, { enabled: false });
     const refreshQuery2 = api.differentApi.updateGames.useQuery(
-        { server, username, count: 20 },
+        { server, username, count: 2000 },
         {
             enabled: false,
             onSuccess(data) {
@@ -29,7 +29,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         console.log(refreshQuery3.data);
     }
 
-    const { data: challenges } = api.differentApi.getChallenges.useQuery({ server, username });
+    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ server, username });
 
     // Filter challenges based on search term
     const filteredChallenges = challenges?.data.filter((item) => {

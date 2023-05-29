@@ -1,4 +1,4 @@
-import type { PrismaClient, Prisma } from "@prisma/client";
+import type { PrismaClient, Prisma, Summoner } from "@prisma/client";
 import type { LolApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { MatchV5DTOs } from "twisted/dist/models-dto";
@@ -24,11 +24,25 @@ export async function getUserByNameAndServer(
         });
 
         if (user) {
-            return user;
+            return user; // is Summoner;
         } else {
-            const response = await ctx.lolApi.Summoner.getByName(username, server);
+            const response = (await ctx.lolApi.Summoner.getByName(username, server)).response;
 
-            return response.response;
+            // Map API response to Summoner
+            const userData: Summoner = {
+                puuid: response.puuid,
+                summonerId: response.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                server: server,
+                username: response.name,
+                profileIconId: response.profileIconId,
+                summonerLevel: response.summonerLevel,
+                revisionDate: new Date(response.revisionDate),
+                accountId: response.accountId,
+            };
+
+            return userData;
         }
     } catch (error) {
         console.error(JSON.stringify(error));

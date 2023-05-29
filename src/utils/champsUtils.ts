@@ -55,7 +55,7 @@ export const regionToConstant = (region: string) => {
         throw new Error(`Invalid region: ${region}`);
     }
 
-    return regionMap[region];
+    return regionMap[region] as Regions;
 };
 
 export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
