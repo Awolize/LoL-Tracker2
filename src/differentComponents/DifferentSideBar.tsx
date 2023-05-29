@@ -16,7 +16,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const refreshQuery = api.differentApi.updateChallengeConfig.useQuery({ server, username }, { enabled: false });
     const refreshQuery2 = api.differentApi.updateGames.useQuery(
-        { server, username, count: 2000 },
+        { server, username, count: 10 },
         {
             enabled: false,
             onSuccess(data) {
