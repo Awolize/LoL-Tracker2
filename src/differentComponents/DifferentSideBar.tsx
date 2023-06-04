@@ -5,7 +5,7 @@ import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
 import type { ChallengeLocalization } from "@prisma/client";
 
-import { api, processingApi } from "../utils/api";
+import { api, client, processingApi } from "../utils/api";
 
 export const DifferentSideBar = ({ server, username, selectedItem, setSelectedItem, mappedCases }) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
@@ -16,14 +16,6 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         setSelectedItem(itemId);
     };
     const utils = api.useContext();
-
-    const refreshQuery = processingApi.differentApi.updateChallengeConfig.useMutation();
-    const refreshQuery2 = processingApi.differentApi.updateGames.useMutation();
-    const refreshQuery3 = processingApi.differentApi.updateJackOfAllChamps.useMutation({
-        onSettled: () => {
-            utils.differentApi.getChallengesConfig.invalidate();
-        },
-    });
 
     const { data: challenges, status } = api.differentApi.getChallengesConfig.useQuery({ server, username });
 
@@ -45,7 +37,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const LastItem = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery.mutate({ server, username });
+            client.differentApi.updateChallengeConfig.mutate({ server, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -57,7 +49,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const LastItem2 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery2.mutate({ server, username, count: 1000 });
+            client.differentApi.updateGames.mutate({ server, username, count: 1000 });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -69,7 +61,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const LastItem3 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery3.mutate({ server, username });
+            client.differentApi.updateJackOfAllChamps.mutate({ server, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
