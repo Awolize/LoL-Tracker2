@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
-import type { ChallengeLocalization, Prisma } from "@prisma/client";
+import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
+import type { ChallengeLocalization } from "@prisma/client";
 
 import { api } from "../utils/api";
 
@@ -107,13 +109,19 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="bg-gray-800 rounded px-2 py-1 my-1"
                         />
-                        <input
-                            type="checkbox"
-                            placeholder="Search..."
-                            checked={showAll}
-                            onChange={(e) => setShowAll(e.target.checked)}
-                            className="bg-gray-800 rounded px-2 py-1 my-1"
-                        />
+                        {showAll ? (
+                            <OutlineFunnelIcon
+                                onClick={() => setShowAll(!showAll)}
+                                className="text-gray-500 bg-gray-800 rounded h-8 px-2 py-1 my-1"
+                                aria-checked={showAll}
+                            />
+                        ) : (
+                            <SolidFunnelIcon
+                                onClick={() => setShowAll(!showAll)}
+                                className="text-gray-500 bg-gray-800 rounded h-8 px-2 py-1 my-1"
+                                aria-checked={showAll}
+                            />
+                        )}
                     </div>
                     <ul className="flex flex-col gap-1 overflow-y-auto">
                         {filteredChallenges?.map((item) => {

@@ -9,7 +9,6 @@ import {
     getUserByNameAndServer,
     updateChampionDetails,
     prepareSummonersCreation,
-    getMatchesForSummonerByMatch,
     getMatchesForSummonerBySummoner,
 } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
