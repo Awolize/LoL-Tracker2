@@ -1,8 +1,6 @@
-import type { Summoner } from "@prisma/client";
 import { Constants } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import { regionToRegionGroup } from "twisted/dist/constants";
-import type { SummonerV4DTO } from "twisted/dist/models-dto";
 import { z } from "zod";
 
 import type { Participant } from "../../../types/different_types";
@@ -64,7 +62,7 @@ export const differentApiRouter = createTRPCRouter({
 
     getChallengesConfig: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .query(async ({ ctx }) => {
             const data = await ctx.prisma.challengesConfig.findMany({
                 select: {
                     id: true,
