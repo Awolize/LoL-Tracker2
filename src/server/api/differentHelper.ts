@@ -186,3 +186,60 @@ export const updateChampionDetails = async (ctx: {
         });
     }
 };
+
+const matchFilterSettings = {
+    gameMode: "CLASSIC",
+    gameType: "MATCHED_GAME",
+    queueId: {
+        in: [400, 410, 420, 430, 440, 700],
+    },
+    gameStartTimestamp: {
+        gte: new Date("2022-05-11T00:00:00Z"),
+    },
+};
+
+export async function getMatchesForSummonerBySummoner(
+    ctx: {
+        prisma: PrismaClient<
+            Prisma.PrismaClientOptions,
+            never,
+            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+        >;
+        lolApi: LolApi;
+    },
+    user: Summoner
+) {
+    const summoner = await ctx.prisma.summoner.findFirst({
+        where: {
+            puuid: user.puuid,
+        },
+        include: {
+            matches: {
+                include: {
+                    MatchInfo: true,
+                },
+                where: {
+                    MatchInfo: matchFilterSettings,
+                },
+            },
+        },
+    });
+
+    return summoner?.matches;
+}
+export async function getMatchesForSummonerByMatch(ctx, user) {
+    const matches = await ctx.prisma.match.findMany({
+        where: {
+            participants: {
+                some: user,
+            },
+            MatchInfo: matchFilterSettings,
+        },
+        include: {
+            MatchInfo: true,
+            participants: true,
+        },
+    });
+
+    return matches;
+}

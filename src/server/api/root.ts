@@ -1,4 +1,4 @@
-import { differentApiRouter } from "./routers/different";
+import { differentApiRouter } from "./routers/differentApiRouter";
 import { riotApiRouter } from "./routers/riot";
 import { createTRPCRouter } from "./trpc";
 /**

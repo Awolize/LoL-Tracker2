@@ -30,6 +30,26 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     const [selectedItem, setSelectedItem] = useState(null);
 
     const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ server, username });
+    // const selectedChallenge2 = api.differentApi.getJackOfAllChamps2.useQuery({ server, username });
+    // const selectedChallenge3 = api.differentApi.getJackOfAllChamps3.useQuery({ server, username });
+
+    const selectedChallengeQuery = (challenge) => {
+        console.log(challenge);
+
+        const challengeDataMap = {
+            401106: selectedChallenge?.data,
+        };
+
+        const mappedData = challengeDataMap[challenge] || [];
+        const mappedCases = Object.keys(challengeDataMap)
+            .map(Number)
+            .filter((key) => challengeDataMap[key] !== null);
+
+        return {
+            data: mappedData,
+            cases: mappedCases,
+        };
+    };
 
     const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
     return (
@@ -53,6 +73,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                         username={username}
                         selectedItem={selectedItem}
                         setSelectedItem={setSelectedItem}
+                        mappedCases={selectedChallengeQuery(selectedItem)?.cases}
                     />
                 </aside>
 
@@ -76,7 +97,9 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                                             style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
                                         >
                                             {champsWithRole?.map((champ) => {
-                                                const jacks = selectedChallenge.data?.map((el) => el.key) ?? [];
+                                                const jacks =
+                                                    selectedChallengeQuery(selectedItem)?.data.map((el) => el.key) ??
+                                                    [];
                                                 const hide = jacks.includes(champ.key);
 
                                                 return (

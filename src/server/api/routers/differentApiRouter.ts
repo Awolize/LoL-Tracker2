@@ -7,7 +7,13 @@ import { z } from "zod";
 
 import type { Participant } from "../../../types/different_types";
 import { regionToConstant } from "../../../utils/champsUtils";
-import { getUserByNameAndServer, updateChampionDetails, prepareSummonersCreation } from "../differentHelper";
+import {
+    getUserByNameAndServer,
+    updateChampionDetails,
+    prepareSummonersCreation,
+    getMatchesForSummonerByMatch,
+    getMatchesForSummonerBySummoner,
+} from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const differentApiRouter = createTRPCRouter({
@@ -51,6 +57,7 @@ export const differentApiRouter = createTRPCRouter({
                     }),
                 ]);
             } catch (error) {
+                console.log("differentApiRouter: ");
                 console.log(error);
             }
         }),
@@ -87,15 +94,6 @@ export const differentApiRouter = createTRPCRouter({
                 const region = regionToConstant(input.server.toUpperCase());
 
                 const user = await getUserByNameAndServer(ctx, input.username, Constants.Regions.EU_WEST);
-
-                // MatchQueryV5DTO {
-                //     count?: number;
-                //     queue?: number;
-                //     start?: number;
-                //     type?: string;
-                //     startTime?: number;
-                //     endTime?: number;
-                // }
 
                 let totalCount = input.count; // Total number of matches requested
                 const matchIds: string[] = [];
@@ -231,53 +229,25 @@ export const differentApiRouter = createTRPCRouter({
 
             if (!user) return;
 
-            const matchFilterSettings = {
-                gameMode: "CLASSIC",
-                gameType: "MATCHED_GAME",
-                queueId: {
-                    in: [400, 410, 420, 430, 440, 700],
-                },
-                gameStartTimestamp: {
-                    gte: new Date("2022-05-11T00:00:00Z"),
-                },
-            };
+            const matches = await getMatchesForSummonerBySummoner(ctx, user);
 
-            const matches = await ctx.prisma.match.findMany({
-                where: {
-                    participants: {
-                        some: user,
-                    },
-                    MatchInfo: matchFilterSettings,
-                },
-                include: {
-                    MatchInfo: true,
-                    participants: true,
-                },
-            });
+            if (!matches) return;
 
-            console.log(user.username, "Found", matches.length, "games", "using:", matchFilterSettings);
+            const filteredInfoParticipants = matches
+                .map((match) =>
+                    (match.MatchInfo?.participants as any as Participant[] | undefined)?.filter(
+                        (par) => par.puuid === user.puuid /* && par.champ == "champ" ish */
+                    )
+                )
+                .flat()
+                .filter(Boolean) as Participant[];
+
+            console.log(user.username, "Found", filteredInfoParticipants?.length, "games");
 
             const loses: Participant[] = [];
             const wins: Participant[] = [];
 
-            for (const match of matches) {
-                if (!match.MatchInfo?.participants) {
-                    console.warn("No participants? gameId:", match.gameId);
-                    continue;
-                }
-
-                const infoParticipants: Participant[] = match.MatchInfo.participants as any[];
-                const filteredInfoParticipants: Participant[] = infoParticipants.filter(
-                    (el) => el.puuid === user.puuid
-                );
-
-                if (filteredInfoParticipants.length === 0) {
-                    console.error("filteredInfoParticipants.length === 0");
-                    continue;
-                }
-
-                const participantInfo: Participant = filteredInfoParticipants[0] as Participant;
-
+            for (const participantInfo of filteredInfoParticipants) {
                 if (participantInfo.win) {
                     wins.push(participantInfo);
                 } else {
