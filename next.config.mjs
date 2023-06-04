@@ -16,6 +16,7 @@ const config = {
     images: {
         domains: ["ddragon.leagueoflegends.com"],
     },
+    output: process.env.STANDALONE ? "standalone" : undefined,
 };
 
 // // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -54,6 +54,44 @@ export const api = createTRPCNext<AppRouter>({
 });
 
 /**
+ * A set of typesafe react-query hooks for your tRPC API
+ */
+export const processingApi = createTRPCNext<AppRouter>({
+    config() {
+        return {
+            /**
+             * Transformer used for data de-serialization from the server
+             * @see https://trpc.io/docs/data-transformers
+             **/
+            transformer: superjson,
+
+            /**
+             * Links used to determine request flow from client to server
+             * @see https://trpc.io/docs/links
+             * */
+            links: [
+                loggerLink({
+                    enabled: (opts) =>
+                        process.env.NODE_ENV === "development" ||
+                        (opts.direction === "down" && opts.result instanceof Error),
+                }),
+                httpBatchLink({
+                    url:
+                        process.env.NODE_ENV === "development"
+                            ? `${getBaseUrl()}/api/trpc`
+                            : `processing-lol.awot.dev/api/trpc`,
+                }),
+            ],
+        };
+    },
+    /**
+     * Whether tRPC should await queries when server rendering pages
+     * @see https://trpc.io/docs/nextjs#ssr-boolean-default-false
+     */
+    ssr: false,
+});
+
+/**
  * Inference helper for inputs
  * @example type HelloInput = RouterInputs['example']['hello']
  **/
