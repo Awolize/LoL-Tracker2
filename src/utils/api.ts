@@ -79,7 +79,7 @@ export const processingApi = createTRPCNext<AppRouter>({
                     url:
                         process.env.NODE_ENV === "development"
                             ? `${getBaseUrl()}/api/trpc`
-                            : `processing-lol.awot.dev/api/trpc`,
+                            : `https://processing-lol.awot.dev/api/trpc`,
                 }),
             ],
         };
