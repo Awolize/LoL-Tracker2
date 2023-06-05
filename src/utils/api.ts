@@ -54,51 +54,6 @@ export const api = createTRPCNext<AppRouter>({
 });
 
 /**
- * A set of typesafe react-query hooks for your tRPC API
- */
-export const processingApi = createTRPCNext<AppRouter>({
-    config() {
-        return {
-            /**
-             * Transformer used for data de-serialization from the server
-             * @see https://trpc.io/docs/data-transformers
-             **/
-            transformer: superjson,
-
-            /**
-             * Links used to determine request flow from client to server
-             * @see https://trpc.io/docs/links
-             * */
-            links: [
-                loggerLink({
-                    enabled: (opts) =>
-                        process.env.NODE_ENV === "development" ||
-                        (opts.direction === "down" && opts.result instanceof Error),
-                }),
-                httpBatchLink({
-                    url:
-                        process.env.NODE_ENV === "development"
-                            ? `${getBaseUrl()}/api/trpc`
-                            : `https://processing-lol.awot.dev/api/trpc`,
-                }),
-
-                httpLink({
-                    url:
-                        process.env.NODE_ENV === "development"
-                            ? `${getBaseUrl()}/api/trpc`
-                            : `https://processing-lol.awot.dev/api/trpc`,
-                }),
-            ],
-        };
-    },
-    /**
-     * Whether tRPC should await queries when server rendering pages
-     * @see https://trpc.io/docs/nextjs#ssr-boolean-default-false
-     */
-    ssr: false,
-});
-
-/**
  * Inference helper for inputs
  * @example type HelloInput = RouterInputs['example']['hello']
  **/
@@ -109,42 +64,46 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export const client = createTRPCProxyClient<AppRouter>({
-    transformer: superjson,
-    links: [
-        // create a custom ending link
-        (runtime) => {
-            // initialize the different links for different targets
-            const servers = {
-                riotApi: httpLink({ url: `${getBaseUrl()}/api/trpc` })(runtime),
-                differentApi: httpLink({ url: `https://processing-lol.awot.dev/api/trpc` })(runtime),
-            };
-            return (ctx) => {
-                const { op } = ctx;
-                // split the path by `.` as the first part will signify the server target name
-                const pathParts = op.path.split(".");
+export const client = createTRPCNext<AppRouter>({
+    config() {
+        return {
+            transformer: superjson,
+            links: [
+                // create a custom ending link
+                (runtime) => {
+                    // initialize the different links for different targets
+                    const servers = {
+                        riotApi: httpLink({ url: `${getBaseUrl()}/api/trpc` })(runtime),
+                        differentApi: httpLink({ url: `https://processing-lol.awot.dev/api/trpc` })(runtime),
+                    };
+                    return (ctx) => {
+                        const { op } = ctx;
+                        // split the path by `.` as the first part will signify the server target name
+                        const pathParts = op.path.split(".");
 
-                // first part of the query should be `server1` or `server2`
-                const serverName = pathParts.shift() as string as keyof typeof servers;
+                        // first part of the query should be `server1` or `server2`
+                        const serverName = pathParts.shift() as string as keyof typeof servers;
 
-                // combine the rest of the parts of the paths
-                // -- this is what we're actually calling the target server with
-                const path = pathParts.join(".");
-                console.log(`calling ${serverName} on path ${path}`, {
-                    input: op.input,
-                });
+                        // combine the rest of the parts of the paths
+                        // -- this is what we're actually calling the target server with
+                        const path = pathParts.join(".");
+                        console.log(`calling ${serverName} on path ${path}`, {
+                            input: op.input,
+                        });
 
-                const link = servers[serverName];
+                        const link = servers[serverName];
 
-                return link({
-                    ...ctx,
-                    op: {
-                        ...op,
-                        // override the target path with the prefix removed
-                        path,
-                    },
-                });
-            };
-        },
-    ],
+                        return link({
+                            ...ctx,
+                            op: {
+                                ...op,
+                                // override the target path with the prefix removed
+                                path,
+                            },
+                        });
+                    };
+                },
+            ],
+        };
+    },
 });
