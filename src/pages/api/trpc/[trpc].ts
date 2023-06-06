@@ -1,14 +1,16 @@
+/* eslint-disable import/no-unresolved */
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { AnyRouter, CombinedDataTransformer, defaultTransformer } from "@trpc/server";
+import type { AnyRouter, CombinedDataTransformer } from "@trpc/server";
+import { defaultTransformer } from "@trpc/server";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
+import type { MergeRouters } from "@trpc/server/dist/core/internals/mergeRouters.js";
+import { createRouterFactory } from "@trpc/server/dist/core/router.js";
+import { defaultFormatter } from "@trpc/server/dist/error/formatter.js";
 
 import { env } from "../../../env/server.mjs";
 import { appRouter, processingRouter } from "../../../server/api/root";
 import { createTRPCContext } from "../../../server/api/trpc";
-import { MergeRouters } from "@trpc/server/dist/core/internals/mergeRouters.js";
-import { defaultFormatter } from "@trpc/server/dist/error/formatter.js";
-import { createRouterFactory } from "@trpc/server/dist/core/router.js";
 
 export function mergeWithoutOverrides<TType extends Record<string, unknown>>(
     obj1: TType,
