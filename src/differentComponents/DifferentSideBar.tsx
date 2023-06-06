@@ -9,7 +9,7 @@ import { api, client } from "../utils/api";
 
 export const DifferentSideBar = ({ server, username, selectedItem, setSelectedItem, mappedCases }) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
-
+    const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleItemClick = (itemId) => {
@@ -38,8 +38,6 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
         return nameMatch || descriptionMatch;
     });
-
-    const [showAll, setShowAll] = useState(true);
 
     const keystoneChallenges = challenges?.keystones;
 
@@ -99,8 +97,8 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
             )}
 
             {drawerOpen && (
-                <div className="flex flex-col h-full">
-                    <p className="text-center mb-2 border-b border-gray-600 ">Challenges</p>
+                <div className="flex flex-col h-full gap-1">
+                    <p className="text-center border-b border-gray-600 ">Challenges</p>
                     <div className="inline-flex justify-evenly">
                         <input
                             type="text"
