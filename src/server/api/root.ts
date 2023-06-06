@@ -20,3 +20,9 @@ export const processingRouter = createTRPCRouter({
 });
 
 export type ProcessingRouter = typeof processingRouter;
+
+export const togetherRouter = createTRPCRouter({
+    riotApi: riotApiRouter,
+    differentApi: differentApiRouter,
+    processingApi: processingApiRouter,
+});
