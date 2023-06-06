@@ -88,9 +88,11 @@ export const differentApiRouter = createTRPCRouter({
         .input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
         .mutation(async ({ input, ctx }) => {
             try {
+                console.log("UpdateGames for user", input.username, input.server.toUpperCase());
+
                 const region = regionToConstant(input.server.toUpperCase());
 
-                const user = await getUserByNameAndServer(ctx, input.username, Constants.Regions.EU_WEST);
+                const user = await getUserByNameAndServer(ctx, input.username, region);
 
                 let totalCount = input.count; // Total number of matches requested
                 const matchIds: string[] = [];
@@ -109,7 +111,6 @@ export const differentApiRouter = createTRPCRouter({
                     start += count;
                     totalCount -= count;
                 }
-
                 console.log("Fetching", matchIds.length, "matches. For user", user.username);
 
                 const successfullyAddedGameIds: string[] = [];
