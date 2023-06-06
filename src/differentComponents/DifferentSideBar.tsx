@@ -17,9 +17,9 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const utils = api.useContext();
 
-    const refreshQuery = processingApi.differentApi.updateChallengeConfig.useMutation();
-    const refreshQuery2 = processingApi.differentApi.updateGames.useMutation();
-    const refreshQuery3 = processingApi.differentApi.updateJackOfAllChamps.useMutation({
+    const refreshQuery = processingApi.processingApi.updateChallengeConfig.useMutation();
+    const refreshQuery2 = processingApi.processingApi.updateGames.useMutation();
+    const refreshQuery3 = processingApi.processingApi.updateJackOfAllChamps.useMutation({
         onSettled: () => {
             utils.differentApi.getChallengesConfig.invalidate();
         },

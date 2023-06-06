@@ -16,7 +16,7 @@ export const appRouter = createTRPCRouter({
 export type AppRouter = typeof appRouter;
 
 export const processingRouter = createTRPCRouter({
-    processingApi: differentApiRouter,
+    processingApi: processingApiRouter,
 });
 
 export type ProcessingRouter = typeof processingRouter;
