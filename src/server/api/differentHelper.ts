@@ -48,7 +48,7 @@ export async function getUserByNameAndServer(
             return userData;
         }
     } catch (error) {
-        console.log(error);
+        console.error("error:", error);
         console.error(JSON.stringify(error));
         throw new Error("Could not fetch summoner^");
     }

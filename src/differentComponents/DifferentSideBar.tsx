@@ -5,7 +5,7 @@ import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
 import type { ChallengeLocalization } from "@prisma/client";
 
-import { api, client } from "../utils/api";
+import { api, processingApi } from "../utils/api";
 
 export const DifferentSideBar = ({ server, username, selectedItem, setSelectedItem, mappedCases }) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
@@ -17,9 +17,9 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const utils = api.useContext();
 
-    const refreshQuery = client.differentApi.updateChallengeConfig.useMutation();
-    const refreshQuery2 = client.differentApi.updateGames.useMutation();
-    const refreshQuery3 = client.differentApi.updateJackOfAllChamps.useMutation({
+    const refreshQuery = processingApi.differentApi.updateChallengeConfig.useMutation();
+    const refreshQuery2 = processingApi.differentApi.updateGames.useMutation();
+    const refreshQuery3 = processingApi.differentApi.updateJackOfAllChamps.useMutation({
         onSettled: () => {
             utils.differentApi.getChallengesConfig.invalidate();
         },

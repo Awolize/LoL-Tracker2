@@ -1,4 +1,5 @@
 import { differentApiRouter } from "./routers/differentApiRouter";
+import { processingApiRouter } from "./routers/processingApiRouter";
 import { riotApiRouter } from "./routers/riot";
 import { createTRPCRouter } from "./trpc";
 /**
@@ -13,3 +14,9 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+export const processingRouter = createTRPCRouter({
+    processingApi: differentApiRouter,
+});
+
+export type ProcessingRouter = typeof processingRouter;

@@ -34,7 +34,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     // const selectedChallenge3 = api.differentApi.getJackOfAllChamps3.useQuery({ server, username });
 
     const selectedChallengeQuery = (challenge) => {
-        console.log(challenge);
+        // console.log("challenge", challenge);
 
         const challengeDataMap = {
             401106: selectedChallenge?.data,

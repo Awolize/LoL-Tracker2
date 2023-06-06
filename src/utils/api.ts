@@ -5,18 +5,21 @@
  *
  * We also create a few inference helpers for input and output types
  */
-import { httpBatchLink, httpLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { type AppRouter } from "../server/api/root";
+import { ProcessingRouter, type AppRouter } from "../server/api/root";
 
 const getBaseUrl = () => {
-    return `https://processing-lol.awot.dev`; // dev SSR should use localhost
     if (typeof window !== "undefined") return ""; // browser should use relative url
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
     return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
+};
+
+const getProcessingUrl = () => {
+    return `https://processing-lol.awot.dev`; // dev SSR should use localhost
 };
 
 /**
@@ -54,57 +57,27 @@ export const api = createTRPCNext<AppRouter>({
     ssr: false,
 });
 
-/**
- * Inference helper for inputs
- * @example type HelloInput = RouterInputs['example']['hello']
- **/
 export type RouterInputs = inferRouterInputs<AppRouter>;
-/**
- * Inference helper for outputs
- * @example type HelloOutput = RouterOutputs['example']['hello']
- **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export const client = createTRPCNext<AppRouter>({
+export const processingApi = createTRPCNext<ProcessingRouter>({
     config() {
         return {
             transformer: superjson,
             links: [
-                // create a custom ending link
-                (runtime) => {
-                    // initialize the different links for different targets
-                    const servers = {
-                        riotApi: httpLink({ url: `${getBaseUrl()}/api/trpc` })(runtime),
-                        differentApi: httpLink({ url: `https://processing-lol.awot.dev/api/trpc` })(runtime),
-                    };
-                    return (ctx) => {
-                        const { op } = ctx;
-                        // split the path by `.` as the first part will signify the server target name
-                        const pathParts = op.path.split(".");
-
-                        // first part of the query should be `server1` or `server2`
-                        const serverName = pathParts.shift() as string as keyof typeof servers;
-
-                        // combine the rest of the parts of the paths
-                        // -- this is what we're actually calling the target server with
-                        const path = pathParts.join(".");
-                        console.log(`calling ${serverName} on path ${path}`, {
-                            input: op.input,
-                        });
-
-                        const link = servers[serverName];
-
-                        return link({
-                            ...ctx,
-                            op: {
-                                ...op,
-                                // override the target path with the prefix removed
-                                path,
-                            },
-                        });
-                    };
-                },
+                loggerLink({
+                    enabled: (opts) =>
+                        process.env.NODE_ENV === "development" ||
+                        (opts.direction === "down" && opts.result instanceof Error),
+                }),
+                httpBatchLink({
+                    url: `${getProcessingUrl()}/api/trpc`,
+                }),
             ],
         };
     },
+    ssr: false,
 });
+
+export type ProcessingRouterInputs = inferRouterInputs<ProcessingRouter>;
+export type ProcessingRouterOutputs = inferRouterOutputs<ProcessingRouter>;
