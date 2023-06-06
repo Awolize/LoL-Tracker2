@@ -214,6 +214,8 @@ export const differentApiRouter = createTRPCRouter({
     updateJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
         .mutation(async ({ input, ctx }) => {
+            console.log("updateJackOfAllChamps for user", input.username, input.server.toUpperCase());
+
             const region = regionToConstant(input.server.toUpperCase());
 
             const user = await ctx.prisma.summoner.findFirst({
@@ -226,6 +228,8 @@ export const differentApiRouter = createTRPCRouter({
             });
 
             if (!user) return;
+
+            console.log(user.server);
 
             const matches = await getMatchesForSummonerBySummoner(ctx, user);
 
