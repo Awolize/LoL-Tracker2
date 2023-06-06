@@ -1,14 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { mergeRouters } from "@trpc/server";
 import { createNextApiHandler } from "@trpc/server/adapters/next";
 
 import { env } from "../../../env/server.mjs";
-import { appRouter } from "../../../server/api/root";
+import { appRouter, processingRouter } from "../../../server/api/root";
 import { createTRPCContext } from "../../../server/api/trpc";
 
 // create the API handler, but don't return it yet
 const nextApiHandler = createNextApiHandler({
-    router: appRouter,
+    router: mergeRouters(appRouter, processingRouter)!,
     createContext: createTRPCContext,
     onError:
         env.NODE_ENV === "development"
