@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
@@ -34,14 +34,14 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     // const selectedChallenge2 = api.differentApi.getJackOfAllChamps2.useQuery({ server, username });
     // const selectedChallenge3 = api.differentApi.getJackOfAllChamps3.useQuery({ server, username });
 
-    const selectedChallengeQuery = (challenge) => {
-        // console.log("challenge", challenge);
+    const selectedChallengeQuery = useMemo(() => {
+        console.log("challenge", selectedItem);
 
         const challengeDataMap = {
             401106: selectedChallenge?.data,
         };
 
-        const mappedData: ChampionDetails[] = challengeDataMap[challenge] || [];
+        const mappedData: ChampionDetails[] = challengeDataMap[selectedItem] || [];
         const mappedCases = Object.keys(challengeDataMap)
             .map(Number)
             .filter((key) => challengeDataMap[key] !== null);
@@ -50,11 +50,11 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
             data: mappedData,
             cases: mappedCases,
         };
-    };
+    }, [selectedItem, selectedChallenge]);
 
     const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
 
-    const completedChampsLength = selectedChallengeQuery(selectedItem)?.data.length;
+    const completedChampsLength = selectedChallengeQuery?.data.length;
 
     return (
         <div className="flex h-screen w-screen">
@@ -77,7 +77,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                         username={username}
                         selectedItem={selectedItem}
                         setSelectedItem={setSelectedItem}
-                        mappedCases={selectedChallengeQuery(selectedItem)?.cases}
+                        mappedCases={selectedChallengeQuery?.cases}
                     />
                 </aside>
 
@@ -101,9 +101,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                                             style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
                                         >
                                             {champsWithRole?.map((champ) => {
-                                                const jacks =
-                                                    selectedChallengeQuery(selectedItem)?.data.map((el) => el.key) ??
-                                                    [];
+                                                const jacks = selectedChallengeQuery?.data.map((el) => el.key) ?? [];
                                                 const hide = jacks.includes(champ.key);
 
                                                 return (

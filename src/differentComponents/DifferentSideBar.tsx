@@ -13,7 +13,11 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleItemClick = (itemId) => {
-        setSelectedItem(itemId);
+        if (selectedItem !== itemId) {
+            setSelectedItem(itemId);
+        } else {
+            setSelectedItem(null);
+        }
     };
     const utils = api.useContext();
 
