@@ -35,13 +35,13 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     // const selectedChallenge3 = api.differentApi.getJackOfAllChamps3.useQuery({ server, username });
 
     const selectedChallengeQuery = useMemo(() => {
-        console.log("challenge", selectedItem);
+        console.log("selected challenge", selectedItem);
 
         const challengeDataMap = {
             401106: selectedChallenge?.data,
         };
 
-        const mappedData: ChampionDetails[] = challengeDataMap[selectedItem] || [];
+        const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
         const mappedCases = Object.keys(challengeDataMap)
             .map(Number)
             .filter((key) => challengeDataMap[key] !== null);
@@ -77,7 +77,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                         username={username}
                         selectedItem={selectedItem}
                         setSelectedItem={setSelectedItem}
-                        mappedCases={selectedChallengeQuery?.cases}
+                        mappedCases={selectedChallengeQuery.cases}
                     />
                 </aside>
 
