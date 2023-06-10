@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
+import type { ChampionDetails } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi } from "twisted";
@@ -40,7 +41,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
             401106: selectedChallenge?.data,
         };
 
-        const mappedData = challengeDataMap[challenge] || [];
+        const mappedData: ChampionDetails[] = challengeDataMap[challenge] || [];
         const mappedCases = Object.keys(challengeDataMap)
             .map(Number)
             .filter((key) => challengeDataMap[key] !== null);
@@ -52,6 +53,9 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     };
 
     const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
+
+    const completedChampsLength = selectedChallengeQuery(selectedItem)?.data.length;
+
     return (
         <div className="flex h-screen w-screen">
             <Head>
@@ -79,7 +83,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
 
                 <div className="flex flex-1 flex-col">
                     <header className="h-24">
-                        <DifferentHeader finished={100} total={champs.length} patch={patch} />
+                        <DifferentHeader finished={completedChampsLength} total={champs.length} patch={patch} />
                     </header>
 
                     <div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
