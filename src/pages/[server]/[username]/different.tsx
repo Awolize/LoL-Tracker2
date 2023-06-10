@@ -38,7 +38,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
         console.log("selected challenge", selectedItem);
 
         const challengeDataMap = {
-            401106: selectedChallenge?.data,
+            401106: selectedChallenge?.data ?? [],
         };
 
         const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
