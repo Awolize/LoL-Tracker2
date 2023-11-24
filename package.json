@@ -29,7 +29,7 @@
         "react-lazy-load-image-component": "^1.6.0",
         "server-only": "^0.0.1",
         "superjson": "1.12.3",
-        "twisted": "github:Awolize/twisted#LOL-CHALLENGES-V1-dist-2",
+        "twisted": "github:Awolize/twisted#LOL-CHALLENGES-V1-dist-3",
         "zod": "^3.21.4"
     },
     "devDependencies": {

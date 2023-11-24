@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@headlessui/react':
     specifier: ^1.7.15
@@ -56,8 +60,8 @@ dependencies:
     specifier: 1.12.3
     version: 1.12.3
   twisted:
-    specifier: github:Awolize/twisted#LOL-CHALLENGES-V1-dist-2
-    version: github.com/Awolize/twisted/67719de4b8d6f732dc542b791479c5d7783de09a
+    specifier: github:Awolize/twisted#LOL-CHALLENGES-V1-dist-3
+    version: github.com/Awolize/twisted/d74a7dd432717eca68af52d67f1573b5187675c8
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -3427,10 +3431,10 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
-  github.com/Awolize/twisted/67719de4b8d6f732dc542b791479c5d7783de09a:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/67719de4b8d6f732dc542b791479c5d7783de09a}
+  github.com/Awolize/twisted/d74a7dd432717eca68af52d67f1573b5187675c8:
+    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/d74a7dd432717eca68af52d67f1573b5187675c8}
     name: twisted
-    version: 1.53.1
+    version: 1.54.0
     engines: {node: '>=8.6.0'}
     dependencies:
       axios: 0.21.4
