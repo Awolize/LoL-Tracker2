@@ -4,9 +4,10 @@ import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 
 import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
+import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { LolApi } from "twisted";
-import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
+import { LolApi, RiotApi } from "twisted";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails, SummonerV4DTO } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 import { z } from "zod";
 
@@ -15,6 +16,7 @@ import Dropdown from "../../../components/Dropdown";
 import RoleHeader from "../../../components/RoleHeader";
 import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
 import { ToggleEye } from "../../../components/ToggleEye";
+import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 import { api } from "../../../utils/api";
 import {
     filteredOut,
@@ -361,15 +363,20 @@ const paramsSchema = z.object({
 export const getServerSideProps = async (context) => {
     const { res, params } = context;
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
-    const { server, username } = paramsSchema.parse(params);
-    const region = regionToConstant(server.toUpperCase());
-    const api = new LolApi();
+    const { server, username: parsedUsername } = paramsSchema.parse(params);
+    const username = parsedUsername.replace("-", "#");
 
-    const { response: user } = await api.Summoner.getByName(username, region);
+    const region = regionToConstant(server.toUpperCase());
+
+    const prisma = new PrismaClient();
+    const lolApi = new LolApi();
+    const riotApi = new RiotApi();
+
+    const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
     const [{ completeChampsData, patch }, playerChallenges, challengesThresholds] = await Promise.all([
-        masteryBySummoner(api, region, user).then(async (championMasteries) => {
-            const championsDD = await api.DataDragon.getChampion();
+        masteryBySummoner(lolApi, region, user).then(async (championMasteries) => {
+            const championsDD = await lolApi.DataDragon.getChampion();
             return {
                 completeChampsData: Object.keys(championsDD.data)
                     .map((champName) => {
@@ -405,8 +412,8 @@ export const getServerSideProps = async (context) => {
                 patch: championsDD.version,
             };
         }),
-        getChallengesData(api, region, user),
-        getChallengesThresholds(api, region),
+        getChallengesData(lolApi, region, user),
+        getChallengesThresholds(lolApi, region),
     ]);
 
     return {

@@ -29,8 +29,8 @@ const Home: NextPage = () => {
 
     function onSubmit(e) {
         e.preventDefault();
-        router.push(`/${selectedServer?.name}/${usernameRef.current?.value}`);
-        console.log(`Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value}..."`);
+        router.push(`/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-")}`);
+        console.log(`Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-")}..."`);
         setLoading(true);
     }
 

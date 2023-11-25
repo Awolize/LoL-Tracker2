@@ -1,7 +1,24 @@
 import type { PrismaClient, Prisma, Summoner } from "@prisma/client";
-import type { LolApi } from "twisted";
-import type { Regions } from "twisted/dist/constants";
+import type { LolApi , RiotApi } from "twisted";
+import { type Regions } from "twisted/dist/constants";
+import { regionToRegionGroup } from "twisted/dist/constants";
 import type { MatchV5DTOs } from "twisted/dist/models-dto";
+
+const splitUsername = (username) => {
+    return {
+        gamename: username.split("#")[0],
+        tagline: username.split("#")[1],
+    };
+};
+
+const getUserInfo = async (ctx, username, server) => {
+    const { gamename, tagline } = splitUsername(username);
+    const accountInfo = (
+        await ctx.riotApi.Account.getByGameNameAndTagLine(gamename, tagline, regionToRegionGroup(server))
+    ).response;
+    const userInfo = (await ctx.lolApi.Summoner.getByPUUID(accountInfo.puuid, server)).response;
+    return userInfo;
+};
 
 export async function getUserByNameAndServer(
     ctx: {
@@ -11,6 +28,7 @@ export async function getUserByNameAndServer(
             Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
         >;
         lolApi: LolApi;
+        riotApi: RiotApi;
     },
     username: string,
     server: Regions
@@ -27,26 +45,26 @@ export async function getUserByNameAndServer(
         });
 
         if (user) {
-            return user; // is Summoner;
-        } else {
-            const response = (await ctx.lolApi.Summoner.getByName(username, server)).response;
-
-            // Map API response to Summoner
-            const userData: Summoner = {
-                puuid: response.puuid,
-                summonerId: response.id,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                server: server,
-                username: response.name,
-                profileIconId: response.profileIconId,
-                summonerLevel: response.summonerLevel,
-                revisionDate: new Date(response.revisionDate),
-                accountId: response.accountId,
-            };
-
-            return userData;
+            return user; // is existing user;
         }
+
+        const userInfo = await getUserInfo(ctx, username, server);
+
+        // Map API response to Summoner
+        const newUser: Summoner = {
+            puuid: userInfo.puuid,
+            summonerId: userInfo.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            server: server,
+            username: userInfo.name,
+            profileIconId: userInfo.profileIconId,
+            summonerLevel: userInfo.summonerLevel,
+            revisionDate: new Date(userInfo.revisionDate),
+            accountId: userInfo.accountId,
+        };
+
+        return newUser;
     } catch (error) {
         console.error("error:", error);
         console.error(JSON.stringify(error));

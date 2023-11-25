@@ -1,3 +1,4 @@
+import type { Summoner } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
@@ -58,7 +59,7 @@ export const regionToConstant = (region: string) => {
     return regionMap[region] as Regions;
 };
 
-export const masteryBySummoner = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
+export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summoner) => {
     try {
         const prisma = new PrismaClient();
 
@@ -78,10 +79,10 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
 
         const championMasteryData = dbUser
             ? dbUser.championData
-            : (await api.Champion.masteryBySummoner(user.id, region)).response;
+            : (await api.Champion.masteryBySummoner(user.summonerId, region)).response;
 
         const championMastery: ChampionMasteryDTO[] = championMasteryData.map((mastery) => ({
-            summonerId: user.id,
+            summonerId: user.summonerId,
             championId: mastery.championId,
             championLevel: mastery.championLevel,
             championPoints: mastery.championPoints,
@@ -94,7 +95,7 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
 
         return championMastery;
     } catch (error) {
-        console.log(`Error fetching champion mastery data for summoner ${user.name}: ${error}`);
+        console.log(`Error fetching champion mastery data for summoner ${user.username}: ${error}`);
         throw error;
     }
 };
@@ -107,7 +108,7 @@ export const partition = (array, filter) => {
     return [pass, fail];
 };
 
-export const getChallengesData = async (api: LolApi, region: Regions, user: SummonerV4DTO) => {
+export const getChallengesData = async (api: LolApi, region: Regions, user: Summoner) => {
     const response = await api.Challenges.getPlayerData(user.puuid, region);
     const savedChallenges = [202303, 210001, 401106];
     const filteredChallenges = response.response.challenges.filter((challenge) =>

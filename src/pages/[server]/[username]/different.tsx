@@ -6,7 +6,7 @@ import Head from "next/head";
 import type { ChampionDetails } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { LolApi } from "twisted";
+import { LolApi, RiotApi } from "twisted";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import { z } from "zod";
 
@@ -128,13 +128,16 @@ const paramsSchema = z.object({
 export const getServerSideProps = async (context) => {
     const { res, params } = context;
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
-    const { server, username } = paramsSchema.parse(params);
+    const { server, username: parsedUsername } = paramsSchema.parse(params);
+    const username = parsedUsername.replace("-", "#");
+
     const region = regionToConstant(server.toUpperCase());
 
     const prisma = new PrismaClient();
     const lolApi = new LolApi();
+    const riotApi = new RiotApi();
 
-    const user = await getUserByNameAndServer({ prisma, lolApi }, username, region);
+    const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
     const championsDD = await prisma.championDetails.findMany();
 

@@ -38,6 +38,7 @@ const createInnerTRPCContext = async (_opts: CreateContextOptions) => {
     return {
         prisma,
         lolApi,
+        riotApi,
     };
 };
 

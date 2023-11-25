@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { PrismaClient } from "@prisma/client";
-import { LolApi } from "twisted";
+import { LolApi, RiotApi } from "twisted";
 import { z } from "zod";
 
 import { getUserByNameAndServer } from "../../server/api/differentHelper";
@@ -99,12 +99,15 @@ export const getServerSideProps = async (context) => {
     const { res, params } = context;
 
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
-    const { server, username } = paramsSchema.parse(params);
+    const { server, username: parsedUsername } = paramsSchema.parse(params);
+    const username = parsedUsername.replace("-", "#");
+
     const region = regionToConstant(server.toUpperCase());
     const prisma = new PrismaClient();
     const lolApi = new LolApi();
+    const riotApi = new RiotApi();
 
-    const user = await getUserByNameAndServer({ prisma, lolApi }, username, region);
+    const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
     const patch = (await prisma.championDetails.findMany())[0]?.version;
 

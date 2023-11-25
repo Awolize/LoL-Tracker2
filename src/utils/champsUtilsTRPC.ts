@@ -9,7 +9,7 @@ export const updateSummoner = async (
     username: string,
     region: Regions
 ) => {
-    const { response: user } = await api.Summoner.getByName(username, region);
+    const { response: user } = await api.Summoner.getByPUUID(username, region);
 
     await masteryBySummoner(prisma, api, user, region);
 };
