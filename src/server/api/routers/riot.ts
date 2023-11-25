@@ -1,5 +1,4 @@
 import { Constants } from "twisted";
-import type { Regions } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { regionToConstant } from "../../../utils/champsUtils";

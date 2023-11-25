@@ -92,9 +92,6 @@ export const processingApiRouter = createTRPCRouter({
                 const failedGameIds: string[] = [];
 
                 for (let index = 0; index < matchIds.length; index++) {
-                    // Delay for 5000 milliseconds (0.2 times per second)
-                    await new Promise((resolve) => setTimeout(resolve, 5000));
-
                     const matchId = matchIds[index];
 
                     const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
@@ -153,6 +150,9 @@ export const processingApiRouter = createTRPCRouter({
                         });
 
                         successfullyAddedGameIds.push(gameId);
+
+                        // Delay for 5000 milliseconds (0.2 times per second)
+                        await new Promise((resolve) => setTimeout(resolve, 5000));
                     } catch (error) {
                         if (!gameId) {
                             console.error("gameid doesnt exist?", gameId);

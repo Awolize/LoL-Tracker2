@@ -28,6 +28,7 @@
         "react-dom": "18.2.0",
         "react-lazy-load-image-component": "^1.6.0",
         "server-only": "^0.0.1",
+        "sharp": "^0.32.6",
         "superjson": "1.12.3",
         "twisted": "github:Awolize/twisted#build-dist",
         "zod": "^3.21.4"
