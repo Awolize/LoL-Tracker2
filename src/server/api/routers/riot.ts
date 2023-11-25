@@ -21,7 +21,9 @@ export const riotApiRouter = createTRPCRouter({
         .query(async ({ input, ctx }) => {
             const region = regionToConstant(input.server.toUpperCase());
 
-            await updateSummoner(ctx.prisma, ctx.lolApi, input.username, region);
+            console.log("start refreshSummoner with user", input.username, input.server);
+
+            await updateSummoner(ctx, input.username, region);
 
             return true;
         }),

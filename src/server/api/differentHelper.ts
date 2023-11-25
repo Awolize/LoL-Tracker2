@@ -1,5 +1,5 @@
 import type { PrismaClient, Prisma, Summoner } from "@prisma/client";
-import type { LolApi , RiotApi } from "twisted";
+import type { LolApi, RiotApi } from "twisted";
 import { type Regions } from "twisted/dist/constants";
 import { regionToRegionGroup } from "twisted/dist/constants";
 import type { MatchV5DTOs } from "twisted/dist/models-dto";
