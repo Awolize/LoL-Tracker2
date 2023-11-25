@@ -3,7 +3,7 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
-!process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
+await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -14,9 +14,18 @@ const config = {
         defaultLocale: "en",
     },
     images: {
+        unoptimized: true,
         domains: ["ddragon.leagueoflegends.com"],
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "ddragon.leagueoflegends.com",
+                port: "",
+                pathname: "cdn/**",
+            },
+        ],
     },
-    output: process.env.STANDALONE ? "standalone" : undefined,
+    output: "standalone",
     headers: async () => {
         return [
             {
@@ -25,7 +34,10 @@ const config = {
                 headers: [
                     { key: "Access-Control-Allow-Credentials", value: "true" },
                     { key: "Access-Control-Allow-Origin", value: "*" },
-                    { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+                    {
+                        key: "Access-Control-Allow-Methods",
+                        value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+                    },
                     {
                         key: "Access-Control-Allow-Headers",
                         value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",

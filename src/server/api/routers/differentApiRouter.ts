@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { regionToConstant } from "../../../utils/champsUtils";
-import { getUserByNameAndServer } from "../differentHelper";
+import { getUserByNameAndRegion } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const differentApiRouter = createTRPCRouter({
     getChallengesConfig: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
+        .input(z.object({ username: z.string(), region: z.string() }))
         .query(async ({ ctx }) => {
             const data = await ctx.prisma.challengesConfig.findMany({
                 select: {
@@ -30,10 +30,10 @@ export const differentApiRouter = createTRPCRouter({
             return { data, keystones };
         }),
     getJackOfAllChamps: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
+        .input(z.object({ username: z.string(), region: z.string() }))
         .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
-            const user = await getUserByNameAndServer(ctx, input.username, region);
+            const region = regionToConstant(input.region.toUpperCase());
+            const user = await getUserByNameAndRegion(ctx, input.username.toLowerCase(), region);
 
             const getJackOfAllChamps = async (puuid) => {
                 return (

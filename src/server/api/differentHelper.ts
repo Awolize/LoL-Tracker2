@@ -1,69 +1,94 @@
-import type { PrismaClient, Prisma, Summoner } from "@prisma/client";
-import type { LolApi } from "twisted";
-import type { Regions } from "twisted/dist/constants";
-import type { MatchV5DTOs } from "twisted/dist/models-dto";
+import type { PrismaClient, Summoner } from "@prisma/client";
+import type { LolApi, RiotApi } from "twisted";
+import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import type { ChampionsDataDragonDetails, MatchV5DTOs } from "twisted/dist/models-dto";
 
-export async function getUserByNameAndServer(
+const splitUsername = (username) => {
+    return {
+        gameName: decodeURI(username.split("#")[0]),
+        tagLine: username.split("#")[1],
+    };
+};
+
+const getUserInfo = async (ctx, username, region) => {
+    const { gameName, tagLine } = splitUsername(username);
+    const accountInfo = (
+        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region))
+    ).response;
+    const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, region)).response;
+    return { userInfo, accountInfo };
+};
+
+export async function getUserByNameAndRegion(
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
+        riotApi: RiotApi;
     },
     username: string,
-    server: Regions
+    region: Regions,
 ) {
     try {
         const user = await ctx.prisma.summoner.findFirst({
             where: {
-                username: {
+                gameName: {
+                    equals: username.split("#")[0],
                     mode: "insensitive",
-                    equals: username,
                 },
-                server: server,
+                tagLine: {
+                    equals: username.split("#")[1],
+                    mode: "insensitive",
+                },
+                region: region,
             },
         });
 
         if (user) {
-            return user; // is Summoner;
-        } else {
-            const response = (await ctx.lolApi.Summoner.getByName(username, server)).response;
-
-            // Map API response to Summoner
-            const userData: Summoner = {
-                puuid: response.puuid,
-                summonerId: response.id,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                server: server,
-                username: response.name,
-                profileIconId: response.profileIconId,
-                summonerLevel: response.summonerLevel,
-                revisionDate: new Date(response.revisionDate),
-                accountId: response.accountId,
-            };
-
-            return userData;
+            return user; // is existing user;
         }
+
+        console.log("Could not find summoner in DB", username, region);
+
+        const { userInfo, accountInfo } = await getUserInfo(ctx, username, region);
+
+        // Map API response to Summoner
+        const newUser: Summoner = {
+            puuid: userInfo.puuid,
+            summonerId: userInfo.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            region,
+            username: userInfo.name,
+            gameName: accountInfo.gameName ?? null,
+            tagLine: accountInfo.tagLine ?? null,
+            profileIconId: userInfo.profileIconId,
+            summonerLevel: userInfo.summonerLevel,
+            revisionDate: new Date(userInfo.revisionDate),
+            accountId: userInfo.accountId,
+        };
+
+        // Use upsert to save the new user or update an existing one
+        const savedUser = await ctx.prisma.summoner.upsert({
+            where: {
+                puuid: newUser.puuid,
+            },
+            update: newUser,
+            create: newUser,
+        });
+
+        return savedUser;
     } catch (error) {
-        console.error("error:", error);
-        console.error(JSON.stringify(error));
-        throw new Error("Could not fetch summoner^");
+        console.error("error:", new Date().toLocaleString(), new Date(), username, region, error);
+        throw new Error("Could not fetch summoner^", { cause: error });
     }
 }
 
 export const prepareSummonersCreation = (
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
     },
-    game: MatchV5DTOs.MatchDto
+    game: MatchV5DTOs.MatchDto,
 ) => {
     const participantSummoners = game.metadata.participants;
 
@@ -77,47 +102,46 @@ export const prepareSummonersCreation = (
 
         if (existingSummoner) {
             return existingSummoner;
-        } else {
-            // Create a new Summoner record if it doesn't exist
-            const region: Regions | null = game.metadata.matchId.split("_")[0] as Regions | null;
-            if (!region) {
-                console.log(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
-                throw new Error(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
-            }
-            const user = (await ctx.lolApi.Summoner.getByPUUID(participant, region)).response;
-            const upsertedSummoner = await ctx.prisma.summoner.upsert({
-                where: {
-                    puuid: user.puuid,
-                },
-                update: {
-                    summonerId: user.id,
-                    server: region,
-                    username: user.name,
-                    profileIconId: user.profileIconId,
-                    summonerLevel: user.summonerLevel,
-                    revisionDate: new Date(user.revisionDate),
-                    accountId: user.accountId,
-                },
-                create: {
-                    puuid: user.puuid,
-                    summonerId: user.id,
-                    server: region,
-                    username: user.name,
-                    profileIconId: user.profileIconId,
-                    summonerLevel: user.summonerLevel,
-                    revisionDate: new Date(user.revisionDate),
-                    accountId: user.accountId,
-                },
-            });
-
-            return upsertedSummoner;
         }
+        // Create a new Summoner record if it doesn't exist
+        const region: Regions | null = game.metadata.matchId.split("_")[0] as Regions | null;
+        if (!region) {
+            console.log(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
+            throw new Error(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
+        }
+        const user = (await ctx.lolApi.Summoner.getByPUUID(participant, region)).response;
+        const upsertedSummoner = await ctx.prisma.summoner.upsert({
+            where: {
+                puuid: user.puuid,
+            },
+            update: {
+                summonerId: user.id,
+                region: region,
+                username: user.name,
+                profileIconId: user.profileIconId,
+                summonerLevel: user.summonerLevel,
+                revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
+            },
+            create: {
+                puuid: user.puuid,
+                summonerId: user.id,
+                region: region,
+                username: user.name,
+                profileIconId: user.profileIconId,
+                summonerLevel: user.summonerLevel,
+                revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
+            },
+        });
+
+        return upsertedSummoner;
     });
 
     return summonerPromises;
 };
 
-export const flattenChamp = (obj) => {
+export const flattenChamp = (obj: ChampionsDataDragonDetails) => {
     const flattenedObj = {
         id: Number(obj.key),
         version: obj.version,
@@ -164,11 +188,7 @@ export const flattenChamp = (obj) => {
 };
 
 export const updateChampionDetails = async (ctx: {
-    prisma: PrismaClient<
-        Prisma.PrismaClientOptions,
-        never,
-        Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-    >;
+    prisma: PrismaClient;
     lolApi: LolApi;
 }) => {
     const data = await ctx.lolApi.DataDragon.getChampion();
@@ -201,14 +221,10 @@ const matchFilterSettings = {
 
 export async function getMatchesForSummonerBySummoner(
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
     },
-    user: Summoner
+    user: Summoner,
 ) {
     const summoner = await ctx.prisma.summoner.findFirst({
         where: {
@@ -228,8 +244,8 @@ export async function getMatchesForSummonerBySummoner(
 
     return summoner?.matches;
 }
-export async function getMatchesForSummonerByMatch(ctx, user) {
-    const matches = await ctx.prisma.match.findMany({
+export async function getMatchesForSummonerByMatch(prisma: PrismaClient, user) {
+    const matches = await prisma.match.findMany({
         where: {
             participants: {
                 some: user,

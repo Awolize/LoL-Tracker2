@@ -1,5 +1,4 @@
 import { Constants } from "twisted";
-import type { Regions } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { regionToConstant } from "../../../utils/champsUtils";
@@ -18,11 +17,13 @@ export const riotApiRouter = createTRPCRouter({
     }),
 
     refreshSummoner: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
+        .input(z.object({ username: z.string(), region: z.string() }))
+        .mutation(async ({ input, ctx }) => {
+            const region = regionToConstant(input.region.toUpperCase());
 
-            await updateSummoner(ctx.prisma, ctx.lolApi, input.username, region);
+            console.log("[refreshSummoner] Someone pressed the update button with user", input.username, input.region);
+
+            await updateSummoner(ctx, input.username, region);
 
             return true;
         }),

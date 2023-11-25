@@ -1,57 +1,55 @@
-import type { ChampionMastery, Prisma, PrismaClient } from "@prisma/client";
-import type { LolApi } from "twisted";
+import type { ChampionMastery, PrismaClient, Summoner } from "@prisma/client";
+import type { LolApi, RiotApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
-import type { ChampionMasteryDTO, SummonerV4DTO } from "twisted/dist/models-dto";
+import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
+
+import { getUserByNameAndRegion } from "../server/api/differentHelper";
 
 export const updateSummoner = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
-    api: LolApi,
+    ctx: {
+        prisma: PrismaClient;
+        lolApi: LolApi;
+        riotApi: RiotApi;
+    },
     username: string,
-    region: Regions
+    region: Regions,
 ) => {
-    const { response: user } = await api.Summoner.getByName(username, region);
+    const user = await getUserByNameAndRegion(ctx, username.toLowerCase(), region);
 
-    await masteryBySummoner(prisma, api, user, region);
+    await masteryBySummoner(ctx.prisma, ctx.lolApi, user, region);
 };
 
-export const masteryBySummoner = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
-    api: LolApi,
-    user: SummonerV4DTO,
-    region: Regions
-) => {
+export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
     try {
         // Check if the summoner exists in the database
-        const dbUser = await prisma.summoner.findUnique({
+        let dbUser = await prisma.summoner.findUnique({
             where: { puuid: user.puuid },
             include: {
                 championData: true,
             },
         });
 
-        if (dbUser) {
-            console.log(`Summoner found in database: ${dbUser.username}, ${dbUser.championData.length}`);
+        console.log("Updating summoner in db with mastery scores");
+        try {
+            const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
+            await updateSummonerDb(prisma, user, region, masteryData);
+            console.log("Done - Updating summoner in db with mastery scores");
+        } catch (error) {
+            console.error("Failed - Updating summoner in db with mastery scores");
         }
 
-        // If the summoner is not found in the database, fetch their data from the Riot API and save it to the database
+        // Now the user should exist in the db, fetch championData.
+        dbUser = await prisma.summoner.findUnique({
+            where: { puuid: user.puuid },
+            include: {
+                championData: true,
+            },
+        });
 
-        const championMasteryData = dbUser
-            ? dbUser.championData
-            : (await api.Champion.masteryBySummoner(user.id, region)).response;
-
-        if (!dbUser) {
-            console.log(`Summoner not found in database. Fetching data from API...`);
-            await updateSummonerDb(prisma, user, region, championMasteryData);
-        } else {
-            console.log(`Summoner found in database. Updating records...`);
-            const championMasteryData2 = (await api.Champion.masteryBySummoner(user.id, region)).response;
-            console.log(`Summoner found in database. updating ${championMasteryData2.length} champs`);
-            await updateSummonerDb(prisma, user, region, championMasteryData2);
-            console.log(`Summoner found in database. Updating records... Done`);
-        }
+        const championMasteryData = dbUser?.championData ?? [];
 
         const championMastery: ChampionMasteryDTO[] = championMasteryData.map((mastery) => ({
-            summonerId: user.id,
+            summonerId: user.summonerId,
             championId: mastery.championId,
             championLevel: mastery.championLevel,
             championPoints: mastery.championPoints,
@@ -64,16 +62,16 @@ export const masteryBySummoner = async (
 
         return championMastery;
     } catch (error) {
-        console.log(`Error fetching champion mastery data for summoner ${user.name}: ${error}`);
+        console.log(`Error fetching champion mastery data for summoner ${user.gameName}#${user.tagLine}:`, error);
         throw error;
     }
 };
 
 const updateSummonerDb = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
-    user: SummonerV4DTO,
+    prisma: PrismaClient,
+    user: Summoner,
     region: Regions,
-    championMasteryData: ChampionMastery[] | ChampionMasteryDTO[]
+    championMasteryData: ChampionMastery[] | ChampionMasteryDTO[],
 ) => {
     try {
         // Step 1: Upsert Summoner
@@ -82,9 +80,9 @@ const updateSummonerDb = async (
                 puuid: user.puuid,
             },
             update: {
-                summonerId: user.id,
-                server: region,
-                username: user.name,
+                summonerId: user.summonerId,
+                region: region,
+                username: user.username,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
@@ -92,9 +90,9 @@ const updateSummonerDb = async (
             },
             create: {
                 puuid: user.puuid,
-                summonerId: user.id,
-                server: region,
-                username: user.name,
+                summonerId: user.summonerId,
+                region: region,
+                username: user.username,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
@@ -134,8 +132,8 @@ const updateSummonerDb = async (
                         chestGranted: mastery.chestGranted,
                         tokensEarned: mastery.tokensEarned,
                     },
-                })
-            )
+                }),
+            ),
         );
 
         // Step 3: Logging

@@ -12,19 +12,16 @@ datasource db {
 
 model Match {
   gameId       String     @id
-  server       String
-  participants Summoner[] @relation("MatchSummoners")
+  region       String     @unique @map("server")
   MatchInfo    MatchInfo?
+  participants Summoner[] @relation("MatchSummoners")
 }
 
 model MatchInfo {
   gameId             String   @id
-  gameCreation       DateTime
   gameDuration       Int
-  gameEndTimestamp   DateTime
   gameMode           String
   gameName           String
-  gameStartTimestamp DateTime
   gameType           String
   gameVersion        String
   mapId              Int
@@ -33,6 +30,9 @@ model MatchInfo {
   queueId            Int
   teams              Json
   tournamentCode     String
+  gameCreation       DateTime
+  gameStartTimestamp DateTime
+  gameEndTimestamp   DateTime
   match              Match    @relation(fields: [gameId], references: [gameId], onDelete: Cascade)
 }
 
@@ -43,23 +43,26 @@ model Challenges {
 }
 
 model Summoner {
-  puuid         String            @id @unique
-  summonerId    String
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  server        String
-  username      String
-  profileIconId Int
-  summonerLevel Int
-  revisionDate  DateTime
-  accountId     String
-  championData  ChampionMastery[]
-  matches       Match[]           @relation("MatchSummoners")
-  challenges    Challenges?
+  summonerId        String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  region            String             @map("server")
+  username          String
+  profileIconId     Int
+  puuid             String             @id @unique
+  summonerLevel     Int
+  revisionDate      DateTime
+  accountId         String
+  gameName          String?
+  tagLine           String?
+  challenges        Challenges?
+  championData      ChampionMastery[]
+  matches           Match[]            @relation("MatchSummoners")
+  ChallengesDetails ChallengesDetails?
 }
 
 model ChampionDetails {
-  id                   Int      @id @unique
+  id                   Int          @id @unique
   version              String?
   key                  String
   name                 String
@@ -98,8 +101,7 @@ model ChampionDetails {
   attackdamageperlevel Float
   attackspeedperlevel  Float
   attackspeed          Float
-
-  Challenges Challenges[] @relation("ChallengeHeroes")
+  Challenges           Challenges[] @relation("ChallengeHeroes")
 }
 
 model ChampionMastery {
@@ -127,18 +129,71 @@ model ChallengesConfig {
   localizedNames ChallengeLocalization[]
 }
 
-enum Language {
-  en_US
-  // Add more languages as needed
-}
-
 model ChallengeLocalization {
   id               Int
   language         Language
   description      String
   name             String
   shortDescription String
-  ChallengesConfig ChallengesConfig? @relation(fields: [id], references: [id], onDelete: Cascade)
+  ChallengesConfig ChallengesConfig @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@unique([id, language])
+}
+
+enum Language {
+  en_US
+}
+
+model TotalPoints {
+  level               String
+  current             Int
+  max                 Int
+  percentile          Float
+  challengesDetails   ChallengesDetails @relation("TotalPoints_ChallengesDetails", fields: [challengesDetailsId], references: [puuid])
+  challengesDetailsId String            @unique
+}
+
+model Preferences {
+  bannerAccent             String
+  title                    String
+  challengeIds             Int[]
+  crestBorder              String
+  prestigeCrestBorderLevel Int
+  challengesDetails        ChallengesDetails @relation("Preferences_ChallengesDetails", fields: [challengesDetailsId], references: [puuid])
+  challengesDetailsId      String            @unique
+}
+
+model Challenge {
+  challengeId         Int
+  percentile          Float?
+  level               String?
+  value               Int?
+  achievedTime        DateTime?
+  position            Int?
+  playersInLevel      Int?
+  challengesDetails   ChallengesDetails @relation(fields: [challengesDetailsId], references: [puuid])
+  challengesDetailsId String
+
+  @@unique([challengeId, challengesDetailsId])
+}
+
+model CategoryPoints {
+  category            String
+  level               String
+  current             Int
+  max                 Int
+  percentile          Float
+  challengesDetails   ChallengesDetails @relation(fields: [challengesDetailsId], references: [puuid])
+  challengesDetailsId String
+
+  @@unique([category, challengesDetailsId])
+}
+
+model ChallengesDetails {
+  puuid          String           @unique
+  challenges     Challenge[]
+  categoryPoints CategoryPoints[]
+  totalPoints    TotalPoints?     @relation("TotalPoints_ChallengesDetails")
+  preferences    Preferences?     @relation("Preferences_ChallengesDetails")
+  summoner       Summoner         @relation(fields: [puuid], references: [puuid])
 }
