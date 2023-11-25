@@ -22,6 +22,7 @@ import superjson from "superjson";
 
 import { prisma } from "../db";
 import { lolApi } from "../lolApi";
+import { riotApi } from "../riotApi";
 
 type CreateContextOptions = Record<string, never>;
 

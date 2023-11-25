@@ -273,22 +273,22 @@ export const processingApiRouter = createTRPCRouter({
 
     updateChampions: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
+        .query(async ({ input }) => {
+            regionToConstant(input.server.toUpperCase());
 
             return {};
         }),
     updateInvincible: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
+        .query(async ({ input }) => {
+            regionToConstant(input.server.toUpperCase());
 
             return {};
         }),
     updatePerfectionist: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
+        .query(async ({ input }) => {
+            regionToConstant(input.server.toUpperCase());
 
             return {};
         }),

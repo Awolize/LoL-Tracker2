@@ -2,7 +2,7 @@ import type { Summoner } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
-import type { ChampionMasteryDTO, ChampionsDataDragonDetails, SummonerV4DTO } from "twisted/dist/models-dto";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     const disabled: boolean = champ.championPoints > filterPoints;

@@ -7,7 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from 
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi, RiotApi } from "twisted";
-import type { ChampionMasteryDTO, ChampionsDataDragonDetails, SummonerV4DTO } from "twisted/dist/models-dto";
+import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 import { z } from "zod";
 
