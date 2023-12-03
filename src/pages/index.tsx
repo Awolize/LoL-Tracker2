@@ -5,6 +5,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Listbox } from "@headlessui/react";
+import Row from "./_components/Row";
+import Column from "./_components/Column";
 
 const servers = [
     { id: 3, name: "EUW", disabled: false },
@@ -56,15 +58,20 @@ const Home: NextPage = () => {
                         Summoner Profile
                     </h1>
                     <form className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8" onSubmit={onSubmit}>
-                        <input
-                            type="text"
-                            ref={usernameRef}
-                            className="w-full rounded bg-gray-700 text-center text-xl text-white placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
-                        />
-
+                        <Column className={"gap-1"}>
+                            <input
+                                type="text"
+                                ref={usernameRef}
+                                placeholder="lol.awot#dev"
+                                className="w-full h-12 rounded bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                            />
+                            <div className="text-white/50 text-xs">
+                                Remember to include the # and tagline like: Awot#dev
+                            </div>
+                        </Column>
                         <button
                             type="submit"
-                            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                            className="flex items-center justify-center gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
                         >
                             {loading ? (
                                 <LoadingComponent />
