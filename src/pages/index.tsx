@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Listbox } from "@headlessui/react";
-import Row from "./_components/Row";
+
 import Column from "./_components/Column";
 
 const servers = [
