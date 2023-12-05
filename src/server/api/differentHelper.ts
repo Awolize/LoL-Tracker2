@@ -31,7 +31,7 @@ export async function getUserByNameAndServer(
         riotApi: RiotApi;
     },
     username: string,
-    server: Regions
+    server: Regions,
 ) {
     try {
         const user = await ctx.prisma.summoner.findFirst({
@@ -81,7 +81,7 @@ export const prepareSummonersCreation = (
         >;
         lolApi: LolApi;
     },
-    game: MatchV5DTOs.MatchDto
+    game: MatchV5DTOs.MatchDto,
 ) => {
     const participantSummoners = game.metadata.participants;
 
@@ -226,7 +226,7 @@ export async function getMatchesForSummonerBySummoner(
         >;
         lolApi: LolApi;
     },
-    user: Summoner
+    user: Summoner,
 ) {
     const summoner = await ctx.prisma.summoner.findFirst({
         where: {

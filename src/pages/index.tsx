@@ -121,24 +121,18 @@ function ServerListSelector({ selectedServer, setSelectedServer }) {
             </Listbox.Button>
             <div className="relative">
                 <Listbox.Options className="absolute top-0 left-0 flex-col inline w-[150px]">
-                    {servers.map((server) => {
-                        if (selectedServer?.id === server.id) {
-                            return (
-                                <></>
-                                // <Listbox.Option key={server.id} value={server} disabled={server.disabled}>
-                                //   <span className="text-[hsl(280,100%,70%)]">{server.name}</span>
-                                // </Listbox.Option>
-                            );
-                        } else {
-                            return (
-                                <Listbox.Option key={server.name} value={server} disabled={server.disabled}>
-                                    <button type="button" className="hover:text-[hsl(280,100%,70%)]">
-                                        {server.name}
-                                    </button>
-                                </Listbox.Option>
-                            );
-                        }
-                    })}
+                    {servers
+                        .filter((server) => selectedServer?.id !== server.id)
+                        .map((server) => (
+                            <Listbox.Option key={server.id} value={server} disabled={server.disabled}>
+                                <button
+                                    type="button"
+                                    className="hover:text-[hsl(280,100%,70%)] hover:bg-opacity-20 hover:bg-gray-500 w-full text-left"
+                                >
+                                    {server.name}
+                                </button>
+                            </Listbox.Option>
+                        ))}
                 </Listbox.Options>
             </div>
         </Listbox>

@@ -4,7 +4,8 @@ import Image from "next/image";
 
 import type { CompleteChampionInfo } from "../pages/[server]/[username]/mastery";
 import { filteredOut } from "../utils/champsUtils";
-import { DATA_DRAGON_URL } from "../utils/constants";
+
+import { useDataDragonPath } from "./useDataDragonPath";
 
 interface ChampionItemProps {
     champ: CompleteChampionInfo;
@@ -28,12 +29,14 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
+    const getImage = useDataDragonPath();
+
     if (hide) return <></>;
 
     return (
         <li
-            className="flex flex-col pb-2"
             key={champ.key as React.Key}
+            className="flex flex-col pb-2"
             onClick={() => handleChampionClick(champ.championId)}
         >
             <div className="relative z-10">
@@ -72,7 +75,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                 )}
 
                 <Image
-                    src={`${DATA_DRAGON_URL}${champ.image.full}`}
+                    src={getImage(champ.image.full)}
                     style={{
                         zIndex: -1,
                         opacity: disabled ? "40%" : "100%",

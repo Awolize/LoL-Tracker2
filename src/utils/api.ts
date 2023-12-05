@@ -14,12 +14,15 @@ import type { ProcessingRouter, AppRouter } from "../server/api/root";
 
 const getBaseUrl = () => {
     if (typeof window !== "undefined") return ""; // browser should use relative url
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
-    return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
+    return process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:${process.env.PORT ?? 3000}`;
 };
 
 const getProcessingUrl = () => {
-    return `https://processing-lol.awot.dev`; // dev SSR should use localhost
+    console.log(process.env.NODE_ENV);
+
+    return process.env.NODE_ENV === "development" ? getBaseUrl() : `https://processing-lol.awot.dev`;
 };
 
 /**

@@ -5,10 +5,10 @@ import { z } from "zod";
 import type { Participant } from "../../../types/different_types";
 import { regionToConstant } from "../../../utils/champsUtils";
 import {
-    getUserByNameAndServer,
-    updateChampionDetails,
-    prepareSummonersCreation,
     getMatchesForSummonerBySummoner,
+    getUserByNameAndServer,
+    prepareSummonersCreation,
+    updateChampionDetails,
 } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -126,7 +126,7 @@ export const processingApiRouter = createTRPCRouter({
                                         gameCreation: new Date(game.info.gameCreation),
                                         gameDuration: game.info.gameDuration,
                                         gameEndTimestamp: new Date(
-                                            game.info.gameStartTimestamp + game.info.gameDuration
+                                            game.info.gameStartTimestamp + game.info.gameDuration,
                                         ), // wrong
                                         gameMode: game.info.gameMode,
                                         gameName: game.info.gameName,
@@ -208,12 +208,11 @@ export const processingApiRouter = createTRPCRouter({
             if (!matches) return;
 
             const filteredInfoParticipants = matches
-                .map((match) =>
-                    (match.MatchInfo?.participants as any as Participant[] | undefined)?.filter(
-                        (par) => par.puuid === user.puuid /* && par.champ == "champ" ish */
-                    )
+                .flatMap((match) =>
+                    (match.MatchInfo?.participants as unknown as Participant[] | undefined)?.filter(
+                        (par) => par.puuid === user.puuid /* && par.champ == "champ" ish */,
+                    ),
                 )
-                .flat()
                 .filter(Boolean) as Participant[];
 
             console.log(user.username, "Found", filteredInfoParticipants?.length, "games");

@@ -112,7 +112,7 @@ export const getChallengesData = async (api: LolApi, region: Regions, user: Summ
     const response = await api.Challenges.getPlayerData(user.puuid, region);
     const savedChallenges = [202303, 210001, 401106];
     const filteredChallenges = response.response.challenges.filter((challenge) =>
-        savedChallenges.includes(challenge.challengeId)
+        savedChallenges.includes(challenge.challengeId),
     );
     return filteredChallenges;
 };

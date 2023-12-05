@@ -18,13 +18,11 @@ export const riotApiRouter = createTRPCRouter({
 
     refreshSummoner: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .mutation(async ({ input, ctx }) => {
             const region = regionToConstant(input.server.toUpperCase());
 
-            console.log("start refreshSummoner with user", input.username, input.server);
+            console.log("[refreshSummoner] Someone pressed the update button with user", input.username, input.server);
 
             await updateSummoner(ctx, input.username, region);
-
-            return true;
         }),
 });

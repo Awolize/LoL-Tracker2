@@ -52,7 +52,10 @@
         "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
         "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
         "import/resolver": {
-            "typescript": { "alwaysTryTypes": "true", "project": "./packages/*/tsconfig.json" },
+            "typescript": {
+                "alwaysTryTypes": "true",
+                "project": "./packages/*/tsconfig.json"
+            },
             "node": true
         }
     }

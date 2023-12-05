@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import type { NextPage, InferGetServerSidePropsType } from "next";
+import type { InferGetServerSidePropsType, NextPage } from "next";
 import Head from "next/head";
 
 import type { ChampionDetails } from "@prisma/client";

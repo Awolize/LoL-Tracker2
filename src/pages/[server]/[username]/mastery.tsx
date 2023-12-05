@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-import type { NextPage, InferGetServerSidePropsType } from "next";
+import type { InferGetServerSidePropsType, NextPage } from "next";
 import Head from "next/head";
 
 import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
+import type { Summoner } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { LolApi, RiotApi } from "twisted";
+import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 import { z } from "zod";
@@ -56,7 +58,11 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
     const [hiddenChamps, setHiddenChamps] = useState(new Set<number>());
 
-    const refreshQuery = api.riotApi.refreshSummoner.useQuery({ server, username }, { enabled: false });
+    const refreshQuery = api.riotApi.refreshSummoner.useMutation({
+        onSuccess: () => {
+            window.location.reload();
+        },
+    });
 
     useEffect(() => {
         // Check if the hiddenChamps item is present in local storage
@@ -135,7 +141,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
         const title = values.join(" ");
 
         return (
-            <>
+            <Fragment key={title}>
                 <div title={title}>{descriptions[index]}</div>
                 <div className="flex gap-1">
                     {values.map((v) => (
@@ -144,7 +150,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         </span>
                     ))}
                 </div>
-            </>
+            </Fragment>
         );
     }
 
@@ -264,20 +270,12 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                     <button
                         onClick={() => {
-                            refreshQuery.refetch();
+                            refreshQuery.mutate({ server, username });
                         }}
                         className="flex flex-row gap-2 items-center"
                     >
                         <RefreshIcon className="h-5 w-5 text-gray-100" aria-hidden="true" />
-                        {refreshQuery.isFetching ? (
-                            <>Working... </>
-                        ) : refreshQuery.dataUpdatedAt !== 0 ? (
-                            <>
-                                {new Date(refreshQuery.dataUpdatedAt).toLocaleTimeString()} {window.location.reload()}
-                            </>
-                        ) : (
-                            <>{"<- Update"}</>
-                        )}
+                        {refreshQuery.isLoading ? <>Working... </> : <>{"<- Update"}</>}
                     </button>
 
                     <div className="fixed top-1 right-3">
@@ -297,14 +295,14 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                             : champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId));
 
                         const [doneChamps, todoChamps] = partition(champsWithRoleHiddenExcluded, (champ) =>
-                            filteredOut(champ, filterPoints)
+                            filteredOut(champ, filterPoints),
                         );
                         doneChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
                         todoChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
                         const size = champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId)).length;
                         const markedSize = champsWithRole.filter(
-                            (champ) => champ && filteredOut(champ, filterPoints)
+                            (champ) => champ && filteredOut(champ, filterPoints),
                         ).length;
                         const percentage = (100 * markedSize) / size;
 
@@ -363,6 +361,7 @@ const paramsSchema = z.object({
 export const getServerSideProps = async (context) => {
     const { res, params } = context;
     res.setHeader("Cache-Control", "public, s-maxage=50, stale-while-revalidate=59");
+
     const { server, username: parsedUsername } = paramsSchema.parse(params);
     const username = parsedUsername.replace("-", "#");
 
@@ -374,44 +373,8 @@ export const getServerSideProps = async (context) => {
 
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
-    const [{ completeChampsData, patch }, playerChallenges, challengesThresholds] = await Promise.all([
-        masteryBySummoner(lolApi, region, user).then(async (championMasteries) => {
-            const championsDD = await lolApi.DataDragon.getChampion();
-            return {
-                completeChampsData: Object.keys(championsDD.data)
-                    .map((champName) => {
-                        const element: ChampionsDataDragonDetails = championsDD.data[champName]!;
-                        const role = rolesJson[champName as keyof typeof championsDD.data] ?? "Unknown";
-
-                        const personalChampData = championMasteries!
-                            .filter((champ) => champ.championId.toString() == element.key)
-                            .at(0);
-
-                        if (personalChampData) {
-                            return {
-                                image: element.image,
-                                id: element.id,
-                                key: element.key,
-                                ...personalChampData,
-                                championPoints: personalChampData?.championPoints ?? 0,
-                                championLevel: personalChampData?.championLevel ?? 0,
-                                role: role,
-                                name: element.name === "Nunu & Willump" ? "Nunu" : element.name,
-                            } as CompleteChampionInfo;
-                        } else {
-                            return {
-                                ...element,
-                                championPoints: 0,
-                                championLevel: 0,
-                                championId: parseInt(element.key, 10),
-                                role,
-                            } as CompleteChampionInfo;
-                        }
-                    })
-                    .filter(Boolean),
-                patch: championsDD.version,
-            };
-        }),
+    const [completeChampsData, playerChallenges, challengesThresholds] = await Promise.all([
+        getCompleteChampionData(lolApi, region, user),
         getChallengesData(lolApi, region, user),
         getChallengesThresholds(lolApi, region),
     ]);
@@ -420,12 +383,49 @@ export const getServerSideProps = async (context) => {
         props: {
             username,
             server,
-            champData: completeChampsData,
+            champData: completeChampsData.completeChampsData,
+            patch: completeChampsData.patch,
             challenges: playerChallenges,
-            challengesThresholds: challengesThresholds,
-            patch,
+            challengesThresholds,
         },
     };
 };
+
+async function getCompleteChampionData(lolApi: LolApi, region: Regions, username: Summoner) {
+    const championMasteries = await masteryBySummoner(lolApi, region, username);
+    const championsDD = await lolApi.DataDragon.getChampion();
+
+    const completeChampsData = Object.values(championsDD.data)
+        .map((champion) => {
+            const role = rolesJson[champion.id as keyof typeof championsDD.data] || "Bottom";
+
+            const personalChampData = championMasteries.find((champ) => champ.championId.toString() === champion.key);
+
+            if (personalChampData) {
+                const { championPoints = 0, championLevel = 0 } = personalChampData;
+
+                return {
+                    ...champion,
+                    ...personalChampData,
+                    championPoints,
+                    championLevel,
+                    role: role,
+                    name: champion.name === "Nunu & Willump" ? "Nunu" : champion.name,
+                } as CompleteChampionInfo;
+            }
+            return {
+                ...champion,
+                championPoints: 0,
+                championLevel: 0,
+                championId: parseInt(champion.key, 10),
+                role,
+            } as CompleteChampionInfo;
+        })
+        .filter(Boolean);
+
+    const patch = championsDD.version;
+
+    return { completeChampsData, patch };
+}
 
 export default Mastery;
