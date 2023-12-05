@@ -165,12 +165,12 @@ export const processingApiRouter = createTRPCRouter({
                             console.error("something went wrong on gameId:", gameId);
                             console.warn("continue");
                             continue;
-                        } else {
-                            console.error("something went wrong on gameId:", gameId);
-                            console.warn("retry");
-                            index--;
-                            console.log(user.username, "progress:", index, "/", matchIds.length);
                         }
+
+                        console.error("something went wrong on gameId:", gameId);
+                        console.warn("retry");
+                        index--;
+                        console.log(user.username, "progress:", index, "/", matchIds.length);
 
                         failedGameIds.push(gameId);
                     }

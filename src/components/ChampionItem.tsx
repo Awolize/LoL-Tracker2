@@ -41,7 +41,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
         >
             <div className="relative z-10">
                 {showLevel && (
-                    <span className="absolute top-[3px] left-[3px] flex h-6 w-6 items-center justify-center bg-blue-800 px-[0.40rem] text-center text-xs leading-5">
+                    <span className="absolute flex top-1 left-1 h-6 w-6 font-bold items-center justify-center bg-opacity-50 bg-gray-900 text-xs rounded-full">
                         {champ.championLevel}
                     </span>
                 )}
