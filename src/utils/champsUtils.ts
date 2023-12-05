@@ -9,22 +9,26 @@ export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     return disabled;
 };
 
-export const sortAlgorithm = (sortOrder, a: CompleteChampionInfo, b: CompleteChampionInfo): number => {
+export enum SortOrder {
+    Points = 0,
+    AZ = 1,
+    Level = 2,
+}
+
+export const sortAlgorithm = (sortOrder: SortOrder, a: CompleteChampionInfo, b: CompleteChampionInfo): number => {
     switch (sortOrder) {
-        case 0:
+        case SortOrder.Points:
             if (a.championPoints === b.championPoints) {
-                return sortAlgorithm(-1, a, b);
-            } else {
-                return a.championPoints > b.championPoints ? -1 : 1;
+                return sortAlgorithm(SortOrder.AZ, a, b);
             }
-        case 1:
+            return a.championPoints > b.championPoints ? -1 : 1;
+        case SortOrder.AZ:
             return a.name.localeCompare(b.name);
-        case 2:
+        case SortOrder.Level:
             if (a.championLevel === b.championLevel) {
-                return sortOrder(0, a, b);
-            } else {
-                return a.championLevel > b.championLevel ? -1 : 1;
+                return sortAlgorithm(SortOrder.Points, a, b);
             }
+            return a.championLevel > b.championLevel ? -1 : 1;
         default:
             return a.name.localeCompare(b.name);
     }
@@ -100,11 +104,10 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
     }
 };
 
-//Partition function
+//Partition function, there are other ways but this seems easiest to understand in the future
 export const partition = (array, filter) => {
-    const pass: CompleteChampionInfo[] = [],
-        fail: CompleteChampionInfo[] = [];
-    array.forEach((e: CompleteChampionInfo, idx, arr) => (filter(e, idx, arr) ? pass : fail).push(e));
+    const pass = array.filter((e, idx, arr) => filter(e, idx, arr));
+    const fail = array.filter((e, idx, arr) => !filter(e, idx, arr));
     return [pass, fail];
 };
 

@@ -21,6 +21,7 @@ import { ToggleEye } from "../../../components/ToggleEye";
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 import { api } from "../../../utils/api";
 import {
+    SortOrder,
     filteredOut,
     getChallengesData,
     getChallengesThresholds,
@@ -48,7 +49,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const server = props.server;
 
     const [filterPoints, setFilterPoints] = useState(0);
-    const [sortOrder, setSortOrder] = useState(0);
+    const [sortOrder, setSortOrder] = useState(SortOrder.Points);
     const [showLevel, setShowLevel] = useState(false);
     const [showFinished, setShowFinished] = useState(false);
     const [showChests, setShowChests] = useState(false);
@@ -98,7 +99,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
             };
             localStorage.setItem("hiddenChamps", JSON.stringify(hiddenChampsData));
         }
-    }, []);
+    }, [username]);
 
     const handleChampionClick = (championId: number) => {
         if (hideChampionsMode === true) {
@@ -201,9 +202,9 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                 callback={setSortOrder}
                                 saveName="sortOrder"
                                 choices={[
-                                    { text: "Points", value: 0 },
-                                    { text: "A-Z", value: 1 },
-                                    { text: "Level", value: 2 },
+                                    { text: "Points", value: SortOrder.Points },
+                                    { text: "A-Z", value: SortOrder.AZ },
+                                    { text: "Level", value: SortOrder.Level },
                                 ]}
                             />
                         </div>
@@ -219,8 +220,8 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
                     <div className="flex pr-4">
                         <button
+                            type="button"
                             onClick={() => setAlignHeaderRight((prev) => !prev)}
-                            accessKey="s"
                             aria-label="change side"
                         >
                             <span className="absolute inset-y-0 flex items-center pr-2">
@@ -240,7 +241,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                             <p className="text-2xl">
                                 {markedSize} /{" "}
                                 {championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length}
-                                {championMastery.length !=
+                                {championMastery.length !==
                                 championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length
                                     ? "*"
                                     : ""}
@@ -259,7 +260,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 <div className="flex w-full min-w-fit justify-between">
                     <div className="flex flex-col gap-0">
                         <div className="text-md">Different champions</div>
-                        {challenges.length == 3 ? (
+                        {challenges.length === 3 ? (
                             <div className="grid grid-cols-2 text-xs text-gray-400">
                                 {challenges.map((el, index) => renderChallenge(el, index))}
                             </div>
@@ -269,6 +270,7 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     </div>
 
                     <button
+                        type="button"
                         onClick={() => {
                             refreshQuery.mutate({ server, username });
                         }}
