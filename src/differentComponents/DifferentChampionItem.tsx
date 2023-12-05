@@ -10,8 +10,6 @@ export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails;
     return (
         <li className="flex flex-col pb-2" key={champ.key as React.Key}>
             <div className="relative z-10">
-                {console.log(`${DATA_DRAGON_URL}${champ.full}`)}
-
                 <Image
                     src={`${DATA_DRAGON_URL}${champ.full}`}
                     style={{
