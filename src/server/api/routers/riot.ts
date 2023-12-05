@@ -24,5 +24,7 @@ export const riotApiRouter = createTRPCRouter({
             console.log("[refreshSummoner] Someone pressed the update button with user", input.username, input.server);
 
             await updateSummoner(ctx, input.username, region);
+
+            return true;
         }),
 });
