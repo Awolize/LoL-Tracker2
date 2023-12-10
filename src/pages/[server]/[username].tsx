@@ -1,5 +1,3 @@
-import React from "react";
-
 import type { InferGetServerSidePropsType, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -33,7 +31,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="flex h-screen w-screen justify-center ">
+            <div className="flex h-screen w-screen justify-center">
                 <ul className="flex flex-col text-xl">
                     <div className="h-5" />
                     <div className="flex flex-row items-center justify-center gap-6 relative">

@@ -22,8 +22,6 @@ export const useDataDragonPath = () => {
     }, []); // Update the path when championName changes
 
     const getChampionImage = (championName) => {
-        console.log("championName", championName);
-
         return `${dataDragonPath}/${championName}`;
     };
 

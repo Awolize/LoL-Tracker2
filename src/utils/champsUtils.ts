@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
+import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     const disabled: boolean = champ.championPoints > filterPoints;
@@ -105,27 +106,33 @@ export const masteryBySummoner = async (api: LolApi, region: Regions, user: Summ
 };
 
 //Partition function, there are other ways but this seems easiest to understand in the future
-export const partition = (array, filter) => {
+export const partition = <T>(array: T[], filter): { pass: T[]; fail: T[] } => {
     const pass = array.filter((e, idx, arr) => filter(e, idx, arr));
     const fail = array.filter((e, idx, arr) => !filter(e, idx, arr));
-    return [pass, fail];
+    return { pass, fail };
 };
 
-export const getChallengesData = async (api: LolApi, region: Regions, user: Summoner) => {
+export type ChallengeId = 202303 | 210001 | 401106;
+
+export const isChallengeId = (id: number): id is ChallengeId => [202303, 210001, 401106].includes(id);
+
+export const getPlayerChallengesData = async (api: LolApi, region: Regions, user: Summoner) => {
     const response = await api.Challenges.getPlayerData(user.puuid, region);
-    const savedChallenges = [202303, 210001, 401106];
-    const filteredChallenges = response.response.challenges.filter((challenge) =>
-        savedChallenges.includes(challenge.challengeId),
-    );
-    return filteredChallenges;
+    const filteredChallenges = response.response.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
+    const challengesMap = filteredChallenges.reduce((map, challenge: ChallengeV1DTO) => {
+        map.set(challenge.challengeId as ChallengeId, challenge);
+        return map;
+    }, new Map<ChallengeId, ChallengeV1DTO>());
+
+    return challengesMap;
 };
 
 export const getChallengesThresholds = async (api: LolApi, region: Regions) => {
-    const challengeIds = [202303, 210001, 401106];
-    const thresholdsList: { [key: string]: number }[] = [];
+    const challengeIds: ChallengeId[] = [202303, 210001, 401106];
+    const thresholdsMap = new Map<ChallengeId, { [key: string]: number }>();
     for (const challengeId of challengeIds) {
         const thresholds = (await api.Challenges.getChallengeConfig(challengeId, region)).response;
-        thresholdsList.push(thresholds.thresholds);
+        thresholdsMap.set(challengeId, thresholds.thresholds);
     }
-    return thresholdsList;
+    return thresholdsMap;
 };

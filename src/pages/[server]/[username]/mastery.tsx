@@ -7,6 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from 
 import type { Summoner } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
+import { parse, stringify } from "superjson";
 import { LolApi, RiotApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
@@ -20,11 +21,13 @@ import { SwitchWithLabel } from "../../../components/SwitchWithLabel";
 import { ToggleEye } from "../../../components/ToggleEye";
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 import { api } from "../../../utils/api";
+import type { ChallengeId } from "../../../utils/champsUtils";
 import {
     SortOrder,
     filteredOut,
-    getChallengesData,
     getChallengesThresholds,
+    getPlayerChallengesData,
+    isChallengeId,
     masteryBySummoner,
     partition,
     regionToConstant,
@@ -39,14 +42,30 @@ interface Roles {
 
 export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
 
+const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
+
 const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (props) => {
     const champs = props.champData;
     const championMastery = props.champData;
     const patch = props.patch;
-    const challenges = props.challenges;
-    const challengesThresholds = props.challengesThresholds;
+    const challengeIds = parse<ChallengeId[]>(props.challengeIds);
+    const playerChallengesData = parse<Map<ChallengeId, ChallengeV1DTO>>(props.playerChallengesData);
+    const challengesThresholds = parse<
+        Map<
+            ChallengeId,
+            {
+                [key: string]: number;
+            }
+        >
+    >(props.challengesThresholds);
     const username = props.username;
     const server = props.server;
+
+    const championsByRole: Record<string, typeof champs> = ROLES.reduce((acc, role) => {
+        const champsWithRole = champs.filter((champ) => champ?.role === role || (!champ.role && role === "Bottom")); // add champs with role null to the Bottom list
+        acc[role] = champsWithRole;
+        return acc;
+    }, {});
 
     const [filterPoints, setFilterPoints] = useState(0);
     const [sortOrder, setSortOrder] = useState(SortOrder.Points);
@@ -133,21 +152,30 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
     function renderChallenge(challenge: ChallengeV1DTO, index: number) {
         const descriptions = ["Win a game without dying", "Earn an S+ grade", "Win a game"];
 
-        const values = Object.entries(challengesThresholds[index]!).map((threshold) => ({
+        if (!isChallengeId(challenge.challengeId)) {
+            console.log('"Invalid" challenge id is trying to get rendered', challenge.challengeId);
+            return null;
+        }
+
+        const challengeThresholds = challengesThresholds.get(challenge.challengeId);
+        if (!challengeThresholds) return;
+
+        const challengesWithStyles = Object.entries(challengeThresholds).map((threshold) => ({
             value: threshold[1],
             style: "text-gray-400",
         }));
-        values.push({ value: challenge.value, style: "text-gray-100" });
-        values.sort((a, b) => a.value - b.value);
-        const title = values.join(" ");
+
+        challengesWithStyles.push({ value: challenge.value, style: "text-gray-100" });
+        challengesWithStyles.sort((a, b) => a.value - b.value);
+        const title = challengesWithStyles.join(" ");
 
         return (
-            <Fragment key={title}>
+            <Fragment key={challenge.challengeId}>
                 <div title={title}>{descriptions[index]}</div>
                 <div className="flex gap-1">
-                    {values.map((v) => (
-                        <span key={`${v.value}-${v.style}`} className={v.style}>
-                            {v.value}
+                    {challengesWithStyles.map(({ value, style }) => (
+                        <span key={`${value}-${style}`} className={style}>
+                            {value}
                         </span>
                     ))}
                 </div>
@@ -260,9 +288,12 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 <div className="flex w-full min-w-fit justify-between">
                     <div className="flex flex-col gap-0">
                         <div className="text-md">Different champions</div>
-                        {challenges.length === 3 ? (
+                        {challengeIds.length === 3 ? (
                             <div className="grid grid-cols-2 text-xs text-gray-400">
-                                {challenges.map((el, index) => renderChallenge(el, index))}
+                                {challengeIds.map((el, index) => {
+                                    const challengeData = playerChallengesData.get(el);
+                                    return challengeData && renderChallenge(challengeData, index);
+                                })}
                             </div>
                         ) : (
                             <></>
@@ -285,71 +316,63 @@ const Mastery: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     </div>
                 </div>
             </header>
-            <main>
-                <div className="flex flex-row gap-2">
-                    {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-                        if (!champs[0]) return;
+            <main className="flex flex-row gap-2">
+                {Object.entries(championsByRole).map(([role, champions]) => {
+                    const champsWithRoleHiddenExcluded = hideChampionsMode
+                        ? champions
+                        : champions.filter((champ) => !hiddenChamps.has(champ.championId));
 
-                        const champsWithRole = champs.filter((champ) => champ?.role === role);
+                    const { pass: doneChamps, fail: todoChamps } = partition(champsWithRoleHiddenExcluded, (champ) =>
+                        filteredOut(champ, filterPoints),
+                    );
+                    doneChamps.sort((a, b) => sortAlgorithm(sortOrder, a, b));
+                    todoChamps.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
-                        const champsWithRoleHiddenExcluded = hideChampionsMode
-                            ? champsWithRole
-                            : champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId));
+                    const size = champions.filter((champ) => !hiddenChamps.has(champ.championId)).length;
+                    const markedSize = champions.filter((champ) => champ && filteredOut(champ, filterPoints)).length;
+                    const percentage = (100 * markedSize) / size;
 
-                        const [doneChamps, todoChamps] = partition(champsWithRoleHiddenExcluded, (champ) =>
-                            filteredOut(champ, filterPoints),
-                        );
-                        doneChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
-                        todoChamps?.sort((a, b) => sortAlgorithm(sortOrder, a, b));
-
-                        const size = champsWithRole.filter((champ) => !hiddenChamps.has(champ.championId)).length;
-                        const markedSize = champsWithRole.filter(
-                            (champ) => champ && filteredOut(champ, filterPoints),
-                        ).length;
-                        const percentage = (100 * markedSize) / size;
-
-                        return (
-                            <div className="w-full p-4" key={role}>
-                                <RoleHeader
-                                    role={role}
-                                    finishedSize={markedSize}
-                                    hasHidden={champsWithRole.length !== size}
-                                    size={size}
-                                    percentage={percentage}
-                                />
-                                <ul
-                                    className="grid justify-between"
-                                    style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
-                                >
-                                    {todoChamps?.map((champ) => (
-                                        <ChampionItem
-                                            key={`${champ.championId}-todo`}
-                                            champ={champ}
-                                            handleChampionClick={handleChampionClick}
-                                            filterPoints={filterPoints}
-                                            showFinished={showFinished}
-                                            showChest={showChests}
-                                            showLevel={showLevel}
-                                            hiddenChamps={hiddenChamps}
-                                        />
-                                    ))}
-                                    {doneChamps?.map((champ) => (
-                                        <ChampionItem
-                                            key={`${champ.championId}-done`}
-                                            champ={champ}
-                                            handleChampionClick={handleChampionClick}
-                                            filterPoints={filterPoints}
-                                            showFinished={showFinished}
-                                            showChest={showChests}
-                                            showLevel={showLevel}
-                                            hiddenChamps={hiddenChamps}
-                                        />
-                                    ))}
-                                </ul>
-                            </div>
-                        );
-                    })}
-                </div>
+                    return (
+                        <div className="w-full p-4" key={role}>
+                            <RoleHeader
+                                role={role}
+                                finishedSize={markedSize}
+                                hasHidden={champions.length !== size}
+                                size={size}
+                                percentage={percentage}
+                            />
+                            <ul
+                                className="grid justify-between"
+                                style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
+                            >
+                                {todoChamps.map((champ) => (
+                                    <ChampionItem
+                                        key={`${champ.championId}-todo`}
+                                        champ={champ}
+                                        handleChampionClick={handleChampionClick}
+                                        filterPoints={filterPoints}
+                                        showFinished={showFinished}
+                                        showChest={showChests}
+                                        showLevel={showLevel}
+                                        hiddenChamps={hiddenChamps}
+                                    />
+                                ))}
+                                {doneChamps.map((champ) => (
+                                    <ChampionItem
+                                        key={`${champ.championId}-done`}
+                                        champ={champ}
+                                        handleChampionClick={handleChampionClick}
+                                        filterPoints={filterPoints}
+                                        showFinished={showFinished}
+                                        showChest={showChests}
+                                        showLevel={showLevel}
+                                        hiddenChamps={hiddenChamps}
+                                    />
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                })}
             </main>
         </div>
     );
@@ -377,9 +400,11 @@ export const getServerSideProps = async (context) => {
 
     const [completeChampsData, playerChallenges, challengesThresholds] = await Promise.all([
         getCompleteChampionData(lolApi, region, user),
-        getChallengesData(lolApi, region, user),
+        getPlayerChallengesData(lolApi, region, user),
         getChallengesThresholds(lolApi, region),
     ]);
+
+    const challengeIds: ChallengeId[] = [202303, 210001, 401106];
 
     return {
         props: {
@@ -387,8 +412,9 @@ export const getServerSideProps = async (context) => {
             server,
             champData: completeChampsData.completeChampsData,
             patch: completeChampsData.patch,
-            challenges: playerChallenges,
-            challengesThresholds,
+            challengeIds: stringify(challengeIds),
+            playerChallengesData: stringify(playerChallenges),
+            challengesThresholds: stringify(challengesThresholds),
         },
     };
 };

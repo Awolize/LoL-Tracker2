@@ -6,5 +6,5 @@ type Props = {
 };
 
 export default function Column({ children, className = "" }: Props) {
-    return <div className={"flex flex-col " + className}>{children}</div>;
+    return <div className={`flex flex-col ${className}`}>{children}</div>;
 }

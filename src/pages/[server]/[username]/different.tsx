@@ -31,8 +31,6 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     const [selectedItem, setSelectedItem] = useState(null);
 
     const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ server, username });
-    // const selectedChallenge2 = api.differentApi.getJackOfAllChamps2.useQuery({ server, username });
-    // const selectedChallenge3 = api.differentApi.getJackOfAllChamps3.useQuery({ server, username });
 
     const selectedChallengeQuery = useMemo(() => {
         console.log("selected challenge", selectedItem);
@@ -57,7 +55,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
     const completedChampsLength = selectedChallengeQuery?.data.length;
 
     return (
-        <div className="flex h-screen w-screen">
+        <div>
             <Head>
                 <title>{title}</title>
                 <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
@@ -70,7 +68,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="h-screen w-screen flex">
+            <div className="flex h-screen w-screen justify-center">
                 <aside className="z-10">
                     <DifferentSideBar
                         server={server}
