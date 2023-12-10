@@ -68,7 +68,7 @@ export interface Participant {
     onMyWayPings: number;
     participantId: number;
     pentaKills: number;
-    perks: any;
+    perks: never;
     physicalDamageDealt: number;
     physicalDamageDealtToChampions: number;
     physicalDamageTaken: number;

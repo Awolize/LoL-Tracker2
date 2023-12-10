@@ -6,7 +6,6 @@ import Head from "next/head";
 import type { ChampionDetails } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { LolApi, RiotApi } from "twisted";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import { z } from "zod";
 
@@ -14,9 +13,7 @@ import { DifferentChampionItem } from "../../../differentComponents/DifferentCha
 import { DifferentHeader } from "../../../differentComponents/DifferentHeader";
 import { DifferentRoleHeader } from "../../../differentComponents/DifferentRoleHeader";
 import { DifferentSideBar } from "../../../differentComponents/DifferentSideBar";
-import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 import { api } from "../../../utils/api";
-import { regionToConstant } from "../../../utils/champsUtils";
 
 import rolesJson from "./roles.json";
 
@@ -129,13 +126,7 @@ export const getServerSideProps = async (context) => {
     const { server, username: parsedUsername } = paramsSchema.parse(params);
     const username = parsedUsername.replace("-", "#");
 
-    const region = regionToConstant(server.toUpperCase());
-
     const prisma = new PrismaClient();
-    const lolApi = new LolApi();
-    const riotApi = new RiotApi();
-
-    const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
     const championsDD = await prisma.championDetails.findMany();
 

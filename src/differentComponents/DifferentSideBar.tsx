@@ -29,7 +29,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         },
     });
 
-    const { data: challenges, status } = api.differentApi.getChallengesConfig.useQuery({ server, username });
+    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ server, username });
 
     // Filter challenges based on search term and mappedCases
     const filteredChallenges = challenges?.data.filter((item) => {
@@ -43,7 +43,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         return nameMatch || descriptionMatch;
     });
 
-    const keystoneChallenges = challenges?.keystones;
+    // const keystoneChallenges = challenges?.keystones;
 
     const LastItem = ({ selected }) => {
         const handleClick = () => {

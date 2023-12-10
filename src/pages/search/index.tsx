@@ -4,10 +4,9 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import { LoadingComponent } from "../_components/LoadingSpinner";
 import Row from "../_components/Row";
-
-import { LoadingComponent } from "./LoadingSpinner";
-import { ServerListSelector, servers } from "./ServerListSelector";
+import { ServerListSelector, servers } from "../_components/ServerListSelector";
 
 const Home: NextPage = () => {
     const router = useRouter();

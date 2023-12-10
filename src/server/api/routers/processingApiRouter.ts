@@ -24,7 +24,7 @@ export const processingApiRouter = createTRPCRouter({
                     // upsertMany hack
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
-                        data: data.map((challenge: any) => {
+                        data: data.map((challenge) => {
                             // There is one challenge that got an endtimestamp (id: 600012)
                             //  "name":"Challenges are Here!"
 
@@ -39,7 +39,7 @@ export const processingApiRouter = createTRPCRouter({
                         skipDuplicates: true,
                     }),
                     ctx.prisma.challengeLocalization.createMany({
-                        data: data.map((challenge: any) => {
+                        data: data.map((challenge) => {
                             const enUSLocalization = challenge.localizedNames.en_US;
 
                             return {
@@ -117,7 +117,7 @@ export const processingApiRouter = createTRPCRouter({
                         const creationPromises = prepareSummonersCreation(ctx, game);
                         const summoners = await Promise.all(creationPromises);
 
-                        const createdMatch = await ctx.prisma.match.create({
+                        await ctx.prisma.match.create({
                             data: {
                                 gameId: gameId,
                                 server: gameServer,
@@ -134,10 +134,10 @@ export const processingApiRouter = createTRPCRouter({
                                         gameType: game.info.gameType,
                                         gameVersion: game.info.gameVersion,
                                         mapId: game.info.mapId,
-                                        participants: game.info.participants as any,
+                                        participants: game.info.participants as never,
                                         platformId: game.info.platformId,
                                         queueId: game.info.queueId,
-                                        teams: game.info.teams as any,
+                                        teams: game.info.teams as never,
                                         tournamentCode: game.info.tournamentCode,
                                     },
                                 },
