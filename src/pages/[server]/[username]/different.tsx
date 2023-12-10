@@ -59,7 +59,7 @@ const Different: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>
                 <meta
                     property="og:description"
                     name="description"
-                    content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
+                    content="Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
                 />
                 <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
                 <link rel="icon" href="/favicon.ico" />

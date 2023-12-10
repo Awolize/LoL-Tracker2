@@ -25,7 +25,7 @@ const ProfilePage: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
                 <meta
                     property="og:description"
-                    content="Generated using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
+                    content="Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
                 />
                 <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
                 <link rel="icon" href="/favicon.ico" />
