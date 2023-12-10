@@ -2,7 +2,7 @@ import React from "react";
 
 type Props = {
     children: React.ReactNode;
-    className?: string;
+    className?: React.ComponentProps<"div">["className"];
 };
 
 export default function Column({ children, className = "" }: Props) {
