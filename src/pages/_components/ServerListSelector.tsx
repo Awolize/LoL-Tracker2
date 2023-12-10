@@ -41,3 +41,5 @@ export const ServerListSelector = ({ selectedServer, setSelectedServer }) => {
         </Listbox>
     );
 };
+
+export default ServerListSelector;
