@@ -1,7 +1,6 @@
-import type { PrismaClient, Prisma, Summoner } from "@prisma/client";
+import type { Prisma, PrismaClient, Summoner } from "@prisma/client";
 import type { LolApi, RiotApi } from "twisted";
-import { type Regions } from "twisted/dist/constants";
-import { regionToRegionGroup } from "twisted/dist/constants";
+import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
 import type { MatchV5DTOs } from "twisted/dist/models-dto";
 
 const splitUsername = (username) => {
@@ -14,10 +13,10 @@ const splitUsername = (username) => {
 const getUserInfo = async (ctx, username, server) => {
     const { gamename, tagline } = splitUsername(username);
     const accountInfo = (
-        await ctx.riotApi.Account.getByGameNameAndTagLine(gamename, tagline, regionToRegionGroup(server))
+        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gamename, tagline, regionToRegionGroup(server))
     ).response;
-    const userInfo = (await ctx.lolApi.Summoner.getByPUUID(accountInfo.puuid, server)).response;
-    return userInfo;
+    const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, server)).response;
+    return { userInfo, accountInfo };
 };
 
 export async function getUserByNameAndServer(
@@ -48,7 +47,7 @@ export async function getUserByNameAndServer(
             return user; // is existing user;
         }
 
-        const userInfo = await getUserInfo(ctx, username, server);
+        const { userInfo, accountInfo } = await getUserInfo(ctx, username, server);
 
         // Map API response to Summoner
         const newUser: Summoner = {
@@ -58,6 +57,8 @@ export async function getUserByNameAndServer(
             updatedAt: new Date(),
             server: server,
             username: userInfo.name,
+            gameName: accountInfo.gameName ?? null,
+            tagLine: accountInfo.tagLine ?? null,
             profileIconId: userInfo.profileIconId,
             summonerLevel: userInfo.summonerLevel,
             revisionDate: new Date(userInfo.revisionDate),
