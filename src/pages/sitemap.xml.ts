@@ -1,45 +1,24 @@
-import { PrismaClient, type Summoner } from "@prisma/client";
-
 const URL = "https://lol.awot.dev";
 
-function generateSiteMap(summoners: Summoner[]) {
+function generateSiteMap() {
     return `<?xml version="1.0" encoding="UTF-8"?>
-   <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-     <!-- Add the static URLs manually -->
-     <url>
-       <loc>${URL}</loc>
-     </url>
-     <url>
-       <loc>${URL}/search</loc>
-     </url>
-     ${summoners
-         .filter((e) => e.gameName && e.tagLine)
-         .map(({ gameName, tagLine }) => {
-             return `
-           <url>
-               <loc>${`${URL}/EUW/${gameName}-${tagLine}`}</loc>
-           </url>
-           <url>
-               <loc>${`${URL}/EUW/${gameName}-${tagLine}/mastery`}</loc>
-           </url>
-         `;
-         })
-         .join("")}
-   </urlset>
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <sitemap>
+        <loc>${URL}/sitemap1.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>${URL}/sitemap2.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>${URL}/sitemap3.xml</loc>
+      </sitemap>
+    </sitemapindex>
  `;
 }
 
-async function getSortedData() {
-    const prisma = new PrismaClient();
-    const summoners = await prisma.summoner.findMany({ take: 20000 });
-    return summoners;
-}
-
 export async function getServerSideProps({ res }) {
-    const summoners = await getSortedData();
-
     // Generate the XML sitemap with the blog data
-    const sitemap = generateSiteMap(summoners);
+    const sitemap = generateSiteMap();
 
     res.setHeader("Content-Type", "text/xml");
     // Send the XML to the browser
