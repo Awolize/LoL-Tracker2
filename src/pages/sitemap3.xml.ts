@@ -6,12 +6,6 @@ function generateSiteMap(summoners: Summoner[]) {
     return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
      <!-- Add the static URLs manually -->
-     <url>
-       <loc>${URL}</loc>
-     </url>
-     <url>
-       <loc>${URL}/search</loc>
-     </url>
      ${summoners
          .filter((e) => e.gameName && e.tagLine)
          .map(({ gameName, tagLine }) => {
@@ -31,7 +25,7 @@ function generateSiteMap(summoners: Summoner[]) {
 
 async function getSortedData() {
     const prisma = new PrismaClient();
-    const summoners = await prisma.summoner.findMany({ skip: 40000, take: 20000 });
+    const summoners = await prisma.summoner.findMany({ skip: 10000 * 3, take: 10000 });
     return summoners;
 }
 

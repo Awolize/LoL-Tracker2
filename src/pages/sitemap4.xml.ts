@@ -25,7 +25,7 @@ function generateSiteMap(summoners: Summoner[]) {
 
 async function getSortedData() {
     const prisma = new PrismaClient();
-    const summoners = await prisma.summoner.findMany({ skip: 10000 * 2, take: 10000 });
+    const summoners = await prisma.summoner.findMany({ skip: 10000 * 4, take: 10000 });
     return summoners;
 }
 
