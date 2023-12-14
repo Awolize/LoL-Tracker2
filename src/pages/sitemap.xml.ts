@@ -12,6 +12,15 @@ function generateSiteMap() {
       <sitemap>
         <loc>${URL}/sitemap3.xml</loc>
       </sitemap>
+      <sitemap>
+        <loc>${URL}/sitemap4.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>${URL}/sitemap5.xml</loc>
+      </sitemap>
+      <sitemap>
+        <loc>${URL}/sitemap6.xml</loc>
+      </sitemap>
     </sitemapindex>
  `;
 }
