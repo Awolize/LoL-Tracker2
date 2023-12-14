@@ -19,9 +19,6 @@ function generateSiteMap(summoners: Summoner[]) {
            <url>
                <loc>${`${URL}/EUW/${gameName}-${tagLine}`}</loc>
            </url>
-           <url>
-               <loc>${`${URL}/EUW/${gameName}-${tagLine}/mastery`}</loc>
-           </url>
          `;
          })
          .join("")}
