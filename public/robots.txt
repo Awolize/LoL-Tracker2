@@ -18,3 +18,6 @@ Allow: /EUW/awot-dev/mastery
 # Allow all crawlers for /EUW/awot-dev/different
 User-agent: *
 Allow: /EUW/awot-dev/different
+
+
+Sitemap: https://lol.awot.dev/sitemap.xml
