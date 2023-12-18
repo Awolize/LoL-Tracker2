@@ -9,32 +9,32 @@ import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
 
 const paramsSchema = z.object({
-	server: z.string(),
-	username: z.string(),
+    server: z.string(),
+    username: z.string(),
 });
 
 export default async function Page({ params }) {
-	const { server, username: parsedUsername } = paramsSchema.parse(params);
-	const username = parsedUsername.replace("-", "#");
+    const { server, username: rawUsername } = paramsSchema.parse(params);
+    const username = rawUsername.replace("-", "#");
 
-	const region = regionToConstant(server.toUpperCase());
-	const prisma = new PrismaClient();
-	const lolApi = new LolApi();
-	const riotApi = new RiotApi();
+    const region = regionToConstant(server.toUpperCase());
+    const prisma = new PrismaClient();
+    const lolApi = new LolApi();
+    const riotApi = new RiotApi();
 
-	const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
+    const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
-	const patch = (await prisma.championDetails.findMany())[0]?.version;
+    const patch = (await prisma.championDetails.findMany())[0]?.version;
 
-	// const apiChampsData = await getChampionsAndMastery(username);
+    // const apiChampsData = await getChampionsAndMastery(username);
 
-	const props = {
-		username,
-		server,
-		profileIconId: user.profileIconId,
-		summonerLevel: user.summonerLevel,
-		patch,
-	};
+    const props = {
+        username: rawUsername,
+        server,
+        profileIconId: user.profileIconId,
+        summonerLevel: user.summonerLevel,
+        patch,
+    };
 
-	return <Client {...props} />;
+    return <Client {...props} />;
 }

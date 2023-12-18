@@ -21,7 +21,7 @@ export const processingApiRouter = createTRPCRouter({
 
             try {
                 await ctx.prisma.$transaction([
-                    // upsertMany hack
+                    // upsertMany "hack"
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
                         data: data.map((challenge) => {

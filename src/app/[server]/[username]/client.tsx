@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { DATA_DRAGON_PROFIL_ICON, DATA_DRAGON_URL_SHORT } from "~/utils/constants";
 
-export default async function Client({ server, username, profileIconId, summonerLevel, patch }) {
-    const pathname = usePathname();
+export default async function Client({ server, username: rawUsername, profileIconId, summonerLevel, patch }) {
+    const username = rawUsername.replace("-", "#");
+
     const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${profileIconId}.png`;
 
     return (
@@ -37,7 +37,7 @@ export default async function Client({ server, username, profileIconId, summoner
                     <div className="flex flex-col items-center">
                         <div className="flex flex-col gap-6 ">
                             <div>
-                                <Link href={pathname + "/mastery"} className="underline">
+                                <Link href={`${rawUsername}/mastery`} className="underline">
                                     Mastery Points Tracker
                                 </Link>
                                 <div className="text-sm">
@@ -48,7 +48,7 @@ export default async function Client({ server, username, profileIconId, summoner
                                 </div>
                             </div>
                             <div>
-                                <Link href={pathname + "/different"} className="underline">
+                                <Link href={`${rawUsername}/different`} className="underline">
                                     [WIP] Champion Tracker
                                 </Link>
                                 <div className="text-sm">
