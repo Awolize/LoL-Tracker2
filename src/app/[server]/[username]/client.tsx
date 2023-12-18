@@ -1,15 +1,13 @@
-"use client";
+"use server";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { DATA_DRAGON_PROFIL_ICON, DATA_DRAGON_URL_SHORT } from "~/utils/constants";
 
-export default function Client({ server, username, profileIconId, summonerLevel, patch }) {
-    const router = useRouter();
-    console.log({ server, username, profileIconId, summonerLevel, patch });
-
+export default async function Client({ server, username, profileIconId, summonerLevel, patch }) {
+    const pathname = usePathname();
     const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${profileIconId}.png`;
-    console.log(profileIconUrl);
 
     return (
         <div>
@@ -39,9 +37,9 @@ export default function Client({ server, username, profileIconId, summonerLevel,
                     <div className="flex flex-col items-center">
                         <div className="flex flex-col gap-6 ">
                             <div>
-                                <button type="button" onClick={() => router.push("/mastery")} className="underline">
+                                <Link href={pathname + "/mastery"} className="underline">
                                     Mastery Points Tracker
-                                </button>
+                                </Link>
                                 <div className="text-sm">
                                     Tailored for the challenge{" "}
                                     <span className="italic font-bold">Catch &apos;em all</span>, but also works with{" "}
@@ -50,9 +48,9 @@ export default function Client({ server, username, profileIconId, summonerLevel,
                                 </div>
                             </div>
                             <div>
-                                <button type="button" onClick={() => router.push("/different")} className="underline">
+                                <Link href={pathname + "/different"} className="underline">
                                     [WIP] Champion Tracker
-                                </button>
+                                </Link>
                                 <div className="text-sm">
                                     Manually keep track of specific heroes. For challenges such as{" "}
                                     <span className="italic font-bold">All Random All Champions</span>, with{" "}
