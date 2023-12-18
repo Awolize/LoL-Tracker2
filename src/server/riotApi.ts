@@ -1,14 +1,10 @@
 import { RiotApi } from "twisted";
+import { env } from "~/env";
 
-import { env } from "../env/server.mjs";
+const globalForRiotApi = globalThis as unknown as {
+	riotApi: RiotApi | undefined;
+};
 
-declare global {
-    // eslint-disable-next-line no-var
-    var riotApi: RiotApi;
-}
+export const riotApi = globalForRiotApi.riotApi ?? new RiotApi();
 
-export const riotApi = global.riotApi || new RiotApi();
-
-if (env.NODE_ENV !== "production") {
-    global.riotApi = riotApi;
-}
+if (env.NODE_ENV !== "production") globalForRiotApi.riotApi = riotApi;

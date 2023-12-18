@@ -5,290 +5,289 @@ import { z } from "zod";
 import type { Participant } from "../../../types/different_types";
 import { regionToConstant } from "../../../utils/champsUtils";
 import {
-    getMatchesForSummonerBySummoner,
-    getUserByNameAndServer,
-    prepareSummonersCreation,
-    updateChampionDetails,
+	getMatchesForSummonerBySummoner,
+	getUserByNameAndServer,
+	prepareSummonersCreation,
+	updateChampionDetails,
 } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const processingApiRouter = createTRPCRouter({
-    updateChallengeConfig: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .mutation(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
-            const data = (await ctx.lolApi.Challenges.getConfig(region)).response;
+	updateChallengeConfig: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string() }))
+		.mutation(async ({ input, ctx }) => {
+			const region = regionToConstant(input.server.toUpperCase());
+			const data = (await ctx.lolApi.Challenges.getConfig(region)).response;
 
-            try {
-                await ctx.prisma.$transaction([
-                    // upsertMany hack
-                    ctx.prisma.challengesConfig.deleteMany(),
-                    ctx.prisma.challengesConfig.createMany({
-                        data: data.map((challenge) => {
-                            // There is one challenge that got an endtimestamp (id: 600012)
-                            //  "name":"Challenges are Here!"
+			try {
+				await ctx.prisma.$transaction([
+					// upsertMany hack
+					ctx.prisma.challengesConfig.deleteMany(),
+					ctx.prisma.challengesConfig.createMany({
+						data: data.map((challenge) => {
+							// There is one challenge that got an endtimestamp (id: 600012)
+							//  "name":"Challenges are Here!"
 
-                            return {
-                                id: challenge.id,
-                                leaderboard: challenge.leaderboard,
-                                state: challenge.state,
-                                thresholds: challenge.thresholds,
-                                endTimestamp: challenge.endTimestamp ? new Date(challenge.endTimestamp) : null,
-                            };
-                        }),
-                        skipDuplicates: true,
-                    }),
-                    ctx.prisma.challengeLocalization.createMany({
-                        data: data.map((challenge) => {
-                            const enUSLocalization = challenge.localizedNames.en_US;
+							return {
+								id: challenge.id,
+								leaderboard: challenge.leaderboard,
+								state: challenge.state,
+								thresholds: challenge.thresholds,
+								endTimestamp: challenge.endTimestamp ? new Date(challenge.endTimestamp) : null,
+							};
+						}),
+						skipDuplicates: true,
+					}),
+					ctx.prisma.challengeLocalization.createMany({
+						data: data.map((challenge) => {
+							const enUSLocalization = challenge.localizedNames.en_US;
 
-                            return {
-                                id: challenge.id,
-                                language: "en_US",
-                                name: enUSLocalization ? enUSLocalization.name : "",
-                                description: enUSLocalization ? enUSLocalization.description : "",
-                                shortDescription: enUSLocalization ? enUSLocalization.shortDescription : "",
-                            };
-                        }),
-                    }),
-                ]);
-            } catch (error) {
-                console.log("differentApiRouter: ");
-                console.log(error);
-            }
-        }),
+							return {
+								id: challenge.id,
+								language: "en_US",
+								name: enUSLocalization ? enUSLocalization.name : "",
+								description: enUSLocalization ? enUSLocalization.description : "",
+								shortDescription: enUSLocalization ? enUSLocalization.shortDescription : "",
+							};
+						}),
+					}),
+				]);
+			} catch (error) {
+				console.log("differentApiRouter: ");
+				console.log(error);
+			}
+		}),
 
-    updateGames: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
-        .mutation(async ({ input, ctx }) => {
-            try {
-                console.log(`UpdateGames for user ${input.username} (${input.server.toUpperCase()})`);
+	updateGames: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
+		.mutation(async ({ input, ctx }) => {
+			try {
+				console.log(`UpdateGames for user ${input.username} (${input.server.toUpperCase()})`);
 
-                const region = regionToConstant(input.server.toUpperCase());
+				const region = regionToConstant(input.server.toUpperCase());
 
-                const user = await getUserByNameAndServer(ctx, input.username, region);
+				const user = await getUserByNameAndServer(ctx, input.username, region);
 
-                let totalCount = input.count; // Total number of matches requested
-                const matchIds: string[] = [];
+				let totalCount = input.count; // Total number of matches requested
+				const matchIds: string[] = [];
 
-                let start = 0;
-                while (totalCount > 0) {
-                    const count = Math.min(100, totalCount); // Maximum count per request is 100
-                    const matchIdsResponse = await ctx.lolApi.MatchV5.list(user.puuid, regionToRegionGroup(region), {
-                        count: count,
-                        start: start,
-                        startTime: new Date("2022-05-11T00:00:00Z").getTime() / 1000,
-                    });
-                    if (matchIdsResponse.response.length === 0) break;
+				let start = 0;
+				while (totalCount > 0) {
+					const count = Math.min(100, totalCount); // Maximum count per request is 100
+					const matchIdsResponse = await ctx.lolApi.MatchV5.list(user.puuid, regionToRegionGroup(region), {
+						count: count,
+						start: start,
+						startTime: new Date("2022-05-11T00:00:00Z").getTime() / 1000,
+					});
+					if (matchIdsResponse.response.length === 0) break;
 
-                    matchIds.push(...matchIdsResponse.response);
-                    start += count;
-                    totalCount -= count;
-                }
-                console.log("Fetching", matchIds.length, "matches. For user", user.username);
+					matchIds.push(...matchIdsResponse.response);
+					start += count;
+					totalCount -= count;
+				}
+				console.log("Fetching", matchIds.length, "matches. For user", user.username);
 
-                const successfullyAddedGameIds: string[] = [];
-                const skipAddedGameIds: string[] = [];
-                const failedGameIds: string[] = [];
+				const successfullyAddedGameIds: string[] = [];
+				const skipAddedGameIds: string[] = [];
+				const failedGameIds: string[] = [];
 
-                for (let index = 0; index < matchIds.length; index++) {
-                    const matchId = matchIds[index];
+				for (let index = 0; index < matchIds.length; index++) {
+					const matchId = matchIds[index];
 
-                    const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
-                    const gameId = matchId?.split("_")[1];
+					const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
+					const gameId = matchId?.split("_")[1];
 
-                    try {
-                        if (!matchId || !gameId || !gameServer) continue;
+					try {
+						if (!matchId || !gameId || !gameServer) continue;
 
-                        // Create the Match record
-                        const existingGame = await ctx.prisma.match.findFirst({
-                            where: {
-                                gameId: gameId,
-                            },
-                        });
-                        if (existingGame) {
-                            skipAddedGameIds.push(gameId);
-                            continue;
-                        }
+						// Create the Match record
+						const existingGame = await ctx.prisma.match.findFirst({
+							where: {
+								gameId: gameId,
+							},
+						});
+						if (existingGame) {
+							skipAddedGameIds.push(gameId);
+							continue;
+						}
 
-                        const gameResponse = await ctx.lolApi.MatchV5.get(matchId, regionToRegionGroup(gameServer));
-                        const game = gameResponse.response;
+						const gameResponse = await ctx.lolApi.MatchV5.get(matchId, regionToRegionGroup(gameServer));
+						const game = gameResponse.response;
 
-                        const creationPromises = prepareSummonersCreation(ctx, game);
-                        const summoners = await Promise.all(creationPromises);
+						const creationPromises = prepareSummonersCreation(ctx, game);
+						const summoners = await Promise.all(creationPromises);
 
-                        await ctx.prisma.match.create({
-                            data: {
-                                gameId: gameId,
-                                server: gameServer,
-                                MatchInfo: {
-                                    create: {
-                                        gameCreation: new Date(game.info.gameCreation),
-                                        gameDuration: game.info.gameDuration,
-                                        gameEndTimestamp: new Date(
-                                            game.info.gameStartTimestamp + game.info.gameDuration,
-                                        ), // wrong
-                                        gameMode: game.info.gameMode,
-                                        gameName: game.info.gameName,
-                                        gameStartTimestamp: new Date(game.info.gameStartTimestamp),
-                                        gameType: game.info.gameType,
-                                        gameVersion: game.info.gameVersion,
-                                        mapId: game.info.mapId,
-                                        participants: game.info.participants as never,
-                                        platformId: game.info.platformId,
-                                        queueId: game.info.queueId,
-                                        teams: game.info.teams as never,
-                                        tournamentCode: game.info.tournamentCode,
-                                    },
-                                },
-                                participants: {
-                                    connect: summoners.map((summoner) => ({
-                                        puuid: summoner.puuid,
-                                    })),
-                                },
-                            },
-                        });
+						await ctx.prisma.match.create({
+							data: {
+								gameId: gameId,
+								server: gameServer,
+								MatchInfo: {
+									create: {
+										gameCreation: new Date(game.info.gameCreation),
+										gameDuration: game.info.gameDuration,
+										gameEndTimestamp: new Date(game.info.gameStartTimestamp + game.info.gameDuration), // wrong
+										gameMode: game.info.gameMode,
+										gameName: game.info.gameName,
+										gameStartTimestamp: new Date(game.info.gameStartTimestamp),
+										gameType: game.info.gameType,
+										gameVersion: game.info.gameVersion,
+										mapId: game.info.mapId,
+										participants: game.info.participants as never,
+										platformId: game.info.platformId,
+										queueId: game.info.queueId,
+										teams: game.info.teams as never,
+										tournamentCode: game.info.tournamentCode,
+									},
+								},
+								participants: {
+									connect: summoners.map((summoner) => ({
+										puuid: summoner.puuid,
+									})),
+								},
+							},
+						});
 
-                        successfullyAddedGameIds.push(gameId);
+						successfullyAddedGameIds.push(gameId);
 
-                        // Delay for 5000 milliseconds (0.2 times per second)
-                        await new Promise((resolve) => setTimeout(resolve, 5000));
-                    } catch (error) {
-                        if (!gameId) {
-                            console.error("gameid doesnt exist?", gameId);
-                            console.error({ error });
-                            continue;
-                        }
+						// Delay for 5000 milliseconds (0.2 times per second)
+						await new Promise((resolve) => setTimeout(resolve, 5000));
+					} catch (error) {
+						if (!gameId) {
+							console.error("gameid doesnt exist?", gameId);
+							console.error({ error });
+							continue;
+						}
 
-                        // Retry the same game by decrementing the index
-                        if (failedGameIds.includes(gameId)) {
-                            console.error("something went wrong on gameId:", gameId);
-                            console.warn("continue");
-                            continue;
-                        }
+						// Retry the same game by decrementing the index
+						if (failedGameIds.includes(gameId)) {
+							console.error("something went wrong on gameId:", gameId);
+							console.warn("continue");
+							continue;
+						}
 
-                        console.error("something went wrong on gameId:", gameId);
-                        console.warn("retry");
-                        index--;
-                        console.log(user.username, "progress:", index, "/", matchIds.length);
+						console.error("something went wrong on gameId:", gameId);
+						console.warn("retry");
+						index--;
+						console.log(user.username, "progress:", index, "/", matchIds.length);
 
-                        failedGameIds.push(gameId);
-                    }
-                }
-                console.log({
-                    successfullyAddedGameIds: successfullyAddedGameIds.length,
-                    failedGameIds: failedGameIds.length,
-                    skipAddedGameIds: skipAddedGameIds.length,
-                });
-                return { successfullyAddedGameIds, failedGameIds, skipAddedGameIds };
-            } catch (error) {
-                console.log("error:", JSON.stringify(error));
-            }
-        }),
-    updateJackOfAllChamps: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .mutation(async ({ input, ctx }) => {
-            console.log(`updateJackOfAllChamps for user ${input.username} (${input.server.toUpperCase()})`);
+						failedGameIds.push(gameId);
+					}
+				}
+				console.log({
+					successfullyAddedGameIds: successfullyAddedGameIds.length,
+					failedGameIds: failedGameIds.length,
+					skipAddedGameIds: skipAddedGameIds.length,
+				});
+				return { successfullyAddedGameIds, failedGameIds, skipAddedGameIds };
+			} catch (error) {
+				console.log("error:", JSON.stringify(error));
+			}
+		}),
+	updateJackOfAllChamps: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string() }))
+		.mutation(async ({ input, ctx }) => {
+			console.log(`updateJackOfAllChamps for user ${input.username} (${input.server.toUpperCase()})`);
 
-            const region = regionToConstant(input.server.toUpperCase());
-            const user = await ctx.prisma.summoner.findFirst({
-                where: {
-                    username: {
-                        mode: "insensitive",
-                        equals: input.username,
-                    },
-                    server: region,
-                },
-            });
+			const region = regionToConstant(input.server.toUpperCase());
 
-            if (!user) return;
+			const user = await ctx.prisma.summoner.findFirst({
+				where: {
+					username: {
+						mode: "insensitive",
+						equals: input.username,
+					},
+					server: region,
+				},
+			});
 
-            const matches = await getMatchesForSummonerBySummoner(ctx, user);
+			if (!user) return;
 
-            if (!matches) return;
+			const matches = await getMatchesForSummonerBySummoner(ctx, user);
 
-            const filteredInfoParticipants = matches
-                .flatMap((match) =>
-                    (match.MatchInfo?.participants as unknown as Participant[] | undefined)?.filter(
-                        (par) => par.puuid === user.puuid /* && par.champ == "champ" ish */,
-                    ),
-                )
-                .filter(Boolean) as Participant[];
+			if (!matches) return;
 
-            console.log(user.username, "Found", filteredInfoParticipants?.length, "games");
+			const filteredInfoParticipants = matches
+				.flatMap((match) =>
+					(match.MatchInfo?.participants as unknown as Participant[] | undefined)?.filter(
+						(par) => par.puuid === user.puuid /* && par.champ == "champ" ish */,
+					),
+				)
+				.filter(Boolean) as Participant[];
 
-            const loses: Participant[] = [];
-            const wins: Participant[] = [];
+			console.log(user.username, "Found", filteredInfoParticipants?.length, "games");
 
-            for (const participantInfo of filteredInfoParticipants) {
-                if (participantInfo.win) {
-                    wins.push(participantInfo);
-                } else {
-                    loses.push(participantInfo);
-                }
-            }
+			const loses: Participant[] = [];
+			const wins: Participant[] = [];
 
-            const challenges = (
-                await ctx.prisma.summoner.findFirst({
-                    where: { puuid: user.puuid },
-                    include: { challenges: true },
-                })
-            )?.challenges;
+			for (const participantInfo of filteredInfoParticipants) {
+				if (participantInfo.win) {
+					wins.push(participantInfo);
+				} else {
+					loses.push(participantInfo);
+				}
+			}
 
-            if (!challenges) {
-                await ctx.prisma.challenges.create({
-                    data: {
-                        summoner: { connect: { puuid: user.puuid } },
-                    },
-                });
-            }
+			const challenges = (
+				await ctx.prisma.summoner.findFirst({
+					where: { puuid: user.puuid },
+					include: { challenges: true },
+				})
+			)?.challenges;
 
-            const uniqueWins: Set<number> = new Set(wins.map((win) => win.championId));
-            const uniqueLoses: Set<number> = new Set(loses.map((lose) => lose.championId));
+			if (!challenges) {
+				await ctx.prisma.challenges.create({
+					data: {
+						summoner: { connect: { puuid: user.puuid } },
+					},
+				});
+			}
 
-            try {
-                await ctx.prisma.challenges.update({
-                    where: {
-                        puuid: user.puuid,
-                    },
-                    data: {
-                        jackOfAllChamps: {
-                            connect: [...uniqueWins].map((win) => ({ id: win })),
-                        },
-                    },
-                });
-            } catch (error) {
-                await updateChampionDetails(ctx);
-                console.error("Missing champ??");
-            }
+			const uniqueWins: Set<number> = new Set(wins.map((win) => win.championId));
+			const uniqueLoses: Set<number> = new Set(loses.map((lose) => lose.championId));
 
-            console.log(user.username, matches.length, {
-                wins: uniqueWins.size,
-                loses: uniqueLoses.size,
-            });
+			try {
+				await ctx.prisma.challenges.update({
+					where: {
+						puuid: user.puuid,
+					},
+					data: {
+						jackOfAllChamps: {
+							connect: [...uniqueWins].map((win) => ({ id: win })),
+						},
+					},
+				});
+			} catch (error) {
+				await updateChampionDetails(ctx);
+				console.error("Missing champ??");
+			}
 
-            return { numberOfGames: matches.length, uniqueWins: uniqueWins.size, uniqueLoses: uniqueLoses.size };
-        }),
+			console.log(user.username, matches.length, {
+				wins: uniqueWins.size,
+				loses: uniqueLoses.size,
+			});
 
-    updateChampions: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+			return { numberOfGames: matches.length, uniqueWins: uniqueWins.size, uniqueLoses: uniqueLoses.size };
+		}),
 
-            return {};
-        }),
-    updateInvincible: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+	updateChampions: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string() }))
+		.query(async ({ input }) => {
+			regionToConstant(input.server.toUpperCase());
 
-            return {};
-        }),
-    updatePerfectionist: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+			return {};
+		}),
+	updateInvincible: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string() }))
+		.query(async ({ input }) => {
+			regionToConstant(input.server.toUpperCase());
 
-            return {};
-        }),
+			return {};
+		}),
+	updatePerfectionist: publicProcedure
+		.input(z.object({ username: z.string(), server: z.string() }))
+		.query(async ({ input }) => {
+			regionToConstant(input.server.toUpperCase());
+
+			return {};
+		}),
 });
