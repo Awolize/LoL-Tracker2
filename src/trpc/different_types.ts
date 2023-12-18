@@ -6,7 +6,7 @@ export interface Participant {
     baronKills: number;
     basicPings: number;
     bountyLevel: number;
-    challenges: { [key: string]: number };
+    challenges: Record<string, number>;
     champExperience: number;
     champLevel: number;
     championId: number;

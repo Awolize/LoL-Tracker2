@@ -36,7 +36,7 @@ dependencies:
     specifier: ^1.6.3
     version: 1.6.3
   next:
-    specifier: ^14.0.3
+    specifier: ^14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
   react:
     specifier: 18.2.0
@@ -68,40 +68,40 @@ devDependencies:
     specifier: 1.4.1
     version: 1.4.1
   '@next/eslint-plugin-next':
-    specifier: ^14.0.3
+    specifier: ^14.0.4
     version: 14.0.4
   '@types/eslint':
-    specifier: ^8.44.7
+    specifier: ^8.44.9
     version: 8.44.9
   '@types/node':
-    specifier: ^18.17.0
+    specifier: ^18.19.3
     version: 18.19.3
   '@types/react':
-    specifier: ^18.2.37
+    specifier: ^18.2.45
     version: 18.2.45
   '@types/react-dom':
-    specifier: ^18.2.15
+    specifier: ^18.2.17
     version: 18.2.17
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.11.0
+    specifier: ^6.14.0
     version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.55.0)(typescript@5.3.3)
   '@typescript-eslint/parser':
-    specifier: ^6.11.0
+    specifier: ^6.14.0
     version: 6.14.0(eslint@8.55.0)(typescript@5.3.3)
   autoprefixer:
-    specifier: ^10.4.14
+    specifier: ^10.4.16
     version: 10.4.16(postcss@8.4.32)
   eslint:
-    specifier: ^8.54.0
+    specifier: ^8.55.0
     version: 8.55.0
   postcss:
-    specifier: ^8.4.31
+    specifier: ^8.4.32
     version: 8.4.32
   prisma:
     specifier: 4.15.0
     version: 4.15.0
   tailwindcss:
-    specifier: ^3.3.5
+    specifier: ^3.3.6
     version: 3.3.6
   typescript:
     specifier: ^5.3.3

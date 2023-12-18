@@ -3,8 +3,7 @@ import React from "react";
 import Image from "next/image";
 
 import type { ChampionDetails } from "@prisma/client";
-
-import { DATA_DRAGON_URL } from "../utils/constants";
+import { DATA_DRAGON_URL } from "~/utils/constants";
 
 export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails; hide: boolean }) => {
     return (

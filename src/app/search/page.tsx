@@ -1,26 +1,26 @@
+"use client";
+
 import { useRef, useState } from "react";
 
-import { type NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import LoadingComponent from "../_components/loading-spinner";
+import Row from "../_components/row";
+import ServerListSelector, { servers } from "../_components/server-list-selector";
 
-import { LoadingComponent } from "../_components/LoadingSpinner";
-import Row from "../_components/Row";
-import { ServerListSelector, servers } from "../_components/ServerListSelector";
-
-const Home: NextPage = () => {
+export default function Page() {
     const router = useRouter();
     const usernameRef = useRef<HTMLInputElement>(null);
     const gameTagRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
     const [selectedServer, setSelectedServer] = useState(servers[0]);
 
-    function onSubmit(e) {
+    function onSubmit(e: React.FormEvent) {
         e.preventDefault();
-        router.push(`/${selectedServer?.name}/${usernameRef.current?.value}-${gameTagRef.current?.value}`);
         console.log(
             `Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value}-${gameTagRef.current?.value}..."`,
         );
+        router.push(`/${selectedServer?.name}/${usernameRef.current?.value}-${gameTagRef.current?.value}`);
         setLoading(true);
     }
 
@@ -76,6 +76,4 @@ const Home: NextPage = () => {
             </main>
         </>
     );
-};
-
-export default Home;
+}
