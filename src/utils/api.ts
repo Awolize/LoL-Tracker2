@@ -20,8 +20,6 @@ const getBaseUrl = () => {
 };
 
 const getProcessingUrl = () => {
-    console.log(process.env.NODE_ENV);
-
     return process.env.NODE_ENV === "development" ? getBaseUrl() : `https://processing-lol.awot.dev`;
 };
 

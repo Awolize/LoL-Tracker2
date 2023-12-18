@@ -419,8 +419,8 @@ export const getServerSideProps = async (context) => {
     };
 };
 
-async function getCompleteChampionData(lolApi: LolApi, region: Regions, username: Summoner) {
-    const championMasteries = await masteryBySummoner(lolApi, region, username);
+async function getCompleteChampionData(lolApi: LolApi, region: Regions, user: Summoner) {
+    const championMasteries = await masteryBySummoner(lolApi, region, user);
     const championsDD = await lolApi.DataDragon.getChampion();
 
     const completeChampsData = Object.values(championsDD.data)

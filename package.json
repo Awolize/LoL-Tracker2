@@ -6,8 +6,8 @@
         "build": "next build",
         "dev": "next dev",
         "postinstall": "prisma generate",
-        "lint": "next lint",
         "start": "next start",
+        "lint": "next lint",
         "lint:fix": "eslint --fix --ext .ts,.tsx ./",
         "format": "biome format . --write"
     },
