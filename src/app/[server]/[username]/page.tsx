@@ -3,9 +3,10 @@
 import { z } from "zod";
 
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
+
+import { useApi } from "~/app/_components/useApi";
 import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
-import { useApi } from "~/app/_components/useApi";
 
 const paramsSchema = z.object({
     server: z.string(),

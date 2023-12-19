@@ -4,9 +4,9 @@ import React from "react";
 
 import Image from "next/image";
 
-import { useDataDragonPath } from "./useDataDragonPath";
 import { filteredOut } from "~/utils/champsUtils";
 import { type CompleteChampionInfo } from "../[server]/[username]/mastery/page";
+import { useDataDragonPath } from "./useDataDragonPath";
 
 interface ChampionItemProps {
     champ: CompleteChampionInfo;

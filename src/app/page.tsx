@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-import ServerListSelector, { servers } from "./_components/server-list-selector";
 import Column from "./_components/column";
 import LoadingComponent from "./_components/loading-spinner";
+import ServerListSelector, { servers } from "./_components/server-list-selector";
 
 export default function Page() {
     const router = useRouter();

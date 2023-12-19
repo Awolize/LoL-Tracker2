@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { DATA_DRAGON_PROFIL_ICON, DATA_DRAGON_URL_SHORT } from "~/utils/constants";
+import { DATA_DRAGON_PROFILE_ICON, DATA_DRAGON_URL_SHORT } from "~/utils/constants";
 
 export default async function Client({ server, username: rawUsername, profileIconId, summonerLevel, patch }) {
     const username = rawUsername.replace("-", "#");
 
-    const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFIL_ICON}/${profileIconId}.png`;
+    const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFILE_ICON}/${profileIconId}.png`;
 
     return (
         <div>

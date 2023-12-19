@@ -5,7 +5,7 @@ import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 
-import { type ProcessingRouter, type AppRouter } from "~/server/api/root";
+import { type AppRouter, type ProcessingRouter } from "~/server/api/root";
 import { getProcessingUrl, getUrl, transformer } from "./shared";
 
 export const api = createTRPCReact<AppRouter>();

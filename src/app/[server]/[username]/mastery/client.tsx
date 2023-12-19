@@ -8,20 +8,20 @@ import { Fragment, useEffect, useState } from "react";
 
 import Head from "next/head";
 
-import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon as RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { parse } from "superjson";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
-import type { ChallengeId } from "../../../../utils/champsUtils";
-import { SortOrder, filteredOut, isChallengeId, partition, sortAlgorithm } from "../../../../utils/champsUtils";
-import { type CompleteChampionInfo } from "./page";
-import { api } from "~/trpc/react";
 import ChampionItem from "~/app/_components/ChampionItem";
 import Dropdown from "~/app/_components/Dropdown";
 import RoleHeader from "~/app/_components/RoleHeader";
 import { SwitchWithLabel } from "~/app/_components/SwitchWithLabel";
 import { ToggleEye } from "~/app/_components/ToggleEye";
+import { api } from "~/trpc/react";
+import type { ChallengeId } from "../../../../utils/champsUtils";
+import { SortOrder, filteredOut, isChallengeId, partition, sortAlgorithm } from "../../../../utils/champsUtils";
+import { type CompleteChampionInfo } from "./page";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 

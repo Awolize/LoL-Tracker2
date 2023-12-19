@@ -1,6 +1,6 @@
+import { PrismaClient } from "@prisma/client";
 import { RiotApi } from "twisted";
 import { LolApi } from "twisted";
-import { PrismaClient } from "@prisma/client";
 
 export function useApi() {
     const prisma = new PrismaClient();

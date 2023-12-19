@@ -2,8 +2,8 @@ import "~/styles/globals.css";
 
 import { cookies } from "next/headers";
 
-import { TRPCReactProvider } from "~/trpc/react";
 import { type Metadata } from "next";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
     applicationName: "LoL Mastery Tracker",

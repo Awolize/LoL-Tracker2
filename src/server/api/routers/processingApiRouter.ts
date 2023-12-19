@@ -2,6 +2,8 @@ import type { Regions } from "twisted/dist/constants";
 import { regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
+import { type Participant } from "~/trpc/different_types";
+import { regionToConstant } from "~/utils/champsUtils";
 import {
     getMatchesForSummonerBySummoner,
     getUserByNameAndServer,
@@ -9,8 +11,6 @@ import {
     updateChampionDetails,
 } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { type Participant } from "~/trpc/different_types";
-import { regionToConstant } from "~/utils/champsUtils";
 
 export const processingApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
