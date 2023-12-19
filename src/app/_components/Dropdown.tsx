@@ -29,7 +29,7 @@ const Dropdown = ({ callback, choices, saveName }: Props) => {
                 }
             }
         }
-    }, []);
+    }, [saveName, choices.length, choices]);
 
     useEffect(() => {
         if (selected?.value != null) {
@@ -40,7 +40,7 @@ const Dropdown = ({ callback, choices, saveName }: Props) => {
                 window.localStorage.setItem(saveName, selected.value.toString());
             }
         }
-    }, [selected?.value]);
+    }, [selected?.value, callback, saveName]);
 
     return (
         <Listbox value={selected} onChange={setSelected}>
@@ -58,9 +58,9 @@ const Dropdown = ({ callback, choices, saveName }: Props) => {
                     leaveTo="opacity-0"
                 >
                     <Listbox.Options className="max-h-75 absolute mt-1 w-full overflow-auto rounded-md bg-gray-900 py-1 text-base text-gray-100 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {choices.map((person, personIdx) => (
+                        {choices.map((person) => (
                             <Listbox.Option
-                                key={personIdx}
+                                key={person.text}
                                 className={({ active }) =>
                                     `relative cursor-default select-none py-2 pl-10 pr-4 text-gray-100 ${
                                         active ? "bg-gray-800" : ""

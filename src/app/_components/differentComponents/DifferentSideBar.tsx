@@ -77,7 +77,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
         return (
-            <button className={itemClasses} onClick={handleClick}>
+            <button type="button" className={itemClasses} onClick={handleClick}>
                 Update jack of all champs
             </button>
         );
