@@ -1,6 +1,6 @@
 import type { Prisma, PrismaClient, Summoner } from "@prisma/client";
 import type { LolApi, RiotApi } from "twisted";
-import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
+import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
 import type { MatchV5DTOs } from "twisted/dist/models-dto";
 
 const splitUsername = (username) => {
@@ -96,41 +96,40 @@ export const prepareSummonersCreation = (
 
         if (existingSummoner) {
             return existingSummoner;
-        } else {
-            // Create a new Summoner record if it doesn't exist
-            const region: Regions | null = game.metadata.matchId.split("_")[0] as Regions | null;
-            if (!region) {
-                console.log(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
-                throw new Error(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
-            }
-            const user = (await ctx.lolApi.Summoner.getByPUUID(participant, region)).response;
-            const upsertedSummoner = await ctx.prisma.summoner.upsert({
-                where: {
-                    puuid: user.puuid,
-                },
-                update: {
-                    summonerId: user.id,
-                    server: region,
-                    username: user.name,
-                    profileIconId: user.profileIconId,
-                    summonerLevel: user.summonerLevel,
-                    revisionDate: new Date(user.revisionDate),
-                    accountId: user.accountId,
-                },
-                create: {
-                    puuid: user.puuid,
-                    summonerId: user.id,
-                    server: region,
-                    username: user.name,
-                    profileIconId: user.profileIconId,
-                    summonerLevel: user.summonerLevel,
-                    revisionDate: new Date(user.revisionDate),
-                    accountId: user.accountId,
-                },
-            });
-
-            return upsertedSummoner;
         }
+        // Create a new Summoner record if it doesn't exist
+        const region: Regions | null = game.metadata.matchId.split("_")[0] as Regions | null;
+        if (!region) {
+            console.log(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
+            throw new Error(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
+        }
+        const user = (await ctx.lolApi.Summoner.getByPUUID(participant, region)).response;
+        const upsertedSummoner = await ctx.prisma.summoner.upsert({
+            where: {
+                puuid: user.puuid,
+            },
+            update: {
+                summonerId: user.id,
+                server: region,
+                username: user.name,
+                profileIconId: user.profileIconId,
+                summonerLevel: user.summonerLevel,
+                revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
+            },
+            create: {
+                puuid: user.puuid,
+                summonerId: user.id,
+                server: region,
+                username: user.name,
+                profileIconId: user.profileIconId,
+                summonerLevel: user.summonerLevel,
+                revisionDate: new Date(user.revisionDate),
+                accountId: user.accountId,
+            },
+        });
+
+        return upsertedSummoner;
     });
 
     return summonerPromises;

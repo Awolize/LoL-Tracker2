@@ -1,6 +1,6 @@
 "use server";
 
-import { type ChampionDetails, PrismaClient } from "@prisma/client";
+import { PrismaClient, type ChampionDetails } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { z } from "zod";
 

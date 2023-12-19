@@ -1,14 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
 
-import Head from "next/head";
-
-import { ArrowPathIcon as RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { parse } from "superjson";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";

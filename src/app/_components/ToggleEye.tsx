@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Switch } from "@headlessui/react";
 
 export const ToggleEye = ({ label, checked, onChange }) => {
@@ -7,7 +5,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
         <div className="flex flex-row items-center gap-2">
             <Switch checked={checked} onChange={onChange}>
                 <span className="sr-only">{label}</span>
-                <span className={`justify-center items-center content-center w-full h-full transform transition`}>
+                <span className={"justify-center items-center content-center w-full h-full transform transition"}>
                     {checked ? (
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
