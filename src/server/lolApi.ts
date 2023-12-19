@@ -2,7 +2,7 @@ import { LolApi } from "twisted";
 import { env } from "~/env";
 
 const globalForLolApi = globalThis as unknown as {
-	lolApi: LolApi | undefined;
+    lolApi: LolApi | undefined;
 };
 
 export const lolApi = globalForLolApi.lolApi ?? new LolApi();

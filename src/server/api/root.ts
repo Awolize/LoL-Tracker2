@@ -9,8 +9,8 @@ import { riotApiRouter } from "~/server/api/routers/riot";
  * All routers added in /api/routers should be manually added here
  */
 export const appRouter = createTRPCRouter({
-	riotApi: riotApiRouter,
-	differentApi: differentApiRouter,
+    riotApi: riotApiRouter,
+    differentApi: differentApiRouter,
 });
 
 // export type definition of API
@@ -22,7 +22,7 @@ export type AppRouter = typeof appRouter;
  * All routers added in /api/routers should be manually added here
  */
 export const processingRouter = createTRPCRouter({
-	processingApi: processingApiRouter,
+    processingApi: processingApiRouter,
 });
 
 // export type definition of API

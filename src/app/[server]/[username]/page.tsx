@@ -1,12 +1,11 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
-import { LolApi, RiotApi } from "twisted";
 import { z } from "zod";
 
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
+import { useApi } from "~/app/_components/useApi";
 
 const paramsSchema = z.object({
     server: z.string(),
@@ -18,9 +17,8 @@ export default async function Page({ params }) {
     const username = rawUsername.replace("-", "#");
 
     const region = regionToConstant(server.toUpperCase());
-    const prisma = new PrismaClient();
-    const lolApi = new LolApi();
-    const riotApi = new RiotApi();
+
+    const { prisma, lolApi, riotApi } = useApi();
 
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 

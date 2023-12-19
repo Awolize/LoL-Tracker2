@@ -165,21 +165,8 @@ export function Client(props: {
         );
     }
 
-    const title = `LoL Mastery Tracker for ${props.username} on ${props.server}.`;
     return (
-        <div>
-            <Head>
-                <title>{title}</title>
-                <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
-                <meta
-                    property="og:description"
-                    name="description"
-                    content="Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
-                />
-                <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
+        <>
             <header className="relative mt-2 flex flex-row gap-8 z-50 px-5">
                 <div
                     className={`w-full min-w-fit flex items-center justify-start gap-4 ${
@@ -356,6 +343,6 @@ export function Client(props: {
                     );
                 })}
             </main>
-        </div>
+        </>
     );
 }

@@ -5,15 +5,13 @@ const SUMMONERS_PER_SITEMAP = 10000;
 
 export async function generateSitemaps() {
     const prisma = new PrismaClient();
-    const summonersSize = await prisma.summoner.count()
+    const summonersSize = await prisma.summoner.count();
     const numberOfSitemaps = Math.ceil(summonersSize / SUMMONERS_PER_SITEMAP);
-    const resultArray = Array.from({ length: numberOfSitemaps }, (_, index) => ({id: index}));
+    const resultArray = Array.from({ length: numberOfSitemaps }, (_, index) => ({ id: index }));
     return resultArray;
 }
 
-export default async function sitemap({
-    id,
-}) {
+export default async function sitemap({ id }) {
     const summoners = (await getSummoners(id)).filter((e) => e.gameName && e.tagLine);
     const summonersSitemaps = summoners.map(({ gameName, tagLine, updatedAt }) => ({
         url: `${BASE_URL}/EUW/${gameName}-${tagLine}`,
@@ -32,7 +30,7 @@ export default async function sitemap({
             changeFrequency: "monthly",
             priority: 0.8,
         },
-        ...(summonersSitemaps),
+        ...summonersSitemaps,
     ];
 }
 

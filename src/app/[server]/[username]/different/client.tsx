@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import Head from "next/head";
-
 import type { ChampionDetails } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 
@@ -47,24 +45,10 @@ export default function Client({
         };
     }, [selectedItem, selectedChallenge]);
 
-    const title = `LoL Mastery Tracker for ${username} on ${server}.`;
-
     const completedChampsLength = selectedChallengeQuery?.data.length;
 
     return (
         <div>
-            <Head>
-                <title>{title}</title>
-                <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
-                <meta
-                    property="og:description"
-                    name="description"
-                    content="Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
-                />
-                <meta property="og:image" content="https://lol.awot.dev/favicon.png" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
             <div className="flex h-screen w-screen justify-center">
                 <aside className="z-10">
                     <DifferentSideBar

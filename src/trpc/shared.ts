@@ -6,26 +6,26 @@ import { type ProcessingRouter, type AppRouter } from "~/server/api/root";
 export const transformer = superjson;
 
 function getBaseUrl() {
-	if (typeof window !== "undefined") return "";
-	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-	return `http://localhost:${process.env.PORT ?? 3000}`;
+    if (typeof window !== "undefined") return "";
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
 export function getUrl() {
-	return getBaseUrl() + "/api/trpc";
+    return getBaseUrl() + "/api/trpc";
 }
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 function getBaseProcessingUrl() {
-	if (typeof window !== "undefined") return "";
-	if (process.env.VERCEL_URL) return `https://${process.env.PROCESSING_URL}`;
-	return `http://localhost:${process.env.PORT ?? 3000}`;
+    if (typeof window !== "undefined") return "";
+    if (process.env.VERCEL_URL) return `https://${process.env.PROCESSING_URL}`;
+    return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
 export function getProcessingUrl() {
-	return getBaseProcessingUrl() + "/api/trpc";
+    return getBaseProcessingUrl() + "/api/trpc";
 }
 
 export type ProcessingRouterInputs = inferRouterInputs<ProcessingRouter>;

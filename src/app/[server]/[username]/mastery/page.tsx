@@ -1,10 +1,9 @@
 "use server";
 
 import type { Summoner } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { stringify } from "superjson";
-import { LolApi, RiotApi } from "twisted";
+import { type LolApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import { z } from "zod";
@@ -20,6 +19,7 @@ import {
 import rolesJson from "../roles.json";
 import { Client } from "./client";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
+import { useApi } from "~/app/_components/useApi";
 
 interface Roles {
     role: string;
@@ -36,9 +36,8 @@ export default async function Page({ params }) {
     const { server, username: parsedUsername } = paramsSchema.parse(params);
     const username = parsedUsername.replace("-", "#");
     const region = regionToConstant(server.toUpperCase());
-    const prisma = new PrismaClient();
-    const lolApi = new LolApi();
-    const riotApi = new RiotApi();
+
+    const { prisma, lolApi, riotApi } = useApi();
 
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 

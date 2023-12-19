@@ -27,12 +27,12 @@ import { riotApi } from "~/server/riotApi";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-	return {
-		prisma,
-		lolApi,
-		riotApi,
-		...opts,
-	};
+    return {
+        prisma,
+        lolApi,
+        riotApi,
+        ...opts,
+    };
 };
 
 /**
@@ -43,16 +43,16 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * errors on the backend.
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
-	transformer: superjson,
-	errorFormatter({ shape, error }) {
-		return {
-			...shape,
-			data: {
-				...shape.data,
-				zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-			},
-		};
-	},
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+        return {
+            ...shape,
+            data: {
+                ...shape.data,
+                zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+            },
+        };
+    },
 });
 
 /**
