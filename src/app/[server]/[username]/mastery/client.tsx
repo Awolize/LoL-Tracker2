@@ -7,8 +7,8 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { parse } from "superjson";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
+import Dropdown from "~/app/_components/Dropdown";
 import ChampionItem from "~/app/_components/champion-item";
-import Dropdown from "~/app/_components/dropdown";
 import RoleHeader from "~/app/_components/role-header";
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
