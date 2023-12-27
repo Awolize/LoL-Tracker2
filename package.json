@@ -33,7 +33,8 @@
 		"sharp": "^0.33.0",
 		"superjson": "^2.2.1",
 		"twisted": "github:Awolize/twisted#build-dist",
-		"zod": "^3.22.4"
+		"zod": "^3.22.4",
+		"zustand": "^4.4.7"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.4.1",

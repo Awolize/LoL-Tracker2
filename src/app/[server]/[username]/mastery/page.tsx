@@ -16,7 +16,7 @@ import {
     regionToConstant,
 } from "../../../../utils/champsUtils";
 
-import { useApi } from "~/app/_components/useApi";
+import { useApi } from "~/app/_components/use-api";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
 import rolesJson from "../roles.json";
 import { Client } from "./client";

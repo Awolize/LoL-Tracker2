@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { getUserByNameAndServer } from "../../../server/api/differentHelper";
 
-import { useApi } from "~/app/_components/useApi";
+import { useApi } from "~/app/_components/use-api";
 import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
 

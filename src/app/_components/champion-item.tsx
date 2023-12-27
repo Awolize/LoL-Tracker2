@@ -6,7 +6,7 @@ import Image from "next/image";
 
 import { filteredOut } from "~/utils/champsUtils";
 import { type CompleteChampionInfo } from "../[server]/[username]/mastery/page";
-import { useDataDragonPath } from "./useDataDragonPath";
+import { useDataDragonPath } from "./use-data-dragon-path";
 
 interface ChampionItemProps {
     champ: CompleteChampionInfo;
@@ -15,22 +15,22 @@ interface ChampionItemProps {
     showFinished: boolean;
     showChest: boolean;
     showLevel: boolean;
-    hiddenChamps: Set<number>;
+    hiddenChamp: boolean;
 }
 
 const ChampionItem: React.FC<ChampionItemProps> = ({
     champ,
-    handleChampionClick,
     filterPoints,
     showFinished,
     showChest,
     showLevel,
-    hiddenChamps,
+    hiddenChamp,
+    handleChampionClick,
 }) => {
     const disabled = filteredOut(champ, filterPoints);
     const hide = disabled && !showFinished;
 
-    const getImage = useDataDragonPath();
+    const { getChampionImage } = useDataDragonPath();
 
     if (hide) return <></>;
 
@@ -42,9 +42,9 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
         >
             <div className="relative z-10">
                 {showLevel && (
-                    <span className="absolute flex top-1 left-1 h-6 w-6 font-bold items-center justify-center bg-opacity-50 bg-gray-900 text-xs rounded-full">
+                    <div className="absolute flex top-1 left-1 h-6 w-6 font-bold items-center justify-center bg-opacity-50 bg-gray-900 text-xs rounded-full">
                         {champ.championLevel}
-                    </span>
+                    </div>
                 )}
                 {showChest && !champ.chestGranted && (
                     <span className="absolute top-[3px] right-[3px] flex h-6 w-6 items-center justify-center px-[0.20rem] ">
@@ -76,19 +76,27 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                 )}
 
                 <Image
-                    src={getImage(champ.image.full)}
+                    src={getChampionImage(champ.image.full)}
                     style={{
                         zIndex: -1,
                         opacity: disabled ? "40%" : "100%",
+                        boxSizing: "border-box",
                     }}
-                    className={`${hiddenChamps.has(champ.championId) ? "grayscale brightness-50" : ""} ${
-                        disabled ? "grayscale" : ""
-                    }`}
+                    className={`
+                        ${hiddenChamp && "grayscale brightness-50"} 
+                        ${disabled && "grayscale"} 
+                        rounded
+                        ${showLevel && champ.championLevel === 7 && "border-4 border-sky-500 border-opacity-70"}
+                        ${showLevel && champ.championLevel === 6 && "border-4 border-purple-600 border-opacity-60"}
+                        ${showLevel && champ.championLevel === 5 && "border-4 border-red-600 border-opacity-50"}
+                        ${showLevel && champ.championLevel < 5 && "border-4 border-yellow-700 border-opacity-25"}
+                    `}
                     alt={`${champ.name}`}
                     height={90}
                     width={90}
                     // hidden={hideAll}
-                    // placeholderSrc="/placeholder.png"
+                    placeholder="blur"
+                    blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 />
             </div>
 

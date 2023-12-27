@@ -7,11 +7,11 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { parse } from "superjson";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
-import ChampionItem from "~/app/_components/ChampionItem";
-import Dropdown from "~/app/_components/Dropdown";
-import RoleHeader from "~/app/_components/RoleHeader";
-import { SwitchWithLabel } from "~/app/_components/SwitchWithLabel";
-import { ToggleEye } from "~/app/_components/ToggleEye";
+import ChampionItem from "~/app/_components/champion-item";
+import Dropdown from "~/app/_components/dropdown";
+import RoleHeader from "~/app/_components/role-header";
+import { SwitchWithLabel } from "~/app/_components/switch-w-label";
+import { ToggleEye } from "~/app/_components/toggle-eye";
 import { api } from "~/trpc/react";
 import type { ChallengeId } from "../../../../utils/champsUtils";
 import { SortOrder, filteredOut, isChallengeId, partition, sortAlgorithm } from "../../../../utils/champsUtils";
@@ -279,6 +279,7 @@ export function Client(props: {
                     </div>
                 </div>
             </header>
+
             <main className="flex flex-row gap-2">
                 {Object.entries(championsByRole).map(([role, champions]) => {
                     const champsWithRoleHiddenExcluded = hideChampionsMode
@@ -317,7 +318,7 @@ export function Client(props: {
                                         showFinished={showFinished}
                                         showChest={showChests}
                                         showLevel={showLevel}
-                                        hiddenChamps={hiddenChamps}
+                                        hiddenChamp={hiddenChamps.has(champ.championId)}
                                     />
                                 ))}
                                 {doneChamps.map((champ) => (
@@ -329,7 +330,7 @@ export function Client(props: {
                                         showFinished={showFinished}
                                         showChest={showChests}
                                         showLevel={showLevel}
-                                        hiddenChamps={hiddenChamps}
+                                        hiddenChamp={hiddenChamps.has(champ.championId)}
                                     />
                                 ))}
                             </ul>

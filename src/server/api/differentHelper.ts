@@ -33,15 +33,22 @@ export async function getUserByNameAndServer(
     server: Regions,
 ) {
     try {
+        console.time("ctx.prisma.summoner.findFirst");
         const user = await ctx.prisma.summoner.findFirst({
             where: {
-                username: {
-                    mode: "insensitive",
-                    equals: username,
+                gameName: {
+                    equals: username.split("#")[0],
+                },
+                tagLine: {
+                    equals: username.split("#")[1],
                 },
                 server: server,
             },
         });
+
+        console.timeEnd("ctx.prisma.summoner.findFirst");
+
+        console.log("found user?", !!user, username);
 
         if (user) {
             return user; // is existing user;

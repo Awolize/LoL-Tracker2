@@ -127,12 +127,19 @@ export const getPlayerChallengesData = async (api: LolApi, region: Regions, user
     return challengesMap;
 };
 
-export const getChallengesThresholds = async (api: LolApi, region: Regions) => {
+export const getChallengesThresholds = async (lolApi: LolApi, region: Regions) => {
     const challengeIds: ChallengeId[] = [202303, 210001, 401106];
+    const promises = challengeIds.map(async (challengeId) => {
+        const thresholds = (await lolApi.Challenges.getChallengeConfig(challengeId, region)).response;
+        return { challengeId, thresholds: thresholds.thresholds };
+    });
+
+    const results = await Promise.all(promises);
+
     const thresholdsMap = new Map<ChallengeId, Record<string, number>>();
-    for (const challengeId of challengeIds) {
-        const thresholds = (await api.Challenges.getChallengeConfig(challengeId, region)).response;
-        thresholdsMap.set(challengeId, thresholds.thresholds);
+    for (const { challengeId, thresholds } of results) {
+        thresholdsMap.set(challengeId, thresholds);
     }
+
     return thresholdsMap;
 };

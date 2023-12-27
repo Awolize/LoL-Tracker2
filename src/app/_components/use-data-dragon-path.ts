@@ -27,5 +27,5 @@ export const useDataDragonPath = () => {
         return `${dataDragonPath}/${championName}`;
     };
 
-    return getChampionImage;
+    return {getChampionImage};
 };
