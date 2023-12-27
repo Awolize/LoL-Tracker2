@@ -94,8 +94,8 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                     alt={`${champ.name}`}
                     height={90}
                     width={90}
-                    fill
-                    unoptimized={false}
+                    // fill
+                    // unoptimized={false}
                     // hidden={hideAll}
                     placeholder="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 />
