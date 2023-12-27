@@ -95,7 +95,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                     height={90}
                     width={90}
                     // fill
-                    // unoptimized={false}
+                    unoptimized={true}
                     // hidden={hideAll}
                     placeholder="blur"
                     placeholderSrc="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
