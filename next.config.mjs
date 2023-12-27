@@ -19,10 +19,11 @@ const config = {
                 protocol: "https",
                 hostname: "ddragon.leagueoflegends.com",
                 port: "",
-                pathname: "/**",
+                pathname: "cdn/**",
             },
         ],
     },
+
     output: process.env.STANDALONE ? "standalone" : undefined,
     headers: async () => {
         return [
