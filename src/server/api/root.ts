@@ -1,7 +1,8 @@
-import { differentApiRouter } from "./routers/differentApiRouter";
-import { processingApiRouter } from "./routers/processingApiRouter";
-import { riotApiRouter } from "./routers/riot";
-import { createTRPCRouter } from "./trpc";
+import { differentApiRouter } from "~/server/api/routers/differentApiRouter";
+import { processingApiRouter } from "~/server/api/routers/processingApiRouter";
+import { riotApiRouter } from "~/server/api/routers/riot";
+import { createTRPCRouter } from "~/server/api/trpc";
+
 /**
  * This is the primary router for your server.
  *
@@ -15,14 +16,14 @@ export const appRouter = createTRPCRouter({
 // export type definition of API
 export type AppRouter = typeof appRouter;
 
+/**
+ * This is the primary router for your server.
+ *
+ * All routers added in /api/routers should be manually added here
+ */
 export const processingRouter = createTRPCRouter({
     processingApi: processingApiRouter,
 });
 
+// export type definition of API
 export type ProcessingRouter = typeof processingRouter;
-
-export const togetherRouter = createTRPCRouter({
-    riotApi: riotApiRouter,
-    differentApi: differentApiRouter,
-    processingApi: processingApiRouter,
-});

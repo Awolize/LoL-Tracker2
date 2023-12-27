@@ -2,8 +2,8 @@ import type { Regions } from "twisted/dist/constants";
 import { regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
-import type { Participant } from "../../../types/different_types";
-import { regionToConstant } from "../../../utils/champsUtils";
+import { type Participant } from "~/trpc/different_types";
+import { regionToConstant } from "~/utils/champsUtils";
 import {
     getMatchesForSummonerBySummoner,
     getUserByNameAndServer,
@@ -21,7 +21,7 @@ export const processingApiRouter = createTRPCRouter({
 
             try {
                 await ctx.prisma.$transaction([
-                    // upsertMany hack
+                    // upsertMany "hack"
                     ctx.prisma.challengesConfig.deleteMany(),
                     ctx.prisma.challengesConfig.createMany({
                         data: data.map((challenge) => {
@@ -191,6 +191,7 @@ export const processingApiRouter = createTRPCRouter({
             console.log(`updateJackOfAllChamps for user ${input.username} (${input.server.toUpperCase()})`);
 
             const region = regionToConstant(input.server.toUpperCase());
+
             const user = await ctx.prisma.summoner.findFirst({
                 where: {
                     username: {
@@ -243,8 +244,8 @@ export const processingApiRouter = createTRPCRouter({
                 });
             }
 
-            const uniqueWins: Set<number> = new Set(wins.map((win) => win.championId));
-            const uniqueLoses: Set<number> = new Set(loses.map((lose) => lose.championId));
+            const uniqueWins = new Set<number>(wins.map((win) => win.championId));
+            const uniqueLoses = new Set<number>(loses.map((lose) => lose.championId));
 
             try {
                 await ctx.prisma.challenges.update({

@@ -71,7 +71,7 @@ export const masteryBySummoner = async (
 
         return championMastery;
     } catch (error) {
-        console.log(`Error fetching champion mastery data for summoner ${user.username}: ${error}`);
+        console.log(`Error fetching champion mastery data for summoner ${user.username}:`, error);
         throw error;
     }
 };
