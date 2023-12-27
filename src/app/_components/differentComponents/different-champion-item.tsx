@@ -20,7 +20,7 @@ export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails;
                     width={90}
                     fill
                     // hidden={hideAll}
-                    // placeholderSrc="/placeholder.png"
+                    // blurDataURL="/placeholder.png"
                 />
             </div>
 
