@@ -40,7 +40,7 @@ export const masteryBySummoner = async (
 
         console.log("Updating summoner in db with mastery scores");
         try {
-            const masteryData = (await lolApi.Champion.masteryBySummoner(user.summonerId, region)).response;
+            const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
             await updateSummonerDb(prisma, user, region, masteryData);
             console.log("Done - Updating summoner in db with mastery scores");
         } catch (error) {
