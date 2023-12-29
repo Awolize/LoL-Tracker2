@@ -318,6 +318,7 @@ export function Client(props: {
                                         showFinished={showFinished}
                                         showChest={showChests}
                                         showLevel={showLevel}
+                                        showMasteryPoints={true}
                                         hiddenChamp={hiddenChamps.has(champ.championId)}
                                     />
                                 ))}
@@ -330,6 +331,7 @@ export function Client(props: {
                                         showFinished={showFinished}
                                         showChest={showChests}
                                         showLevel={showLevel}
+                                        showMasteryPoints={true}
                                         hiddenChamp={hiddenChamps.has(champ.championId)}
                                     />
                                 ))}
