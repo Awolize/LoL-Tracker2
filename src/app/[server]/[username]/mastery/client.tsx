@@ -5,11 +5,11 @@ import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challeng
 import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
 import { type ChallengeIds } from "~/utils/champsUtils";
-import ChampionList from "./champions-list";
-import Header from "./header";
-import SortedChampionList from "./role-sorted-champion-list";
-import { ScaleSlider } from "./scale-slider";
-import { type CompleteChampionInfo } from "./server-processing-helpers";
+import ChampionList from "./components/champions-list";
+import Header from "./components/header";
+import SortedChampionList from "./components/role-sorted-champion-list";
+import { ScaleSlider } from "./components/scale-slider";
+import { type CompleteChampionInfo } from "./components/server-processing-helpers";
 import { useOptionsStore } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 

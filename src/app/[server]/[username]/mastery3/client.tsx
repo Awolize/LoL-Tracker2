@@ -15,7 +15,7 @@ import { ToggleEye } from "~/app/_components/toggle-eye";
 import { api } from "~/trpc/react";
 import type { ChallengeIds } from "../../../../utils/champsUtils";
 import { SortOrder, filteredOut, isChallengeId, partition, sortAlgorithm } from "../../../../utils/champsUtils";
-import { type CompleteChampionInfo } from "../mastery/server-processing-helpers";
+import { type CompleteChampionInfo } from "../mastery/components/server-processing-helpers";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 

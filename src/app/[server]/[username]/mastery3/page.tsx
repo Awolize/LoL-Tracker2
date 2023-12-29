@@ -9,7 +9,7 @@ import { getChallengesThresholds, getPlayerChallengesData, regionToConstant } fr
 
 import { useApi } from "~/app/_components/use-api";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
-import { getCompleteChampionData } from "../mastery/server-processing-helpers";
+import { getCompleteChampionData } from "../mastery/components/server-processing-helpers";
 import { Client } from "./client";
 
 const paramsSchema = z.object({

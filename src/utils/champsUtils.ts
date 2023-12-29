@@ -4,7 +4,7 @@ import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
-import { type CompleteChampionInfo } from "~/app/[server]/[username]/mastery/server-processing-helpers";
+import { type CompleteChampionInfo } from "~/app/[server]/[username]/mastery/components/server-processing-helpers";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     const disabled: boolean = champ.championPoints > filterPoints;

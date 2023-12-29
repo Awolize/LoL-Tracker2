@@ -5,7 +5,7 @@ import React from "react";
 import Image from "next/image";
 
 import { filteredOut } from "~/utils/champsUtils";
-import { type CompleteChampionInfo } from "../[server]/[username]/mastery/server-processing-helpers";
+import { type CompleteChampionInfo } from "../[server]/[username]/mastery/components/server-processing-helpers";
 import { useDataDragonPath } from "./use-data-dragon-path";
 
 interface ChampionItemProps {
@@ -16,6 +16,7 @@ interface ChampionItemProps {
     showChest: boolean;
     showLevel: boolean;
     hiddenChamp: boolean;
+    showMasteryPoints: boolean;
 }
 
 const ChampionItem: React.FC<ChampionItemProps> = ({
@@ -25,6 +26,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
     showChest,
     showLevel,
     hiddenChamp,
+    showMasteryPoints,
     handleChampionClick,
 }) => {
     const disabled = filteredOut(champ, filterPoints);
@@ -103,7 +105,9 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
             </div>
 
             <div className="text-center text-xs">{champ.name}</div>
-            <div className="items-center justify-center text-center text-xs">{champ.championPoints}</div>
+            {showMasteryPoints && (
+                <div className="items-center justify-center text-center text-xs">{champ.championPoints}</div>
+            )}
         </li>
     );
 };

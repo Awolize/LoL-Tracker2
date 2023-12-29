@@ -18,7 +18,7 @@ type Store = {
 };
 
 export const useOptionsStore = create<Store>()((set) => ({
-    showMasteryPoints: false,
+    showMasteryPoints: true,
     showAvailableChests: false,
     showLevels: false,
     byRole: true,

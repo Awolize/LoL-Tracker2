@@ -1,9 +1,10 @@
 "use client";
 
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
+import { UpdateButton } from "~/app/_components/updateButton";
 import { processingApi } from "~/trpc/react";
-import { useOptionsStore } from "./stores/options-store";
-import { useUserContext } from "./stores/user-store";
+import { useOptionsStore } from "../stores/options-store";
+import { useUserContext } from "../stores/user-store";
 
 export default function Header() {
     const {
@@ -31,9 +32,9 @@ export default function Header() {
             />
             <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
-            <SwitchWithLabel
+            <UpdateButton
                 label={"Update"}
-                checked={false}
+                checked={updateChampions.isLoading}
                 onChange={async () => {
                     console.log("UPDATE USER");
                     if (user.gameName && user.tagLine) {

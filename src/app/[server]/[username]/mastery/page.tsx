@@ -10,7 +10,7 @@ import { getChallengesThresholds2, getPlayerChallengesData2, regionToConstant } 
 import { useApi } from "~/app/_components/use-api";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
 import { Client } from "./client";
-import { getCompleteChampionData } from "./server-processing-helpers";
+import { getCompleteChampionData } from "./components/server-processing-helpers";
 
 const paramsSchema = z.object({
     server: z.string(),

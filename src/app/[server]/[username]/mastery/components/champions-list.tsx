@@ -1,7 +1,7 @@
 // ChampionList.jsx
 import ChampionItem from "~/app/_components/champion-item";
+import { useOptionsStore } from "../stores/options-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";
-import { useOptionsStore } from "./stores/options-store";
 
 const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
     const {
@@ -29,6 +29,7 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
                         showLevel={showLevels}
                         showChest={showAvailableChests}
                         showFinished={false}
+                        showMasteryPoints={showMasteryPoints}
                         handleChampionClick={() => toggleSelectedChampion(championInfo.championId)}
                     />
                 ))}
