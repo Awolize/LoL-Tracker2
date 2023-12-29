@@ -25,7 +25,7 @@ function getBaseProcessingUrl() {
 }
 
 export function getProcessingUrl() {
-    return `${getBaseProcessingUrl()}/api/trpc`;
+    return `${getBaseProcessingUrl()}/api/trpcProcessing`;
 }
 
 export type ProcessingRouterInputs = inferRouterInputs<ProcessingRouter>;

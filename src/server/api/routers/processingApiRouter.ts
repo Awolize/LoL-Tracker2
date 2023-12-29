@@ -1,5 +1,4 @@
-import type { Regions } from "twisted/dist/constants";
-import { regionToRegionGroup } from "twisted/dist/constants";
+import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { type Participant } from "~/trpc/different_types";
@@ -11,6 +10,10 @@ import {
     updateChampionDetails,
 } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { upsertChallenges } from "./processing/challenges";
+import { updateChallengesConfig } from "./processing/challengesConfig";
+import { upsertMastery } from "./processing/mastery";
+import { upsertSummoner } from "./processing/summoner";
 
 export const processingApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
@@ -272,24 +275,55 @@ export const processingApiRouter = createTRPCRouter({
         }),
 
     updateChampions: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+        .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            console.time("updateChampions");
 
-            return {};
-        }),
-    updateInvincible: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+            const region = input.region as Regions;
+            const regionGroup = regionToRegionGroup(region);
 
-            return {};
-        }),
-    updatePerfectionist: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
-        .query(async ({ input }) => {
-            regionToConstant(input.server.toUpperCase());
+            const user = (await ctx.lolApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
+                .response;
 
-            return {};
+            if (!user.puuid) {
+                console.log("This user does not exist", user);
+                console.timeEnd("updateChampions");
+                return false;
+            }
+
+            // Update global challenges
+            console.time("updateChallengesConfig");
+            await updateChallengesConfig(ctx.prisma, ctx.lolApi, region);
+            console.timeEnd("updateChallengesConfig");
+
+            // Update profile
+            console.time("upsertSummoner");
+            const updatedUser = await upsertSummoner(
+                ctx.prisma,
+                ctx.lolApi,
+                user.puuid,
+                region,
+                input.gameName,
+                input.tagLine,
+            );
+            console.timeEnd("upsertSummoner");
+
+            if (!updatedUser) {
+                console.log("Could not update user");
+                console.timeEnd("updateChampions");
+                return false;
+            }
+
+            // Update championMasteries
+            console.time("upsertMastery");
+            await upsertMastery(updatedUser, ctx.prisma, ctx.lolApi, region);
+            console.timeEnd("upsertMastery");
+
+            // update challenges
+            console.time("upsertChallenges");
+            await upsertChallenges(ctx.lolApi, ctx.prisma, region, updatedUser);
+            console.timeEnd("upsertChallenges");
+
+            console.timeEnd("updateChampions");
         }),
 });

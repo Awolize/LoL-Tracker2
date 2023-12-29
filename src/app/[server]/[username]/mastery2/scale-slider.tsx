@@ -1,4 +1,4 @@
-import { useOptionsStore } from "./options-store";
+import { useOptionsStore } from "./stores/options-store";
 
 export function ScaleSlider() {
     const championsScale = useOptionsStore((state) => state.championsScale);

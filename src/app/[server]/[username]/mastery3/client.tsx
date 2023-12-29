@@ -13,7 +13,7 @@ import RoleHeader from "~/app/_components/role-header";
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
 import { api } from "~/trpc/react";
-import type { ChallengeId } from "../../../../utils/champsUtils";
+import type { ChallengeIds } from "../../../../utils/champsUtils";
 import { SortOrder, filteredOut, isChallengeId, partition, sortAlgorithm } from "../../../../utils/champsUtils";
 import { type CompleteChampionInfo } from "./page";
 
@@ -31,9 +31,9 @@ export function Client(props: {
     const champs = props.champData;
     const championMastery = props.champData;
     const patch = props.patch;
-    const challengeIds = parse<ChallengeId[]>(props.challengeIds);
-    const playerChallengesData = parse<Map<ChallengeId, ChallengeV1DTO>>(props.playerChallengesData);
-    const challengesThresholds = parse<Map<ChallengeId, Record<string, number>>>(props.challengesThresholds);
+    const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
+    const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
+    const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
     const username = props.username;
     const server = props.server;
 

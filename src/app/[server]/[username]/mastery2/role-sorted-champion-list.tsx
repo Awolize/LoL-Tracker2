@@ -1,8 +1,8 @@
 // SortedChampionList.jsx
 import ChampionItem from "~/app/_components/champion-item";
 import RoleHeader from "~/app/_components/role-header";
-import { useOptionsStore } from "./options-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";
+import { useOptionsStore } from "./stores/options-store";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 const SortedChampionList = ({ champions }) => {

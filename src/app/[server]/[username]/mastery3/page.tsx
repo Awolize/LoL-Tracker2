@@ -8,7 +8,7 @@ import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO, ChampionsDataDragonDetails } from "twisted/dist/models-dto";
 import { z } from "zod";
 
-import type { ChallengeId } from "../../../../utils/champsUtils";
+import type { ChallengeIds } from "../../../../utils/champsUtils";
 import {
     getChallengesThresholds,
     getPlayerChallengesData,
@@ -47,7 +47,7 @@ export default async function Page({ params }) {
         getChallengesThresholds(lolApi, region),
     ]);
 
-    const challengeIds: ChallengeId[] = [202303, 210001, 401106];
+    const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
 
     const props = {
         username,
@@ -65,7 +65,6 @@ export default async function Page({ params }) {
 async function getCompleteChampionData(lolApi: LolApi, region: Regions, user: Summoner) {
     const championMasteries = await masteryBySummoner(lolApi, region, user);
     const championsDD = await lolApi.DataDragon.getChampion();
-
     const completeChampsData = Object.values(championsDD.data)
         .map((champion) => {
             const role = rolesJson[champion.id as keyof typeof championsDD.data] || "Bottom";

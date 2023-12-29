@@ -5,7 +5,7 @@ import React from "react";
 import Image from "next/image";
 
 import { filteredOut } from "~/utils/champsUtils";
-import { type CompleteChampionInfo } from "../[server]/[username]/mastery/page";
+import { type CompleteChampionInfo } from "../[server]/[username]/mastery2/server-processing-helpers";
 import { useDataDragonPath } from "./use-data-dragon-path";
 
 interface ChampionItemProps {
@@ -76,7 +76,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                 )}
 
                 <Image
-                    src={getChampionImage(champ.image.full)}
+                    src={getChampionImage(champ.full)}
                     style={{
                         zIndex: -1,
                         opacity: disabled ? "40%" : "100%",

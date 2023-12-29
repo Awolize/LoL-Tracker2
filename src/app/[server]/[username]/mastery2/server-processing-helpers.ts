@@ -1,27 +1,26 @@
 "use server";
 
-import type { Summoner } from "@prisma/client";
+import type { ChampionDetails, PrismaClient, Summoner } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { type LolApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 
 import { masteryBySummoner } from "../../../../utils/champsUtils";
 
-import { type ChampionMasteryDTO, type ChampionsDataDragonDetails } from "twisted/dist/models-dto";
+import { type ChampionMasteryDTO } from "twisted/dist/models-dto";
 import rolesJson from "../roles.json";
 
 interface Roles {
     role: string;
 }
 
-export type CompleteChampionInfo = ChampionMasteryDTO & ChampionsDataDragonDetails & Roles;
-export async function getCompleteChampionData(lolApi: LolApi, region: Regions, user: Summoner) {
-    const championMasteries = await masteryBySummoner(lolApi, region, user);
-    const champions = await lolApi.DataDragon.getChampion();
+export type CompleteChampionInfo = ChampionMasteryDTO & ChampionDetails & Roles;
+export async function getCompleteChampionData(prisma: PrismaClient, region: Regions, user: Summoner) {
+    const championMasteries = await masteryBySummoner(prisma, region, user);
+    const champions = await prisma.championDetails.findMany();
 
-    const completeChampionsData = Object.values(champions.data).map((champion) => {
-        const role = rolesJson[champion.id as keyof typeof champions.data] || "Bottom";
-        const personalChampData = championMasteries.find((champ) => champ.championId.toString() === champion.key) ?? {
+    const completeChampionsData = champions.map((champion) => {
+        const role = rolesJson[champion.key] || "Bottom";
+        const personalChampData = championMasteries.find((champ) => champ.championId === champion.id) ?? {
             championPoints: 0,
             championLevel: 0,
         };
@@ -38,7 +37,7 @@ export async function getCompleteChampionData(lolApi: LolApi, region: Regions, u
         } as CompleteChampionInfo;
     });
 
-    const patch = champions.version;
+    const patch = champions.at(0)?.version ?? "";
 
     return { completeChampionsData, patch };
 }

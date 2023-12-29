@@ -4,8 +4,8 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { stringify } from "superjson";
 import { z } from "zod";
 
-import type { ChallengeId } from "../../../../utils/champsUtils";
-import { getChallengesThresholds, getPlayerChallengesData, regionToConstant } from "../../../../utils/champsUtils";
+import type { ChallengeIds } from "../../../../utils/champsUtils";
+import { getChallengesThresholds2, getPlayerChallengesData2, regionToConstant } from "../../../../utils/champsUtils";
 
 import { useApi } from "~/app/_components/use-api";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
@@ -27,17 +27,16 @@ export default async function Page({ params }) {
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
     const [completeChampionsData, playerChallenges, challengesThresholds] = await Promise.all([
-        getCompleteChampionData(lolApi, region, user),
-        getPlayerChallengesData(lolApi, region, user),
-        getChallengesThresholds(lolApi, region),
+        getCompleteChampionData(prisma, region, user),
+        getPlayerChallengesData2(prisma, user),
+        getChallengesThresholds2(prisma),
     ]);
 
-    const challengeIds: ChallengeId[] = [202303, 210001, 401106];
+    const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
 
     return (
         <Client
-            username={username}
-            server={server}
+            user={user}
             playerChampionInfo={completeChampionsData.completeChampionsData}
             patch={completeChampionsData.patch}
             challengeIds={stringify(challengeIds)}

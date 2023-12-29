@@ -1,8 +1,9 @@
 // ChampionList.jsx
 import ChampionItem from "~/app/_components/champion-item";
-import { useOptionsStore } from "./options-store";
+import { type CompleteChampionInfo } from "./server-processing-helpers";
+import { useOptionsStore } from "./stores/options-store";
 
-const ChampionList = ({ champions }) => {
+const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
     const {
         showAvailableChests,
         showLevels,
@@ -16,7 +17,7 @@ const ChampionList = ({ champions }) => {
     return (
         <div className="w-full p-4">
             <div
-                className="grid justify-between"
+                className="grid justify-between gap-2"
                 style={{ gridTemplateColumns: `repeat(auto-fill, ${championsScale}px)` }}
             >
                 {champions.map((championInfo) => (
