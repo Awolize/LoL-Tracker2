@@ -12,10 +12,7 @@ export interface Choice {
 
 interface Props {
     choices: Choice[];
-    value: {
-        text: string;
-        value: number;
-    };
+    value?: Choice;
     callback: (choice: Choice) => void;
     className?: HTMLAttributes<HTMLDivElement>["className"];
 }
