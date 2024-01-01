@@ -5,6 +5,13 @@ import { UpdateButton } from "~/app/_components/updateButton";
 import { processingApi } from "~/trpc/react";
 import { useOptionsStore } from "../stores/options-store";
 import { useUserContext } from "../stores/user-store";
+import SortOrder, { type Choice } from "./sort-order";
+
+export enum SortOrder2 {
+    Points = 0,
+    AZ = 1,
+    Level = 2,
+}
 
 export default function Header() {
     const {
@@ -12,6 +19,10 @@ export default function Header() {
         showLevels,
         showMasteryPoints,
         byRole,
+        filterPoints,
+        sortOrder,
+        setSortOrder,
+        setFilterPoints,
         toggleAvailableChests,
         toggleLevels,
         toggleMasteryPoints,
@@ -21,6 +32,37 @@ export default function Header() {
     const user = useUserContext((s) => s.user);
 
     const updateChampions = processingApi.processingApi.updateChampions.useMutation();
+
+    const updateUser = async () => {
+        if (user.gameName && user.tagLine) {
+            updateChampions.mutate({
+                gameName: user.gameName,
+                tagLine: user.tagLine,
+                region: user.server,
+            });
+        }
+    };
+
+    const filteredChoices: Choice[] = [
+        {
+            text: "All",
+            value: Number.MAX_SAFE_INTEGER,
+        },
+        { text: "100", value: 100 },
+        { text: "500", value: 500 },
+        { text: "1,000", value: 1000 },
+        { text: "5,000", value: 5000 },
+        { text: "10,000", value: 10000 },
+        { text: "21,600", value: 21600 },
+        { text: "50,000", value: 50000 },
+        { text: "100,000", value: 100000 },
+    ];
+
+    const sortOrderChoices: Choice[] = [
+        { text: "Points", value: SortOrder2.Points },
+        { text: "A-Z", value: SortOrder2.AZ },
+        { text: "Level", value: SortOrder2.Level },
+    ];
 
     return (
         <div className="flex flex-row gap-4">
@@ -32,19 +74,18 @@ export default function Header() {
             />
             <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
-            <UpdateButton
-                label={"Update"}
-                checked={updateChampions.isLoading}
-                onChange={async () => {
-                    console.log("UPDATE USER");
-                    if (user.gameName && user.tagLine) {
-                        updateChampions.mutate({
-                            gameName: user.gameName,
-                            tagLine: user.tagLine,
-                            region: user.server,
-                        });
-                    }
-                }}
+            <UpdateButton label={"Update"} checked={updateChampions.isLoading} onChange={updateUser} />
+            <SortOrder
+                className={"w-32"}
+                callback={(choice) => setFilterPoints(choice.value)}
+                value={filteredChoices.find((el) => el.value === filterPoints)}
+                choices={filteredChoices}
+            />
+            <SortOrder
+                className={"w-32"}
+                callback={(choice) => setSortOrder(choice.value)}
+                value={sortOrderChoices.find((el) => el.value === sortOrder)}
+                choices={sortOrderChoices}
             />
         </div>
     );

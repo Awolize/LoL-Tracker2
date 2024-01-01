@@ -45,6 +45,8 @@ export function Client({
                 ) : (
                     <ChampionList champions={playerChampionInfo} />
                 )}
+
+                {/* <GameHistory /> */}
             </main>
         </UserProvider>
     );

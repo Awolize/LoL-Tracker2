@@ -1,6 +1,7 @@
 // SortedChampionList.jsx
 import ChampionItem from "~/app/_components/champion-item";
 import RoleHeader from "~/app/_components/role-header";
+import { sortAlgorithm } from "~/utils/champsUtils";
 import { useOptionsStore } from "../stores/options-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";
 
@@ -12,6 +13,7 @@ const SortedChampionList = ({ champions }) => {
         filterPoints,
         showMasteryPoints,
         selectedChampions,
+        sortOrder,
         toggleSelectedChampion,
         championsScale,
     } = useOptionsStore();
@@ -27,6 +29,8 @@ const SortedChampionList = ({ champions }) => {
         <div className="flex flex-row gap-2">
             {playerChampionInfoSorted.map((roleChampions, index) => {
                 const role = ROLES[index] ?? `Unknown ${index}`;
+
+                roleChampions.sort((a, b) => sortAlgorithm(sortOrder, a, b));
 
                 return (
                     <div className="w-full p-4" key={role}>
