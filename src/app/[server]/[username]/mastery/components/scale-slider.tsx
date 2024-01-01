@@ -10,7 +10,7 @@ export function ScaleSlider() {
     };
 
     return (
-        <div className="flex items-center flex-col mt-4 mb-2">
+        <div className="flex items-center flex-col">
             <label htmlFor="minmax-range" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Champion size
             </label>

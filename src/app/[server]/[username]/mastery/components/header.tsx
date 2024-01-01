@@ -5,7 +5,8 @@ import { UpdateButton } from "~/app/_components/updateButton";
 import { processingApi } from "~/trpc/react";
 import { useOptionsStore } from "../stores/options-store";
 import { useUserContext } from "../stores/user-store";
-import SortOrder, { type Choice } from "./sort-order";
+import SortOrder, { type Choice } from "./header-dropdown";
+import { ScaleSlider } from "./scale-slider";
 
 export enum SortOrder2 {
     Points = 0,
@@ -65,7 +66,7 @@ export default function Header() {
     ];
 
     return (
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 px-4 py-2 items-center">
             <SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
             <SwitchWithLabel
                 label={"Available Chests"}
@@ -87,6 +88,7 @@ export default function Header() {
                 value={sortOrderChoices.find((el) => el.value === sortOrder)}
                 choices={sortOrderChoices}
             />
+            <ScaleSlider />
         </div>
     );
 }

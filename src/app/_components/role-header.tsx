@@ -10,7 +10,7 @@ interface RoleHeaderProps {
 
 const RoleHeader: React.FC<RoleHeaderProps> = ({ role, finishedSize, size, hasHidden, percentage }) => {
     return (
-        <div className="text-md flex flex-row justify-center gap-8 align-bottom">
+        <div className="text-md flex flex-row  justify-evenly align-bottom">
             <h4 className="my-auto p-2">
                 {finishedSize} / {size}
                 {hasHidden ? "*" : ""}
@@ -20,7 +20,7 @@ const RoleHeader: React.FC<RoleHeaderProps> = ({ role, finishedSize, size, hasHi
                     <h4 className="text-xl font-bold">{role}</h4>
                 </div>
             </div>
-            <h4 className="my-auto p-2">{percentage.toFixed(1)}%</h4>
+            <h4 className="my-auto p-2">{percentage.toFixed(1)} %</h4>
         </div>
     );
 };

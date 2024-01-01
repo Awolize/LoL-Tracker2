@@ -8,7 +8,6 @@ import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
 import SortedChampionList from "./components/role-sorted-champion-list";
-import { ScaleSlider } from "./components/scale-slider";
 import { type CompleteChampionInfo } from "./components/server-processing-helpers";
 import { useOptionsStore } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
@@ -38,7 +37,6 @@ export function Client({
         <UserProvider user={user}>
             <main className="flex flex-col">
                 <Header />
-                <ScaleSlider />
 
                 {byRole ? (
                     <SortedChampionList champions={playerChampionInfo} />
