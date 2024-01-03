@@ -3,15 +3,11 @@ import { z } from "zod";
 
 import { type Participant } from "~/trpc/different_types";
 import { regionToConstant } from "~/utils/champsUtils";
-import {
-    getMatchesForSummonerBySummoner,
-    getUserByNameAndServer,
-    prepareSummonersCreation,
-    updateChampionDetails,
-} from "../differentHelper";
+import { getMatchesForSummonerBySummoner, getUserByNameAndServer, prepareSummonersCreation } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
+import { updateChampionDetails } from "./processing/champions";
 import { upsertMastery } from "./processing/mastery";
 import { upsertSummoner } from "./processing/summoner";
 
@@ -277,7 +273,7 @@ export const processingApiRouter = createTRPCRouter({
     updateChampions: publicProcedure
         .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
         .mutation(async ({ ctx, input }) => {
-            console.time("updateChampions");
+            console.time("updateSummoner");
 
             const region = input.region as Regions;
             const regionGroup = regionToRegionGroup(region);
@@ -287,7 +283,7 @@ export const processingApiRouter = createTRPCRouter({
 
             if (!user.puuid) {
                 console.log("This user does not exist", user);
-                console.timeEnd("updateChampions");
+                console.timeEnd("updateSummoner");
                 return false;
             }
 
@@ -295,6 +291,11 @@ export const processingApiRouter = createTRPCRouter({
             console.time("updateChallengesConfig");
             await updateChallengesConfig(ctx.prisma, ctx.lolApi, region);
             console.timeEnd("updateChallengesConfig");
+
+            // Update global champions
+            console.time("championDetails");
+            await updateChampionDetails(ctx.prisma, ctx.lolApi);
+            console.timeEnd("championDetails");
 
             // Update profile
             console.time("upsertSummoner");
@@ -310,7 +311,7 @@ export const processingApiRouter = createTRPCRouter({
 
             if (!updatedUser) {
                 console.log("Could not update user");
-                console.timeEnd("updateChampions");
+                console.timeEnd("updateSummoner");
                 return false;
             }
 
@@ -324,6 +325,6 @@ export const processingApiRouter = createTRPCRouter({
             await upsertChallenges(ctx.lolApi, ctx.prisma, region, updatedUser);
             console.timeEnd("upsertChallenges");
 
-            console.timeEnd("updateChampions");
+            console.timeEnd("updateSummoner");
         }),
 });

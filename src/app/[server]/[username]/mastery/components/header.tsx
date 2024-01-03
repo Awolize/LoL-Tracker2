@@ -3,7 +3,7 @@
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { UpdateButton } from "~/app/_components/updateButton";
 import { processingApi } from "~/trpc/react";
-import { useOptionsStore } from "../stores/options-store";
+import { useOptionsContext } from "../stores/options-store";
 import { useUserContext } from "../stores/user-store";
 import SortOrder, { type Choice } from "./header-dropdown";
 import { ScaleSlider } from "./scale-slider";
@@ -28,7 +28,7 @@ export default function Header() {
         toggleLevels,
         toggleMasteryPoints,
         toggleSortedByRole,
-    } = useOptionsStore();
+    } = useOptionsContext((state) => state);
 
     const user = useUserContext((s) => s.user);
 

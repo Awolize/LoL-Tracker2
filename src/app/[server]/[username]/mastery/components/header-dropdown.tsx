@@ -53,7 +53,7 @@ export default function SortOrder({ choices, value, callback, className }: Props
                                                 {person.text}
                                             </span>
                                             {selected ? (
-                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3  text-gray-100">
+                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-100">
                                                     <CheckIcon className="h-5 w-5" aria-hidden="true" />
                                                 </span>
                                             ) : null}

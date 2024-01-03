@@ -2,26 +2,25 @@ import { type Summoner } from "@prisma/client";
 import React, { createContext, useContext, useRef } from "react";
 import { createStore, useStore } from "zustand";
 
-interface StoreProps {
+interface Store {
     user: Summoner;
 }
 
-interface StoreState extends StoreProps {
+interface StoreState extends Store {
     setUser: (newUser: Summoner) => void;
 }
 
-type UserStore = ReturnType<typeof createUserStore>;
-
-const createUserStore = (initProps: StoreProps) => {
+const createUserStore = (initProps: Store) => {
     return createStore<StoreState>()((set) => ({
         ...initProps,
         setUser: (newUser) => set((state) => ({ ...state, user: newUser })),
     }));
 };
 
+type UserStore = ReturnType<typeof createUserStore>;
 const UserContext = createContext<UserStore | null>(null);
 
-type UserProviderProps = React.PropsWithChildren<StoreProps>;
+type UserProviderProps = React.PropsWithChildren<Store>;
 
 export function UserProvider({ children, ...props }: UserProviderProps) {
     const storeRef = useRef<UserStore>();

@@ -9,7 +9,7 @@ import ChampionList from "./components/champions-list";
 import Header from "./components/header";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo } from "./components/server-processing-helpers";
-import { useOptionsStore } from "./stores/options-store";
+import { OptionsProvider, useOptionsStore } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 
 export function Client({
@@ -31,21 +31,23 @@ export function Client({
 
     playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
 
-    const { byRole } = useOptionsStore();
+    const { byRole } = useOptionsStore(`${user.gameName}-${user.tagLine}`).getState();
 
     return (
         <UserProvider user={user}>
-            <main className="flex flex-col">
-                <Header />
+            <OptionsProvider persistName={`${user.gameName}-${user.tagLine}`}>
+                <main className="flex flex-col">
+                    <Header />
 
-                {byRole ? (
-                    <SortedChampionList champions={playerChampionInfo} />
-                ) : (
-                    <ChampionList champions={playerChampionInfo} />
-                )}
+                    {byRole ? (
+                        <SortedChampionList champions={playerChampionInfo} />
+                    ) : (
+                        <ChampionList champions={playerChampionInfo} />
+                    )}
 
-                {/* <GameHistory /> */}
-            </main>
+                    {/* <GameHistory /> */}
+                </main>
+            </OptionsProvider>
         </UserProvider>
     );
 }

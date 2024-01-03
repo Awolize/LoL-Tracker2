@@ -1,7 +1,7 @@
 import type { Prisma, PrismaClient, Summoner } from "@prisma/client";
 import type { LolApi, RiotApi } from "twisted";
 import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
-import type { MatchV5DTOs } from "twisted/dist/models-dto";
+import type { ChampionsDataDragonDetails, MatchV5DTOs } from "twisted/dist/models-dto";
 
 const splitUsername = (username) => {
     return {
@@ -137,7 +137,7 @@ export const prepareSummonersCreation = (
     return summonerPromises;
 };
 
-export const flattenChamp = (obj) => {
+export const flattenChamp = (obj: ChampionsDataDragonDetails) => {
     const flattenedObj = {
         id: Number(obj.key),
         version: obj.version,
