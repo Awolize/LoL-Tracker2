@@ -74,7 +74,9 @@ export const masteryBySummoner = async (prisma: PrismaClient, region: Regions, u
         });
 
         if (dbUser) {
-            console.log(`Summoner found in database: ${dbUser.username}, ${dbUser.championData.length}`);
+            console.log(
+                `Summoner found in database: ${dbUser.gameName}#${dbUser.tagLine}, ${dbUser.championData.length}`,
+            );
         } else {
             console.log(`Summoner NOT found in database: ${user.gameName} ${user.tagLine}, ${region}`);
         }
@@ -96,7 +98,7 @@ export const masteryBySummoner = async (prisma: PrismaClient, region: Regions, u
 
         return championMastery;
     } catch (error) {
-        console.log(`Error fetching champion mastery data for summoner ${user.username}:`, error);
+        console.log(`Error fetching champion mastery data for summoner ${user.gameName}#${user.tagLine}:`, error);
         throw error;
     }
 };

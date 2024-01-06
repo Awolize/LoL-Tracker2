@@ -3,11 +3,12 @@ import { z } from "zod";
 
 import { type Participant } from "~/trpc/different_types";
 import { regionToConstant } from "~/utils/champsUtils";
-import { getMatchesForSummonerBySummoner, getUserByNameAndServer, prepareSummonersCreation } from "../differentHelper";
+import { getMatchesForSummonerBySummoner } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
 import { updateChampionDetails } from "./processing/champions";
+import { updateGames } from "./processing/games";
 import { upsertMastery } from "./processing/mastery";
 import { upsertSummoner } from "./processing/summoner";
 
@@ -56,134 +57,6 @@ export const processingApiRouter = createTRPCRouter({
                 console.log(error);
             }
         }),
-
-    updateGames: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string(), count: z.number() }))
-        .mutation(async ({ input, ctx }) => {
-            try {
-                console.log(`UpdateGames for user ${input.username} (${input.server.toUpperCase()})`);
-
-                const region = regionToConstant(input.server.toUpperCase());
-
-                const user = await getUserByNameAndServer(ctx, input.username, region);
-
-                let totalCount = input.count; // Total number of matches requested
-                const matchIds: string[] = [];
-
-                let start = 0;
-                while (totalCount > 0) {
-                    const count = Math.min(100, totalCount); // Maximum count per request is 100
-                    const matchIdsResponse = await ctx.lolApi.MatchV5.list(user.puuid, regionToRegionGroup(region), {
-                        count: count,
-                        start: start,
-                        startTime: new Date("2022-05-11T00:00:00Z").getTime() / 1000,
-                    });
-                    if (matchIdsResponse.response.length === 0) break;
-
-                    matchIds.push(...matchIdsResponse.response);
-                    start += count;
-                    totalCount -= count;
-                }
-                console.log("Fetching", matchIds.length, "matches. For user", user.username);
-
-                const successfullyAddedGameIds: string[] = [];
-                const skipAddedGameIds: string[] = [];
-                const failedGameIds: string[] = [];
-
-                for (let index = 0; index < matchIds.length; index++) {
-                    const matchId = matchIds[index];
-
-                    const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
-                    const gameId = matchId?.split("_")[1];
-
-                    try {
-                        if (!matchId || !gameId || !gameServer) continue;
-
-                        // Create the Match record
-                        const existingGame = await ctx.prisma.match.findFirst({
-                            where: {
-                                gameId: gameId,
-                            },
-                        });
-                        if (existingGame) {
-                            skipAddedGameIds.push(gameId);
-                            continue;
-                        }
-
-                        const gameResponse = await ctx.lolApi.MatchV5.get(matchId, regionToRegionGroup(gameServer));
-                        const game = gameResponse.response;
-
-                        const creationPromises = prepareSummonersCreation(ctx, game);
-                        const summoners = await Promise.all(creationPromises);
-
-                        await ctx.prisma.match.create({
-                            data: {
-                                gameId: gameId,
-                                server: gameServer,
-                                MatchInfo: {
-                                    create: {
-                                        gameCreation: new Date(game.info.gameCreation),
-                                        gameDuration: game.info.gameDuration,
-                                        gameEndTimestamp: new Date(
-                                            game.info.gameStartTimestamp + game.info.gameDuration,
-                                        ), // wrong
-                                        gameMode: game.info.gameMode,
-                                        gameName: game.info.gameName,
-                                        gameStartTimestamp: new Date(game.info.gameStartTimestamp),
-                                        gameType: game.info.gameType,
-                                        gameVersion: game.info.gameVersion,
-                                        mapId: game.info.mapId,
-                                        participants: game.info.participants as never,
-                                        platformId: game.info.platformId,
-                                        queueId: game.info.queueId,
-                                        teams: game.info.teams as never,
-                                        tournamentCode: game.info.tournamentCode,
-                                    },
-                                },
-                                participants: {
-                                    connect: summoners.map((summoner) => ({
-                                        puuid: summoner.puuid,
-                                    })),
-                                },
-                            },
-                        });
-
-                        successfullyAddedGameIds.push(gameId);
-
-                        // Delay for 5000 milliseconds (0.2 times per second)
-                        await new Promise((resolve) => setTimeout(resolve, 5000));
-                    } catch (error) {
-                        if (!gameId) {
-                            console.error("gameid doesnt exist?", gameId);
-                            console.error({ error });
-                            continue;
-                        }
-
-                        // Retry the same game by decrementing the index
-                        if (failedGameIds.includes(gameId)) {
-                            console.error("something went wrong on gameId:", gameId);
-                            console.warn("continue");
-                            continue;
-                        }
-
-                        console.error("something went wrong on gameId:", gameId);
-                        console.warn("retry");
-                        index--;
-                        console.log(user.username, "progress:", index, "/", matchIds.length);
-
-                        failedGameIds.push(gameId);
-                    }
-                }
-                console.log({
-                    successfullyAddedGameIds: successfullyAddedGameIds.length,
-                    failedGameIds: failedGameIds.length,
-                    skipAddedGameIds: skipAddedGameIds.length,
-                });
-                return { successfullyAddedGameIds, failedGameIds, skipAddedGameIds };
-            } catch (error) {
-                console.log("error:", JSON.stringify(error));
-            }
-        }),
     updateJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), server: z.string() }))
         .mutation(async ({ input, ctx }) => {
@@ -215,7 +88,7 @@ export const processingApiRouter = createTRPCRouter({
                 )
                 .filter(Boolean) as Participant[];
 
-            console.log(user.username, "Found", filteredInfoParticipants?.length, "games");
+            console.log(`${user.gameName}#${user.tagLine}`, "Found", filteredInfoParticipants?.length, "games");
 
             const loses: Participant[] = [];
             const wins: Participant[] = [];
@@ -258,18 +131,57 @@ export const processingApiRouter = createTRPCRouter({
                     },
                 });
             } catch (error) {
-                await updateChampionDetails(ctx);
+                await updateChampionDetails(ctx.prisma, ctx.lolApi);
                 console.error("Missing champ??");
             }
 
-            console.log(user.username, matches.length, {
+            console.log(`${user.gameName}#${user.tagLine}`, matches.length, {
                 wins: uniqueWins.size,
                 loses: uniqueLoses.size,
             });
 
             return { numberOfGames: matches.length, uniqueWins: uniqueWins.size, uniqueLoses: uniqueLoses.size };
         }),
+    updateGames: publicProcedure
+        .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            console.time("updateSummoner");
 
+            const region = input.region as Regions;
+            const regionGroup = regionToRegionGroup(region);
+
+            const user = (await ctx.lolApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
+                .response;
+
+            if (!user.puuid) {
+                console.log("This user does not exist", user);
+                console.timeEnd("updateSummoner");
+                return false;
+            }
+
+            // Update profile
+            console.time("upsertSummoner");
+            const updatedUser = await upsertSummoner(
+                ctx.prisma,
+                ctx.lolApi,
+                user.puuid,
+                region,
+                user.gameName ?? input.gameName,
+                user.tagLine ?? input.tagLine,
+            );
+            console.timeEnd("upsertSummoner");
+
+            if (!updatedUser) {
+                console.log("Could not update user");
+                console.timeEnd("updateSummoner");
+                return false;
+            }
+
+            // update games
+            console.time("updateGames");
+            await updateGames(ctx.prisma, ctx.lolApi, updatedUser, region);
+            console.timeEnd("updateGames");
+        }),
     updateChampions: publicProcedure
         .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
         .mutation(async ({ ctx, input }) => {
@@ -304,8 +216,8 @@ export const processingApiRouter = createTRPCRouter({
                 ctx.lolApi,
                 user.puuid,
                 region,
-                input.gameName,
-                input.tagLine,
+                user.gameName ?? input.gameName,
+                user.tagLine ?? input.tagLine,
             );
             console.timeEnd("upsertSummoner");
 
@@ -324,6 +236,11 @@ export const processingApiRouter = createTRPCRouter({
             console.time("upsertChallenges");
             await upsertChallenges(ctx.lolApi, ctx.prisma, region, updatedUser);
             console.timeEnd("upsertChallenges");
+
+            // update games
+            console.time("updateGames");
+            await updateGames(ctx.prisma, ctx.lolApi, updatedUser, region);
+            console.timeEnd("updateGames");
 
             console.timeEnd("updateSummoner");
         }),

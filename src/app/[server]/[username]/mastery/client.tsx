@@ -7,8 +7,9 @@ import { parse } from "superjson";
 import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
+import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
-import { type CompleteChampionInfo } from "./components/server-processing-helpers";
+import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
 import { OptionsProvider, useOptionsStore } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 
@@ -16,6 +17,7 @@ export function Client({
     user,
     patch,
     playerChampionInfo,
+    matches,
     ...props
 }: {
     user: Summoner;
@@ -24,6 +26,7 @@ export function Client({
     challengeIds: string;
     playerChallengesData: string;
     challengesThresholds: string;
+    matches: CompleteMatch[];
 }) {
     const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
     const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
@@ -45,7 +48,7 @@ export function Client({
                         <ChampionList champions={playerChampionInfo} />
                     )}
 
-                    {/* <GameHistory /> */}
+                    <MatchHistory matches={matches} />
                 </main>
             </OptionsProvider>
         </UserProvider>

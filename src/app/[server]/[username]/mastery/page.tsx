@@ -10,7 +10,7 @@ import { getChallengesThresholds2, getPlayerChallengesData2, regionToConstant } 
 import { useApi } from "~/app/_components/use-api";
 import { getUserByNameAndServer } from "~/server/api/differentHelper";
 import { Client } from "./client";
-import { getCompleteChampionData } from "./components/server-processing-helpers";
+import { getCompleteChampionData, getMatches } from "./components/server-processing-helpers";
 
 const paramsSchema = z.object({
     server: z.string(),
@@ -26,10 +26,11 @@ export default async function Page({ params }) {
 
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);
 
-    const [completeChampionsData, playerChallenges, challengesThresholds] = await Promise.all([
+    const [completeChampionsData, playerChallenges, challengesThresholds, matches] = await Promise.all([
         getCompleteChampionData(prisma, region, user),
         getPlayerChallengesData2(prisma, user),
         getChallengesThresholds2(prisma),
+        getMatches(prisma, user),
     ]);
 
     const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
@@ -42,6 +43,7 @@ export default async function Page({ params }) {
             challengeIds={stringify(challengeIds)}
             playerChallengesData={stringify(playerChallenges)}
             challengesThresholds={stringify(challengesThresholds)}
+            matches={matches}
         />
     );
 }

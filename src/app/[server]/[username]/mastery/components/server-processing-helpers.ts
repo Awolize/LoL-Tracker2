@@ -1,6 +1,6 @@
 "use server";
 
-import type { ChampionDetails, PrismaClient, Summoner } from "@prisma/client";
+import type { ChampionDetails, Match, MatchInfo, PrismaClient, Summoner } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import type { Regions } from "twisted/dist/constants";
 
@@ -40,4 +40,37 @@ export async function getCompleteChampionData(prisma: PrismaClient, region: Regi
     const patch = champions.at(0)?.version ?? "";
 
     return { completeChampionsData, patch };
+}
+
+export type CompleteMatch = Match & {
+    MatchInfo: MatchInfo;
+    participants: Summoner[];
+};
+
+export async function getMatches(prisma: PrismaClient, user: Summoner) {
+    const matches: (Match & {
+        MatchInfo: MatchInfo | null;
+        participants: Summoner[];
+    })[] = await prisma.match.findMany({
+        where: {
+            participants: {
+                some: user,
+            },
+        },
+        include: {
+            MatchInfo: true,
+            participants: true,
+        },
+        take: 10,
+        orderBy: {
+            MatchInfo: {
+                gameStartTimestamp: "desc",
+            },
+        },
+    });
+
+    // Filter out null values and ensure MatchInfo is not null
+    const filteredMatches = matches.filter((match): match is CompleteMatch => match?.MatchInfo !== null);
+
+    return filteredMatches;
 }

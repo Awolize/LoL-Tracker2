@@ -12,7 +12,7 @@ datasource db {
 
 model Match {
   gameId       String     @id
-  server       String
+  server       String     @unique
   MatchInfo    MatchInfo?
   participants Summoner[] @relation("MatchSummoners")
 }
