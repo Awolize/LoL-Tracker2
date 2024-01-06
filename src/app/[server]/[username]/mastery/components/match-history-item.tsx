@@ -4,7 +4,7 @@ import { useUserContext } from "../stores/user-store";
 import { type CompleteMatch } from "./server-processing-helpers";
 
 const MatchItem = ({ match }: { match: CompleteMatch }) => {
-    console.log(match.MatchInfo);
+    // console.log(match.MatchInfo);
 
     const { getChampionImage } = useDataDragonPath();
     const user = useUserContext((s) => s.user);

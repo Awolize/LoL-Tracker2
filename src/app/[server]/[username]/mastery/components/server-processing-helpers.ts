@@ -61,7 +61,7 @@ export async function getMatches(prisma: PrismaClient, user: Summoner) {
             MatchInfo: true,
             participants: true,
         },
-        take: 10,
+        take: 25,
         orderBy: {
             MatchInfo: {
                 gameStartTimestamp: "desc",
