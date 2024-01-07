@@ -25,8 +25,7 @@ const config = {
             },
         ],
     },
-
-    output: process.env.STANDALONE ? "standalone" : undefined,
+    output: "standalone",
     headers: async () => {
         return [
             {
