@@ -1,4 +1,4 @@
-import type { ChampionMastery, Prisma, PrismaClient, Summoner } from "@prisma/client";
+import type { ChampionMastery, PrismaClient, Summoner } from "@prisma/client";
 import type { LolApi, RiotApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
@@ -7,11 +7,7 @@ import { getUserByNameAndServer } from "../server/api/differentHelper";
 
 export const updateSummoner = async (
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
         riotApi: RiotApi;
     },
@@ -23,12 +19,7 @@ export const updateSummoner = async (
     await masteryBySummoner(ctx.prisma, ctx.lolApi, user, server);
 };
 
-export const masteryBySummoner = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
-    lolApi: LolApi,
-    user: Summoner,
-    region: Regions,
-) => {
+export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
     try {
         // Check if the summoner exists in the database
         let dbUser = await prisma.summoner.findUnique({
@@ -77,7 +68,7 @@ export const masteryBySummoner = async (
 };
 
 const updateSummonerDb = async (
-    prisma: PrismaClient<Prisma.PrismaClientOptions>,
+    prisma: PrismaClient,
     user: Summoner,
     region: Regions,
     championMasteryData: ChampionMastery[] | ChampionMasteryDTO[],

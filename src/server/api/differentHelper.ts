@@ -1,19 +1,19 @@
-import type { Prisma, PrismaClient, Summoner } from "@prisma/client";
+import type { PrismaClient, Summoner } from "@prisma/client";
 import type { LolApi, RiotApi } from "twisted";
 import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
 import type { ChampionsDataDragonDetails, MatchV5DTOs } from "twisted/dist/models-dto";
 
 const splitUsername = (username) => {
     return {
-        gamename: username.split("#")[0],
-        tagline: username.split("#")[1],
+        gameName: decodeURI(username.split("#")[0]),
+        tagLine: username.split("#")[1],
     };
 };
 
 const getUserInfo = async (ctx, username, server) => {
-    const { gamename, tagline } = splitUsername(username);
+    const { gameName, tagLine } = splitUsername(username);
     const accountInfo = (
-        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gamename, tagline, regionToRegionGroup(server))
+        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(server))
     ).response;
     const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, server)).response;
     return { userInfo, accountInfo };
@@ -21,11 +21,7 @@ const getUserInfo = async (ctx, username, server) => {
 
 export async function getUserByNameAndServer(
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
         riotApi: RiotApi;
     },
@@ -77,11 +73,7 @@ export async function getUserByNameAndServer(
 
 export const prepareSummonersCreation = (
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
     },
     game: MatchV5DTOs.MatchDto,
@@ -184,11 +176,7 @@ export const flattenChamp = (obj: ChampionsDataDragonDetails) => {
 };
 
 export const updateChampionDetails = async (ctx: {
-    prisma: PrismaClient<
-        Prisma.PrismaClientOptions,
-        never,
-        Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-    >;
+    prisma: PrismaClient;
     lolApi: LolApi;
 }) => {
     const data = await ctx.lolApi.DataDragon.getChampion();
@@ -221,11 +209,7 @@ const matchFilterSettings = {
 
 export async function getMatchesForSummonerBySummoner(
     ctx: {
-        prisma: PrismaClient<
-            Prisma.PrismaClientOptions,
-            never,
-            Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-        >;
+        prisma: PrismaClient;
         lolApi: LolApi;
     },
     user: Summoner,

@@ -58,7 +58,7 @@ dependencies:
     version: 2.2.1
   twisted:
     specifier: github:Awolize/twisted#build-dist
-    version: github.com/Awolize/twisted/43370f8e7bc8d7c98431a0796596001893cdca7c
+    version: github.com/Awolize/twisted/d1b2765f04d712967536c638bc2be71720251940
   zod:
     specifier: ^3.22.4
     version: 3.22.4
@@ -2528,10 +2528,10 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  github.com/Awolize/twisted/43370f8e7bc8d7c98431a0796596001893cdca7c:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/43370f8e7bc8d7c98431a0796596001893cdca7c}
+  github.com/Awolize/twisted/d1b2765f04d712967536c638bc2be71720251940:
+    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940}
     name: twisted
-    version: 1.56.0
+    version: 1.56.1
     engines: {node: '>=8.6.0'}
     dependencies:
       axios: 1.6.5
