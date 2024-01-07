@@ -6,7 +6,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 
 import { type AppRouter } from "~/server/api/root";
-import { getProcessingUrl, transformer } from "./shared";
+import { getUrl, transformer } from "./shared";
 
 export const api = createTRPCReact<AppRouter>();
 export function TRPCReactProvider(props: {
@@ -25,7 +25,7 @@ export function TRPCReactProvider(props: {
                         (op.direction === "down" && op.result instanceof Error),
                 }),
                 unstable_httpBatchStreamLink({
-                    url: getProcessingUrl(),
+                    url: getUrl(),
                     headers() {
                         return {
                             cookie: props.cookies,

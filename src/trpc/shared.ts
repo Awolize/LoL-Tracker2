@@ -7,6 +7,7 @@ export const transformer = superjson;
 
 function getBaseUrl() {
     if (typeof window !== "undefined") return "";
+    if (process.env.PROCESSING_URL) return `https://${process.env.PROCESSING_URL}`;
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
     return `http://localhost:${process.env.PORT ?? 3000}`;
 }
@@ -17,13 +18,3 @@ export function getUrl() {
 
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
-
-function getBaseProcessingUrl() {
-    if (typeof window !== "undefined") return "";
-    if (process.env.PROCESSING_URL) return `https://${process.env.PROCESSING_URL}`;
-    return `http://localhost:${process.env.PORT ?? 3000}`;
-}
-
-export function getProcessingUrl() {
-    return `${getBaseProcessingUrl()}/api/trpc`;
-}
