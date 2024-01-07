@@ -1,7 +1,7 @@
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { type AppRouter, type ProcessingRouter } from "~/server/api/root";
+import { type AppRouter } from "~/server/api/root";
 
 export const transformer = superjson;
 
@@ -20,13 +20,10 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 function getBaseProcessingUrl() {
     if (typeof window !== "undefined") return "";
-    if (process.env.VERCEL_URL) return `https://${process.env.PROCESSING_URL}`;
+    if (process.env.PROCESSING_URL) return `https://${process.env.PROCESSING_URL}`;
     return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
 export function getProcessingUrl() {
-    return `${getBaseProcessingUrl()}/api/trpcProcessing`;
+    return `${getBaseProcessingUrl()}/api/trpc`;
 }
-
-export type ProcessingRouterInputs = inferRouterInputs<ProcessingRouter>;
-export type ProcessingRouterOutputs = inferRouterOutputs<ProcessingRouter>;

@@ -2,7 +2,7 @@
 
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { UpdateButton } from "~/app/_components/updateButton";
-import { processingApi } from "~/trpc/react";
+import { api } from "~/trpc/react";
 import { useOptionsContext } from "../stores/options-store";
 import { useUserContext } from "../stores/user-store";
 import SortOrder, { type Choice } from "./header-dropdown";
@@ -32,7 +32,7 @@ export default function Header() {
 
     const user = useUserContext((s) => s.user);
 
-    const updateChampions = processingApi.processingApi.updateChampions.useMutation();
+    const updateChampions = api.processingApi.updateChampions.useMutation();
 
     const updateUser = async () => {
         if (user.gameName && user.tagLine) {
