@@ -20,6 +20,8 @@ COPY src ./src
 COPY public ./public
 COPY next.config.mjs .
 COPY tsconfig.json .
+COPY prisma ./prisma
+COPY postcss.config.cjs tailwind.config.ts ./
 
 # Environment variables must be present at build time
 # https://github.com/vercel/next.js/discussions/14030
@@ -54,6 +56,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
+COPY --from=builder /app/postcss.config.cjs /app/tailwind.config.ts  ./
+COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 
 # Automatically leverage output traces to reduce image size
