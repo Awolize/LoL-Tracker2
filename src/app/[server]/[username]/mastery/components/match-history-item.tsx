@@ -17,20 +17,20 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
     ).win;
 
     return (
-        <div className="w-full p-4 flex flex-row gap-2">
-            <div className="flex flex-row gap-4">
-                <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={200} />
-                <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={100} />
-            </div>
+        <div className="flex flex-row gap-4">
+            <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={200} />
+            <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={100} />
 
             <div className="flex flex-col">
                 <div>{match.MatchInfo.gameStartTimestamp.toLocaleString()}</div>
-                <div>{match.MatchInfo.gameMode}</div>
+                <div>Mode: {match.MatchInfo.gameMode}</div>
+                <div>Type: {match.MatchInfo.gameType}</div>
+                <div>Map: {match.MatchInfo.mapId}</div>
                 <div>{isWin ? "Win ✅" : "Lose ❌"}</div>
                 <div>{(match.MatchInfo.gameDuration / 60).toPrecision(3)} min</div>
             </div>
 
-            {/* <div>{JSON.stringify(match.MatchInfo)}</div> */}
+            {/* <div>{JSON.stringify(match.MatchInfo)}</div> */}{" "}
         </div>
     );
 };
