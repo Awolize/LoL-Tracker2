@@ -10,6 +10,7 @@ import Header from "./components/header";
 import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
+import SideBarExpandable from "./components/side-bar-expandable";
 import { OptionsProvider, useOptionsStore } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 
@@ -48,7 +49,9 @@ export function Client({
                         <ChampionList champions={playerChampionInfo} />
                     )}
 
-                    <MatchHistory matches={matches} />
+                    <SideBarExpandable alignment="right">
+                        <MatchHistory matches={matches} />
+                    </SideBarExpandable>
                 </main>
             </OptionsProvider>
         </UserProvider>
