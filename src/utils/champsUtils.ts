@@ -75,10 +75,14 @@ export const masteryBySummoner = async (prisma: PrismaClient, region: Regions, u
 
         if (dbUser) {
             console.log(
+                new Date().toLocaleString(),
                 `Summoner found in database: ${dbUser.gameName}#${dbUser.tagLine}, ${dbUser.championData.length}`,
             );
         } else {
-            console.log(`Summoner NOT found in database: ${user.gameName} ${user.tagLine}, ${region}`);
+            console.log(
+                new Date().toLocaleString(),
+                `Summoner NOT found in database: ${user.gameName} ${user.tagLine}, ${region}`,
+            );
         }
 
         if (!dbUser?.championData) return [];
