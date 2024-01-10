@@ -11,14 +11,12 @@ import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
 import SideBarExpandable from "./components/side-bar-expandable";
-import { OptionsProvider, useOptionsStore } from "./stores/options-store";
+import { OptionsProvider, useOptionsContext } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 
 export function Client({
     user,
-    patch,
     playerChampionInfo,
-    matches,
     ...props
 }: {
     user: Summoner;
@@ -35,25 +33,46 @@ export function Client({
 
     playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
 
-    const { byRole } = useOptionsStore(`${user.gameName}-${user.tagLine}`).getState();
-
     return (
         <UserProvider user={user}>
             <OptionsProvider persistName={`${user.gameName}-${user.tagLine}`}>
-                <main className="flex flex-col">
-                    <Header />
-
-                    {byRole ? (
-                        <SortedChampionList champions={playerChampionInfo} />
-                    ) : (
-                        <ChampionList champions={playerChampionInfo} />
-                    )}
-
-                    <SideBarExpandable alignment="right">
-                        <MatchHistory matches={matches} />
-                    </SideBarExpandable>
-                </main>
+                <Main {...props} playerChampionInfo={playerChampionInfo} user={user} />
             </OptionsProvider>
         </UserProvider>
+    );
+}
+
+// need to access the useOptionsContext inside the provider
+function Main({
+    user,
+    patch,
+    playerChampionInfo,
+    matches,
+    ...props
+}: {
+    user: Summoner;
+    playerChampionInfo: CompleteChampionInfo[];
+    patch: string;
+    challengeIds: string;
+    playerChallengesData: string;
+    challengesThresholds: string;
+    matches: CompleteMatch[];
+}) {
+    const byRole = useOptionsContext((state) => state.byRole);
+
+    return (
+        <main className="flex flex-col">
+            <Header />
+
+            {byRole ? (
+                <SortedChampionList champions={playerChampionInfo} />
+            ) : (
+                <ChampionList champions={playerChampionInfo} />
+            )}
+
+            <SideBarExpandable alignment="right">
+                <MatchHistory matches={matches} />
+            </SideBarExpandable>
+        </main>
     );
 }
