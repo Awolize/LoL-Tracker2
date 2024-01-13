@@ -45,7 +45,7 @@ const SortedChampionList = ({ champions }) => {
                                 const hidden = selectedChampions.has(championInfo.championId);
 
                                 if (hidden && !showSelectedChampions) {
-                                    return <></>;
+                                    return null;
                                 }
 
                                 return (
@@ -58,7 +58,9 @@ const SortedChampionList = ({ champions }) => {
                                         showChest={showAvailableChests}
                                         showMasteryPoints={showMasteryPoints}
                                         showFinished={false}
-                                        handleChampionClick={() => toggleSelectedChampion(championInfo.championId)}
+                                        handleChampionClick={() =>
+                                            showSelectedChampions && toggleSelectedChampion(championInfo.championId)
+                                        }
                                     />
                                 );
                             })}

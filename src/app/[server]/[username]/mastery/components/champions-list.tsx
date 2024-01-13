@@ -12,6 +12,7 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
         showMasteryPoints,
         selectedChampions,
         sortOrder,
+        showSelectedChampions,
         toggleSelectedChampion,
         championsScale,
     } = useOptionsContext((state) => state);
@@ -25,6 +26,12 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
                 {champions
                     .sort((a, b) => sortAlgorithm(sortOrder, a, b))
                     .map((championInfo) => {
+                        const hidden = selectedChampions.has(championInfo.championId);
+
+                        if (hidden && !showSelectedChampions) {
+                            return null;
+                        }
+
                         return (
                             <ChampionItem
                                 key={championInfo.id}
@@ -35,7 +42,9 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
                                 showChest={showAvailableChests}
                                 showFinished={false}
                                 showMasteryPoints={showMasteryPoints}
-                                handleChampionClick={() => toggleSelectedChampion(championInfo.championId)}
+                                handleChampionClick={() =>
+                                    showSelectedChampions && toggleSelectedChampion(championInfo.championId)
+                                }
                             />
                         );
                     })}
