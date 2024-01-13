@@ -1,6 +1,7 @@
 "use client";
 
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
+import { ToggleEye } from "~/app/_components/toggle-eye";
 import { UpdateButton } from "~/app/_components/updateButton";
 import { api } from "~/trpc/react";
 import { useOptionsContext } from "../stores/options-store";
@@ -22,12 +23,14 @@ export default function Header() {
         byRole,
         filterPoints,
         sortOrder,
+        showSelectedChampions,
         setSortOrder,
         setFilterPoints,
         toggleAvailableChests,
         toggleLevels,
         toggleMasteryPoints,
         toggleSortedByRole,
+        toggleShowSelectedChampions,
     } = useOptionsContext((state) => state);
 
     const user = useUserContext((s) => s.user);
@@ -87,6 +90,11 @@ export default function Header() {
                 callback={(choice) => setSortOrder(choice.value)}
                 value={sortOrderChoices.find((el) => el.value === sortOrder)}
                 choices={sortOrderChoices}
+            />
+            <ToggleEye
+                label="Hide selected champions"
+                checked={!showSelectedChampions}
+                onChange={toggleShowSelectedChampions}
             />
             <ScaleSlider />
         </div>

@@ -14,6 +14,7 @@ const SortedChampionList = ({ champions }) => {
         showMasteryPoints,
         selectedChampions,
         sortOrder,
+        showSelectedChampions,
         toggleSelectedChampion,
         championsScale,
     } = useOptionsContext((state) => state);
@@ -40,19 +41,27 @@ const SortedChampionList = ({ champions }) => {
                             className="grid justify-between"
                             style={{ gridTemplateColumns: `repeat(auto-fill, ${championsScale}px)` }}
                         >
-                            {roleChampions.map((championInfo) => (
-                                <ChampionItem
-                                    key={championInfo.id}
-                                    champ={championInfo}
-                                    filterPoints={filterPoints}
-                                    hiddenChamp={selectedChampions.has(championInfo.championId)}
-                                    showLevel={showLevels}
-                                    showChest={showAvailableChests}
-                                    showMasteryPoints={showMasteryPoints}
-                                    showFinished={false}
-                                    handleChampionClick={() => toggleSelectedChampion(championInfo.championId)}
-                                />
-                            ))}
+                            {roleChampions.map((championInfo) => {
+                                const hidden = selectedChampions.has(championInfo.championId);
+
+                                if (hidden && !showSelectedChampions) {
+                                    return <></>;
+                                }
+
+                                return (
+                                    <ChampionItem
+                                        key={championInfo.id}
+                                        champ={championInfo}
+                                        filterPoints={filterPoints}
+                                        hiddenChamp={hidden}
+                                        showLevel={showLevels}
+                                        showChest={showAvailableChests}
+                                        showMasteryPoints={showMasteryPoints}
+                                        showFinished={false}
+                                        handleChampionClick={() => toggleSelectedChampion(championInfo.championId)}
+                                    />
+                                );
+                            })}
                         </div>
                     </div>
                 );

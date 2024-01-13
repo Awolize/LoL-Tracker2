@@ -13,6 +13,7 @@ interface Store {
     selectedChampions: Set<number>;
     championsScale: number;
     sortOrder: number;
+    showSelectedChampions: boolean;
 }
 
 interface StoreState extends Store {
@@ -23,6 +24,7 @@ interface StoreState extends Store {
     setFilterPoints: (newFilter: number) => void;
     setSortOrder: (newFilter: SortOrder2) => void;
     toggleSelectedChampion: (championId: number) => void;
+    toggleShowSelectedChampions: () => void;
     setChampionsScale: (newScaleValue: number) => void;
 }
 
@@ -35,6 +37,7 @@ const initialState = {
     selectedChampions: new Set<number>(),
     championsScale: 85,
     sortOrder: SortOrder2.Points,
+    showSelectedChampions: false,
 };
 
 // const useOptionsStore: (persistName: string) => UseBoundStore<StoreApi<StoreState>>
@@ -52,6 +55,8 @@ export const useOptionsStore = (persistName: string) => {
                     set((state) => ({ ...state, showAvailableChests: !state.showAvailableChests })),
                 toggleLevels: () => set((state) => ({ ...state, showLevels: !state.showLevels })),
                 toggleSortedByRole: () => set((state) => ({ ...state, byRole: !state.byRole })),
+                toggleShowSelectedChampions: () =>
+                    set((state) => ({ ...state, showSelectedChampions: !state.showSelectedChampions })),
                 setFilterPoints: (newFilter) => set((state) => ({ ...state, filterPoints: newFilter })),
                 setSortOrder: (newSortOrder) => set((state) => ({ ...state, sortOrder: newSortOrder })),
                 toggleSelectedChampion: (championId) =>
