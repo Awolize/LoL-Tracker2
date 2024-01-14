@@ -1,4 +1,5 @@
-import "~/styles/globals.css";
+import "public/build.css";
+// import "~/styles/globals.css";
 
 import { cookies } from "next/headers";
 

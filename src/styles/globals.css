@@ -20,4 +20,5 @@ a {
 
 * {
     box-sizing: border-box;
+    min-width: 0px;
 }
