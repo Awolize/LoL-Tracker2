@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export function SideBarExpandable({ children, alignment }: { children: React.ReactNode; alignment: "right" | "left" }) {
-    const [drawerOpen, setDrawerOpen] = useState(true);
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (
         <div
