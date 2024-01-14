@@ -15,8 +15,8 @@ const SortedChampionList = ({ champions }) => {
         selectedChampions,
         sortOrder,
         showSelectedChampions,
-        toggleSelectedChampion,
         championsScale,
+        toggleSelectedChampion,
     } = useOptionsContext((state) => state);
 
     const playerChampionInfoSorted: CompleteChampionInfo[][] = [];

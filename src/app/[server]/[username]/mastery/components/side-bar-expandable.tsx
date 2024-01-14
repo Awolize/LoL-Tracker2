@@ -1,26 +1,29 @@
 import { useState } from "react";
 
-function SideBarExpandable({ children, alignment }: { children: React.ReactNode; alignment: "right" | "left" }) {
+export function SideBarExpandable({ children, alignment }: { children: React.ReactNode; alignment: "right" | "left" }) {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (
         <div
-            className={`fixed bg-zinc-950 py-2 h-screen z-20 duration-300 rounded-r-lg flex flex-col gap-2
-                ${drawerOpen ? "min-w-fit w-1/3" : "px-0 w-0"}
-                ${alignment === "right" ? "right-0" : "left-0"}
+            className={`fixed flex flex-col bg-zinc-950 py-2 z-20 duration-300 w-[1100px]
+                ${drawerOpen ? `${alignment}-0` : `${alignment === "left" ? "-left" : "-right"}-[1100px]`}
             `}
         >
-            <button
-                type="button"
-                onClick={() => setDrawerOpen(!drawerOpen)}
-                className={`bg-zinc-900 whitespace-nowrap text-white rounded border-black cursor-pointer mt-5 py-2 px-4 " ${
-                    drawerOpen ? "mx-auto z-30" : "relative flex flex-1 w-fit right-44 z-30"
-                }`}
-            >
-                Match History
-            </button>
+            <div className="relative flex flex-1">
+                <button
+                    type="button"
+                    onClick={() => setDrawerOpen(!drawerOpen)}
+                    className={`bg-zinc-900 whitespace-nowrap text-white rounded border-black cursor-pointer mt-5 py-2 px-4 z-30 ${
+                        drawerOpen
+                            ? `absolute ${alignment}-1/2`
+                            : `absolute flex flex-1 w-fit ${alignment === "right" ? "-left" : "-right"}-44 z-30`
+                    }`}
+                >
+                    Match History
+                </button>
+            </div>
 
-            <div className="px-4 overflow-y-auto">{children}</div>
+            <div className="px-4 mt-20 overflow-y-auto">{children}</div>
         </div>
     );
 }

@@ -45,6 +45,8 @@ export async function getUserByNameAndServer(
             return user; // is existing user;
         }
 
+        console.log("Could not find summoner in DB", username, server);
+
         const { userInfo, accountInfo } = await getUserInfo(ctx, username, server);
 
         // Map API response to Summoner
@@ -63,7 +65,16 @@ export async function getUserByNameAndServer(
             accountId: userInfo.accountId,
         };
 
-        return newUser;
+        // Use upsert to save the new user or update an existing one
+        const savedUser = await ctx.prisma.summoner.upsert({
+            where: {
+                puuid: newUser.puuid,
+            },
+            update: newUser,
+            create: newUser,
+        });
+
+        return savedUser;
     } catch (error) {
         console.error("error:", new Date().toLocaleString(), new Date(), username, server, error);
         throw new Error("Could not fetch summoner^", { cause: error });

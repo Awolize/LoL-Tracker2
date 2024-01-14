@@ -13,8 +13,8 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
         selectedChampions,
         sortOrder,
         showSelectedChampions,
-        toggleSelectedChampion,
         championsScale,
+        toggleSelectedChampion,
     } = useOptionsContext((state) => state);
 
     return (

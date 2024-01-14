@@ -71,7 +71,15 @@ function Main({
             )}
 
             <SideBarExpandable alignment="right">
-                <MatchHistory matches={matches} />
+                {matches.length !== 0 ? (
+                    <MatchHistory matches={matches} />
+                ) : (
+                    <div className="p-4 text-center">
+                        Don't forget to press the update button, this might take a while the first time.
+                        <br />
+                        After the first time it should take 2 min.
+                    </div>
+                )}
             </SideBarExpandable>
         </main>
     );
