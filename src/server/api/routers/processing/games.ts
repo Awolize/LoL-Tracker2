@@ -34,7 +34,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
         for (let index = 0; index < matchIds.length; index++) {
             const matchId = matchIds[index];
 
-            const gameServer: Regions | null = matchId?.split("_")[0] as Regions | null;
+            const gameRegion: Regions | null = matchId?.split("_")[0] as Regions | null;
             const gameId = matchId?.split("_")[1];
 
             if (index % 50 === 0) {
@@ -42,7 +42,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
             }
 
             try {
-                if (!matchId || !gameId || !gameServer) continue;
+                if (!matchId || !gameId || !gameRegion) continue;
 
                 // Create the Match record
                 const existingGame = await prisma.match.findFirst({
@@ -56,7 +56,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                     continue;
                 }
 
-                const gameResponse = await lolApi.MatchV5.get(matchId, regionToRegionGroup(gameServer));
+                const gameResponse = await lolApi.MatchV5.get(matchId, regionToRegionGroup(gameRegion));
                 const game = gameResponse.response;
 
                 const creationPromises = summonersFromGames(prisma, lolApi, game);
@@ -65,7 +65,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                 await prisma.match.create({
                     data: {
                         gameId: gameId,
-                        server: gameServer,
+                        region: gameRegion,
                         MatchInfo: {
                             create: {
                                 gameCreation: new Date(game.info.gameCreation),

@@ -25,12 +25,12 @@ export type CompleteChampionInfo = ChampionDetails &
     };
 
 const paramsSchema = z.object({
-    server: z.string(),
+    region: z.string(),
     username: z.string(),
 });
 
 export default async function Page({ params }) {
-    const { server, username: parsedUsername } = paramsSchema.parse(params);
+    const { region, username: parsedUsername } = paramsSchema.parse(params);
     const username = parsedUsername.replace("-", "#");
 
     const prisma = new PrismaClient();
@@ -60,7 +60,7 @@ export default async function Page({ params }) {
 
     const props = {
         username,
-        server,
+        region,
         champData: completeChampsData,
         patch: championsDD[0]?.version,
     };

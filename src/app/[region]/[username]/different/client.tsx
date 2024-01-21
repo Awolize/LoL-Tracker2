@@ -14,18 +14,18 @@ import { type CompleteChampionInfo } from "./page";
 
 export default function Client({
     username,
-    server,
+    region,
     patch,
     champData: champs,
 }: {
     username: string;
-    server: string;
+    region: string;
     champData: CompleteChampionInfo[];
     patch: string | null | undefined;
 }) {
     const [selectedItem, setSelectedItem] = useState(null);
 
-    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ server, username });
+    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ region, username });
 
     const selectedChallengeQuery = useMemo(() => {
         console.log("selected challenge", selectedItem);
@@ -51,7 +51,7 @@ export default function Client({
         <div className="flex h-screen w-screen justify-center">
             <aside className="z-10">
                 <DifferentSideBar
-                    server={server}
+                    region={region}
                     username={username}
                     selectedItem={selectedItem}
                     setSelectedItem={setSelectedItem}

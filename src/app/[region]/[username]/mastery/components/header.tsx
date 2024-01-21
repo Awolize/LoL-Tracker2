@@ -47,7 +47,7 @@ export default function Header() {
             updateChampions.mutate({
                 gameName: user.gameName,
                 tagLine: user.tagLine,
-                region: user.server,
+                region: user.region,
             });
         }
     };

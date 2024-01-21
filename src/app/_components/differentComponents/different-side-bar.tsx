@@ -9,7 +9,7 @@ import type { ChallengeLocalization } from "@prisma/client";
 import { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
 
-export const DifferentSideBar = ({ server, username, selectedItem, setSelectedItem, mappedCases }) => {
+export const DifferentSideBar = ({ region, username, selectedItem, setSelectedItem, mappedCases }) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -31,7 +31,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
         },
     });
 
-    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ server, username });
+    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ region, username });
 
     // Filter challenges based on search term and mappedCases
     const filteredChallenges = challenges?.data.filter((item) => {
@@ -49,7 +49,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
 
     const LastItem = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery.mutate({ server, username });
+            refreshQuery.mutate({ region, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -73,7 +73,7 @@ export const DifferentSideBar = ({ server, username, selectedItem, setSelectedIt
     };
     const LastItem3 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery3.mutate({ server, username });
+            refreshQuery3.mutate({ region, username });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;

@@ -12,7 +12,7 @@ datasource db {
 
 model Match {
   gameId       String     @id
-  server       String
+  region       String     @map("server")
   participants Summoner[] @relation("MatchSummoners")
   MatchInfo    MatchInfo?
 }
@@ -47,7 +47,7 @@ model Summoner {
   summonerId    String
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
-  server        String
+  region        String            @map("server")
   username      String
   gameName      String?
   tagLine       String?

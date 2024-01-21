@@ -5,22 +5,22 @@ import { useRef, useState } from "react";
 
 import Column from "./_components/column";
 import LoadingComponent from "./_components/loading-spinner";
-import ServerListSelector, { servers } from "./_components/server-list-selector";
+import RegionListSelector, { regions } from "./_components/region-list-selector";
 
 export default function Page() {
     const router = useRouter();
     const usernameRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
-    const [selectedServer, setSelectedServer] = useState(servers[0]);
+    const [selectedRegion, setSelectedRegion] = useState(regions[0]);
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         console.log(
-            `Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value
+            `Redirecting to "/${selectedRegion?.name}/${usernameRef.current?.value
                 .replace("#", "-")
                 .toLowerCase()}..."`,
         );
-        router.push(`/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-").toLowerCase()}`);
+        router.push(`/${selectedRegion?.name}/${usernameRef.current?.value.replace("#", "-").toLowerCase()}`);
         setLoading(true);
     }
 
@@ -41,7 +41,7 @@ export default function Page() {
                     <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem] ">
                         Search{" "}
                         <div className="inline-block">
-                            <ServerListSelector selectedServer={selectedServer} setSelectedServer={setSelectedServer} />
+                            <RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
                         </div>{" "}
                         Summoner Profile
                     </h1>

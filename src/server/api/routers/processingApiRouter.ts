@@ -14,9 +14,9 @@ import { upsertSummoner } from "./processing/summoner";
 
 export const processingApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
+        .input(z.object({ username: z.string(), region: z.string() }))
         .mutation(async ({ input, ctx }) => {
-            const region = regionToConstant(input.server.toUpperCase());
+            const region = regionToConstant(input.region.toUpperCase());
             const data = (await ctx.lolApi.Challenges.getConfig(region)).response;
 
             try {
@@ -58,11 +58,11 @@ export const processingApiRouter = createTRPCRouter({
             }
         }),
     updateJackOfAllChamps: publicProcedure
-        .input(z.object({ username: z.string(), server: z.string() }))
+        .input(z.object({ username: z.string(), region: z.string() }))
         .mutation(async ({ input, ctx }) => {
-            console.log(`updateJackOfAllChamps for user ${input.username} (${input.server.toUpperCase()})`);
+            console.log(`updateJackOfAllChamps for user ${input.username} (${input.region.toUpperCase()})`);
 
-            const region = regionToConstant(input.server.toUpperCase());
+            const region = regionToConstant(input.region.toUpperCase());
 
             const user = await ctx.prisma.summoner.findFirst({
                 where: {
@@ -70,7 +70,7 @@ export const processingApiRouter = createTRPCRouter({
                         mode: "insensitive",
                         equals: input.username,
                     },
-                    server: region,
+                    region: region,
                 },
             });
 

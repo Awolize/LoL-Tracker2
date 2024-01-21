@@ -21,7 +21,7 @@ const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 
 export function Client(props: {
     username: string;
-    server: string;
+    region: string;
     champData: CompleteChampionInfo[];
     patch: string;
     challengeIds: string;
@@ -35,7 +35,7 @@ export function Client(props: {
     const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
     const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
     const username = props.username;
-    const server = props.server;
+    const region = props.region;
 
     const championsByRole: Record<string, typeof champs> = ROLES.reduce((acc, role) => {
         const champsWithRole = champs.filter((champ) => champ?.role === role || (!champ.role && role === "Bottom")); // add champs with role null to the Bottom list
@@ -266,7 +266,7 @@ export function Client(props: {
                     <button
                         type="button"
                         onClick={() => {
-                            refreshQuery.mutate({ server, username });
+                            refreshQuery.mutate({ region, username });
                         }}
                         className="flex flex-row gap-2 items-center"
                     >

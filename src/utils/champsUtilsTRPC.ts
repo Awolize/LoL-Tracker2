@@ -3,7 +3,7 @@ import type { LolApi, RiotApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 
-import { getUserByNameAndServer } from "../server/api/differentHelper";
+import { getUserByNameAndRegion } from "../server/api/differentHelper";
 
 export const updateSummoner = async (
     ctx: {
@@ -12,11 +12,11 @@ export const updateSummoner = async (
         riotApi: RiotApi;
     },
     username: string,
-    server: Regions,
+    region: Regions,
 ) => {
-    const user = await getUserByNameAndServer(ctx, username.toLowerCase(), server);
+    const user = await getUserByNameAndRegion(ctx, username.toLowerCase(), region);
 
-    await masteryBySummoner(ctx.prisma, ctx.lolApi, user, server);
+    await masteryBySummoner(ctx.prisma, ctx.lolApi, user, region);
 };
 
 export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
@@ -81,7 +81,7 @@ const updateSummonerDb = async (
             },
             update: {
                 summonerId: user.summonerId,
-                server: region,
+                region: region,
                 username: user.username,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
@@ -91,7 +91,7 @@ const updateSummonerDb = async (
             create: {
                 puuid: user.puuid,
                 summonerId: user.summonerId,
-                server: region,
+                region: region,
                 username: user.username,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,

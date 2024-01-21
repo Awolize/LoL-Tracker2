@@ -1,6 +1,6 @@
 import { Listbox } from "@headlessui/react";
 
-export const servers = [
+export const regions = [
     { id: 3, name: "EUW", disabled: false },
     { id: 1, name: "BR", disabled: false },
     { id: 2, name: "EUNE", disabled: false },
@@ -15,24 +15,24 @@ export const servers = [
     { id: 12, name: "PBE", disabled: false },
 ];
 
-export const ServerListSelector = ({ selectedServer, setSelectedServer }) => {
+export const RegionListSelector = ({ selectedRegion, setSelectedRegion }) => {
     return (
-        <Listbox value={selectedServer} onChange={setSelectedServer}>
+        <Listbox value={selectedRegion} onChange={setSelectedRegion}>
             <Listbox.Button className={"flex items-end"}>
-                <span className="text-[hsl(280,100%,70%)]">{selectedServer?.name}</span>
+                <span className="text-[hsl(280,100%,70%)]">{selectedRegion?.name}</span>
                 <p className="text-xs">v</p>
             </Listbox.Button>
             <div className="relative">
                 <Listbox.Options className="absolute top-0 left-0 flex-col inline w-[150px]">
-                    {servers
-                        .filter((server) => selectedServer?.id !== server.id)
-                        .map((server) => (
-                            <Listbox.Option key={server.id} value={server} disabled={server.disabled}>
+                    {regions
+                        .filter((region) => selectedRegion?.id !== region.id)
+                        .map((region) => (
+                            <Listbox.Option key={region.id} value={region} disabled={region.disabled}>
                                 <button
                                     type="button"
                                     className="hover:text-[hsl(280,100%,70%)] hover:bg-opacity-20 hover:bg-gray-500 w-full text-left"
                                 >
-                                    {server.name}
+                                    {region.name}
                                 </button>
                             </Listbox.Option>
                         ))}
@@ -42,4 +42,4 @@ export const ServerListSelector = ({ selectedServer, setSelectedServer }) => {
     );
 };
 
-export default ServerListSelector;
+export default RegionListSelector;

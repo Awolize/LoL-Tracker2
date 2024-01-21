@@ -24,7 +24,7 @@ export const upsertSummoner = async (
         },
         update: {
             summonerId: summoner.id,
-            server: region,
+            region: region,
             username: summoner.name,
             profileIconId: summoner.profileIconId,
             summonerLevel: summoner.summonerLevel,
@@ -36,7 +36,7 @@ export const upsertSummoner = async (
         create: {
             puuid: summoner.puuid,
             summonerId: summoner.id,
-            server: region,
+            region: region,
             username: summoner.name,
             profileIconId: summoner.profileIconId,
             summonerLevel: summoner.summonerLevel,
@@ -79,7 +79,7 @@ export const summonersFromGames = (prisma: PrismaClient, lolApi: LolApi, game: M
             data: {
                 puuid: user.puuid,
                 summonerId: user.id,
-                server: region,
+                region: region,
                 username: user.name,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,

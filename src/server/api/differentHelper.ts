@@ -10,23 +10,23 @@ const splitUsername = (username) => {
     };
 };
 
-const getUserInfo = async (ctx, username, server) => {
+const getUserInfo = async (ctx, username, region) => {
     const { gameName, tagLine } = splitUsername(username);
     const accountInfo = (
-        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(server))
+        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region))
     ).response;
-    const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, server)).response;
+    const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, region)).response;
     return { userInfo, accountInfo };
 };
 
-export async function getUserByNameAndServer(
+export async function getUserByNameAndRegion(
     ctx: {
         prisma: PrismaClient;
         lolApi: LolApi;
         riotApi: RiotApi;
     },
     username: string,
-    server: Regions,
+    region: Regions,
 ) {
     try {
         const user = await ctx.prisma.summoner.findFirst({
@@ -39,7 +39,7 @@ export async function getUserByNameAndServer(
                     equals: username.split("#")[1],
                     mode: "insensitive",
                 },
-                server: server,
+                region: region,
             },
         });
 
@@ -47,9 +47,9 @@ export async function getUserByNameAndServer(
             return user; // is existing user;
         }
 
-        console.log("Could not find summoner in DB", username, server);
+        console.log("Could not find summoner in DB", username, region);
 
-        const { userInfo, accountInfo } = await getUserInfo(ctx, username, server);
+        const { userInfo, accountInfo } = await getUserInfo(ctx, username, region);
 
         // Map API response to Summoner
         const newUser: Summoner = {
@@ -57,7 +57,7 @@ export async function getUserByNameAndServer(
             summonerId: userInfo.id,
             createdAt: new Date(),
             updatedAt: new Date(),
-            server: server,
+            region,
             username: userInfo.name,
             gameName: accountInfo.gameName ?? null,
             tagLine: accountInfo.tagLine ?? null,
@@ -78,7 +78,7 @@ export async function getUserByNameAndServer(
 
         return savedUser;
     } catch (error) {
-        console.error("error:", new Date().toLocaleString(), new Date(), username, server, error);
+        console.error("error:", new Date().toLocaleString(), new Date(), username, region, error);
         throw new Error("Could not fetch summoner^", { cause: error });
     }
 }
@@ -116,7 +116,7 @@ export const prepareSummonersCreation = (
             },
             update: {
                 summonerId: user.id,
-                server: region,
+                region: region,
                 username: user.name,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
@@ -126,7 +126,7 @@ export const prepareSummonersCreation = (
             create: {
                 puuid: user.puuid,
                 summonerId: user.id,
-                server: region,
+                region: region,
                 username: user.name,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
