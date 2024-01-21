@@ -33,7 +33,7 @@ export const differentApiRouter = createTRPCRouter({
         .input(z.object({ username: z.string(), server: z.string() }))
         .query(async ({ input, ctx }) => {
             const region = regionToConstant(input.server.toUpperCase());
-            const user = await getUserByNameAndServer(ctx, input.username, region);
+            const user = await getUserByNameAndServer(ctx, input.username.toLowerCase(), region);
 
             const getJackOfAllChamps = async (puuid) => {
                 return (

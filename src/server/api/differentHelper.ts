@@ -33,9 +33,11 @@ export async function getUserByNameAndServer(
             where: {
                 gameName: {
                     equals: username.split("#")[0],
+                    mode: "insensitive",
                 },
                 tagLine: {
                     equals: username.split("#")[1],
+                    mode: "insensitive",
                 },
                 server: server,
             },

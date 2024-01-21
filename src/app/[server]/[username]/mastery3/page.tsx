@@ -19,7 +19,7 @@ const paramsSchema = z.object({
 
 export default async function Page({ params }) {
     const { server, username: parsedUsername } = paramsSchema.parse(params);
-    const username = parsedUsername.replace("-", "#");
+    const username = parsedUsername.replace("-", "#").toLowerCase();
     const region = regionToConstant(server.toUpperCase());
 
     const { prisma, lolApi, riotApi } = useApi();

@@ -21,7 +21,7 @@ export default async function Page({ params }) {
     const { prisma, lolApi, riotApi } = useApi();
 
     const { server, username: parsedUsername } = paramsSchema.parse(params);
-    const username = parsedUsername.replace("-", "#");
+    const username = parsedUsername.replace("-", "#").toLowerCase();
     const region = regionToConstant(server.toUpperCase());
 
     const user = await getUserByNameAndServer({ prisma, lolApi, riotApi }, username, region);

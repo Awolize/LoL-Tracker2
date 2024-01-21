@@ -15,7 +15,7 @@ const paramsSchema = z.object({
 
 export default async function Page({ params }) {
     const { server, username: rawUsername } = paramsSchema.parse(params);
-    const username = rawUsername.replace("-", "#");
+    const username = rawUsername.replace("-", "#").toLowerCase();
 
     const region = regionToConstant(server.toUpperCase());
 

@@ -14,7 +14,7 @@ export const updateSummoner = async (
     username: string,
     server: Regions,
 ) => {
-    const user = await getUserByNameAndServer(ctx, username, server);
+    const user = await getUserByNameAndServer(ctx, username.toLowerCase(), server);
 
     await masteryBySummoner(ctx.prisma, ctx.lolApi, user, server);
 };

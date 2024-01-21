@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 
-import Head from "next/head";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "../_components/loading-spinner";
 import Row from "../_components/row";
@@ -18,9 +17,15 @@ export default function Page() {
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
         console.log(
-            `Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value}-${gameTagRef.current?.value}..."`,
+            `Redirecting to "/${
+                selectedServer?.name
+            }/${usernameRef.current?.value.toLowerCase()}-${gameTagRef.current?.value.toLowerCase()}..."`,
         );
-        router.push(`/${selectedServer?.name}/${usernameRef.current?.value}-${gameTagRef.current?.value}`);
+        router.push(
+            `/${
+                selectedServer?.name
+            }/${usernameRef.current?.value.toLowerCase()}-${gameTagRef.current?.value.toLowerCase()}`,
+        );
         setLoading(true);
     }
 

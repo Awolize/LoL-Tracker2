@@ -35,7 +35,12 @@ export default function Header() {
 
     const user = useUserContext((s) => s.user);
 
-    const updateChampions = api.processingApi.updateChampions.useMutation();
+    const utils = api.useUtils();
+    const updateChampions = api.processingApi.updateChampions.useMutation({
+        onSuccess() {
+            utils.invalidate();
+        },
+    });
 
     const updateUser = async () => {
         if (user.gameName && user.tagLine) {

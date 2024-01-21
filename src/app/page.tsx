@@ -15,8 +15,12 @@ export default function Page() {
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
-        console.log(`Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-")}..."`);
-        router.push(`/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-")}`);
+        console.log(
+            `Redirecting to "/${selectedServer?.name}/${usernameRef.current?.value
+                .replace("#", "-")
+                .toLowerCase()}..."`,
+        );
+        router.push(`/${selectedServer?.name}/${usernameRef.current?.value.replace("#", "-").toLowerCase()}`);
         setLoading(true);
     }
 
