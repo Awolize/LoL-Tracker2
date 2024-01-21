@@ -4,10 +4,10 @@ import type { ChampionDetails, Match, MatchInfo, PrismaClient, Summoner } from "
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import type { Regions } from "twisted/dist/constants";
 
-import { masteryBySummoner } from "../../../../../utils/champsUtils";
+import { masteryBySummoner } from "../../utils/champsUtils";
 
 import { type ChampionMasteryDTO } from "twisted/dist/models-dto";
-import rolesJson from "../../roles.json";
+import rolesJson from "../../app/[region]/[username]/roles.json";
 
 interface Roles {
     role: string;

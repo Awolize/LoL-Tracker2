@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { useDataDragonPath } from "~/app/_components/use-data-dragon-path";
+import { useDataDragonPath } from "~/components/ui/use-data-dragon-path";
 import { useUserContext } from "../stores/user-store";
 
 interface MatchTableProps {

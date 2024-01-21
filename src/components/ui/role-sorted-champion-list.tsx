@@ -1,6 +1,6 @@
 // SortedChampionList.jsx
-import ChampionItem from "~/app/_components/champion-item";
-import RoleHeader from "~/app/_components/role-header";
+import ChampionItem from "~/components/ui/champion-item";
+import RoleHeader from "~/components/ui/role-header";
 import { sortAlgorithm } from "~/utils/champsUtils";
 import { useOptionsContext } from "../stores/options-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";

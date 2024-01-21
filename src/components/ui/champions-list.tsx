@@ -1,5 +1,5 @@
 // ChampionList.jsx
-import ChampionItem from "~/app/_components/champion-item";
+import ChampionItem from "~/components/ui/champion-item";
 import { sortAlgorithm } from "~/utils/champsUtils";
 import { useOptionsContext } from "../stores/options-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";

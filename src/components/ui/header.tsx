@@ -1,8 +1,8 @@
 "use client";
 
-import { SwitchWithLabel } from "~/app/_components/switch-w-label";
-import { ToggleEye } from "~/app/_components/toggle-eye";
-import { UpdateButton } from "~/app/_components/updateButton";
+import { SwitchWithLabel } from "~/components/ui/switch-w-label";
+import { ToggleEye } from "~/components/ui/toggle-eye";
+import { UpdateButton } from "~/components/ui/update-button";
 import { api } from "~/trpc/react";
 import { useOptionsContext } from "../stores/options-store";
 import { useUserContext } from "../stores/user-store";

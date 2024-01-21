@@ -5,14 +5,14 @@ import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challeng
 import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
 import { type ChallengeIds } from "~/utils/champsUtils";
-import ChampionList from "./components/champions-list";
-import Header from "./components/header";
-import MatchHistory from "./components/match-history";
-import SortedChampionList from "./components/role-sorted-champion-list";
-import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
-import SideBarExpandable from "./components/side-bar-expandable";
-import { OptionsProvider, useOptionsContext } from "./stores/options-store";
-import { UserProvider } from "./stores/user-store";
+import { OptionsProvider, useOptionsContext } from "../../../../components/stores/options-store";
+import { UserProvider } from "../../../../components/stores/user-store";
+import ChampionList from "../../../../components/ui/champions-list";
+import Header from "../../../../components/ui/header";
+import MatchHistory from "../../../../components/ui/match-history";
+import SortedChampionList from "../../../../components/ui/role-sorted-champion-list";
+import { type CompleteChampionInfo, type CompleteMatch } from "../../../../components/ui/server-processing-helpers";
+import SideBarExpandable from "../../../../components/ui/side-bar-expandable";
 
 export function Client({
     user,

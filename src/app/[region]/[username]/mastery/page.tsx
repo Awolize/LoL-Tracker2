@@ -7,10 +7,10 @@ import { z } from "zod";
 import type { ChallengeIds } from "../../../../utils/champsUtils";
 import { getChallengesThresholds2, getPlayerChallengesData2, regionToConstant } from "../../../../utils/champsUtils";
 
-import { useApi } from "~/app/_components/use-api";
+import { useApi } from "~/components/ui/use-api";
 import { getUserByNameAndRegion } from "~/server/api/differentHelper";
+import { getCompleteChampionData, getMatches } from "../../../../components/ui/server-processing-helpers";
 import { Client } from "./client";
-import { getCompleteChampionData, getMatches } from "./components/server-processing-helpers";
 
 const paramsSchema = z.object({
     region: z.string(),

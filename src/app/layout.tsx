@@ -4,6 +4,7 @@ import "public/build.css";
 import { cookies } from "next/headers";
 
 import { type Metadata } from "next";
+import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
+                <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+                    <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
