@@ -11,8 +11,8 @@ export async function generateSitemaps() {
     return resultArray;
 }
 
-export default async function sitemap({ id }) {
-    const summoners = (await getSummoners(id)).filter((e) => e.gameName && e.tagLine);
+export default async function sitemap({ id: sitemapId }) {
+    const summoners = (await getSummoners(sitemapId)).filter((e) => e.gameName && e.tagLine);
     const summonersSitemaps = summoners.map(({ gameName, tagLine, updatedAt }) => ({
         url: `${BASE_URL}/EUW/${gameName}-${tagLine}`,
         lastModified: updatedAt,
@@ -35,10 +35,10 @@ export default async function sitemap({ id }) {
 }
 
 /**
- * @param {number} id
+ * @param {number} sitemapId
  */
-async function getSummoners(id) {
+async function getSummoners(sitemapId) {
     const prisma = new PrismaClient();
-    const summoners = await prisma.summoner.findMany({ skip: 10000 * id, take: 10000 });
+    const summoners = await prisma.summoner.findMany({ skip: 10000 * sitemapId, take: 10000 });
     return summoners;
 }
