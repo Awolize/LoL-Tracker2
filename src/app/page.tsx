@@ -56,7 +56,6 @@ export default function Page() {
                                 Remember to include the # and tagline like: Awot#dev
                             </div>
                         </div>
-                        ;
                         <button
                             type="submit"
                             className="flex items-center justify-center gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
