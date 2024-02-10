@@ -102,7 +102,10 @@ export const masteryBySummoner = async (prisma: PrismaClient, region: Regions, u
 
         return championMastery;
     } catch (error) {
-        console.log(`Error fetching champion mastery data for summoner ${user.gameName}#${user.tagLine}:`, error);
+        console.log(
+            `Error fetching champion mastery data for summoner ${user.gameName}#${user.tagLine} (${user.region}):`,
+            error,
+        );
         throw error;
     }
 };

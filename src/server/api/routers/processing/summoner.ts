@@ -1,17 +1,11 @@
 import { type PrismaClient } from "@prisma/client";
 import { type LolApi } from "twisted";
 import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import { RateLimitError } from "twisted/dist/errors";
 import { type MatchV5DTOs } from "twisted/dist/models-dto";
 
-export const upsertSummoner = async (
-    prisma: PrismaClient,
-    lolApi: LolApi,
-    puuid: string,
-    region: Regions,
-    gameName: string,
-    tagLine: string,
-) => {
-    const summoner = (await lolApi.Summoner.getByPUUID(puuid, region)).response;
+export const upsertSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid: string, region: Regions) => {
+    const { account, summoner } = await getSummonerRateLimit(lolApi, puuid, region);
 
     if (!summoner) {
         console.log("Could not find summoner", puuid, region);
@@ -30,8 +24,8 @@ export const upsertSummoner = async (
             summonerLevel: summoner.summonerLevel,
             revisionDate: new Date(summoner.revisionDate),
             accountId: summoner.accountId,
-            gameName: gameName,
-            tagLine: tagLine,
+            gameName: account.gameName,
+            tagLine: account.tagLine,
         },
         create: {
             puuid: summoner.puuid,
@@ -42,11 +36,41 @@ export const upsertSummoner = async (
             summonerLevel: summoner.summonerLevel,
             revisionDate: new Date(summoner.revisionDate),
             accountId: summoner.accountId,
-            gameName: gameName,
-            tagLine: tagLine,
+            gameName: account.gameName,
+            tagLine: account.tagLine,
         },
     });
 
+    return upsertedSummoner;
+};
+
+export const createSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid: string, region: Regions) => {
+    const existingSummoner = await prisma.summoner.findUnique({
+        where: {
+            puuid: puuid,
+        },
+    });
+
+    if (existingSummoner) {
+        return existingSummoner;
+    }
+
+    const { account, summoner } = await getSummonerRateLimit(lolApi, puuid, region);
+
+    const upsertedSummoner = await prisma.summoner.create({
+        data: {
+            puuid: summoner.puuid,
+            summonerId: summoner.id,
+            region: region,
+            username: summoner.name,
+            profileIconId: summoner.profileIconId,
+            summonerLevel: summoner.summonerLevel,
+            revisionDate: new Date(summoner.revisionDate),
+            accountId: summoner.accountId,
+            gameName: account.gameName,
+            tagLine: account.tagLine,
+        },
+    });
     return upsertedSummoner;
 };
 
@@ -56,42 +80,45 @@ export const summonersFromGames = (prisma: PrismaClient, lolApi: LolApi, game: M
     // Create or find existing Summoner records for each participant
 
     const summonerPromises = participantSummoners.map(async (participant) => {
-        const existingSummoner = await prisma.summoner.findUnique({
-            where: {
-                puuid: participant,
-            },
-        });
-
-        if (existingSummoner) {
-            return existingSummoner;
-        }
-        // Create a new Summoner record if it doesn't exist
         const region: Regions | null = game.metadata.matchId.split("_")[0] as Regions | null;
         if (!region) {
             console.log(`could not summonersFromGames based on matchId splice ${game.metadata.matchId}`);
             throw new Error(`could not summonersFromGames based on matchId splice ${game.metadata.matchId}`);
         }
 
-        const account = (await lolApi.Account.getByPUUID(participant, regionToRegionGroup(region))).response;
-        const user = (await lolApi.Summoner.getByPUUID(account.puuid, region)).response;
-
-        const upsertedSummoner = await prisma.summoner.create({
-            data: {
-                puuid: user.puuid,
-                summonerId: user.id,
-                region: region,
-                username: user.name,
-                profileIconId: user.profileIconId,
-                summonerLevel: user.summonerLevel,
-                revisionDate: new Date(user.revisionDate),
-                accountId: user.accountId,
-                gameName: account.gameName,
-                tagLine: account.tagLine,
-            },
-        });
+        const upsertedSummoner = createSummoner(prisma, lolApi, participant, region);
 
         return upsertedSummoner;
     });
 
     return summonerPromises;
+};
+
+const getSummonerRateLimit = async (lolApi: LolApi, puuid: string, region: Regions) => {
+    let retryCount = 0;
+    const maxRetries = 30;
+
+    while (retryCount < maxRetries) {
+        try {
+            const account = (await lolApi.Account.getByPUUID(puuid, regionToRegionGroup(region))).response;
+            const summoner = (await lolApi.Summoner.getByPUUID(account.puuid, region)).response;
+            return { account, summoner };
+        } catch (error) {
+            // Check if the error is due to rate limiting
+            console.log("type:", typeof error);
+
+            if (error instanceof RateLimitError && error.status === 429) {
+                const retryAfter = (error.rateLimits.RetryAfter || 60) + 1;
+                console.log(`[Summoner] Rate limited. Retrying after ${retryAfter} seconds...`);
+                await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+                retryCount++;
+            } else {
+                // If it's not a rate limit error, rethrow the error
+                throw error;
+            }
+        }
+    }
+
+    // If max retries are reached, throw an error or handle it accordingly
+    throw new Error(`Max retries (${maxRetries}) reached. Unable to get summoner data.`);
 };

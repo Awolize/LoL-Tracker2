@@ -1,11 +1,12 @@
 import { type PrismaClient, type Summoner } from "@prisma/client";
 import { type LolApi } from "twisted";
 import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
 
 export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
     try {
-        console.log(`UpdateGames for user ${user.gameName}#${user.tagLine} (${region.toUpperCase()})`);
+        console.log(`UpdateGames for user ${user.gameName}#${user.tagLine} (${user.region})`);
 
         let totalCount = 1000; // Total number of matches requested
         const matchIds: string[] = [];
@@ -31,11 +32,27 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
         const skippedGames: string[] = [];
         const failedGames: string[] = [];
 
-        for (let index = 0; index < matchIds.length; index++) {
-            const matchId = matchIds[index];
+        // Create the Match record
+        const existingGames = await prisma.match.findMany({
+            where: {
+                gameId: { in: matchIds },
+            },
+        });
 
+        const newMatchIds = matchIds.filter((matchId) => {
+            const newGame = !existingGames.some((existingGame) => existingGame.gameId === matchId);
+            if (!newGame) {
+                skippedGames.push(matchId);
+            }
+            return newGame;
+        });
+        console.log(`Filtered ${skippedGames.length} before starting.`);
+
+        for (const [index, matchId] of newMatchIds.entries()) {
             if (index % 50 === 0) {
-                console.log(`${user.gameName}#${user.tagLine} progress: ${index} / ${matchIds.length}`);
+                console.log(
+                    `${user.gameName}#${user.tagLine} (${user.region}) progress: ${index} / ${newMatchIds.length}`,
+                );
             }
 
             try {
@@ -105,30 +122,27 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             } catch (error) {
                 if (!matchId) {
-                    console.error("GameId does'nt exist?", matchId);
-                    console.error({ error });
                     continue;
                 }
 
-                // Retry the same game by decrementing the index
                 if (failedGames.includes(matchId)) {
-                    console.error("something went wrong on gameId:", matchId);
-                    console.warn("continue");
                     continue;
                 }
 
                 console.error("something went wrong on gameId:", matchId);
                 console.warn("retry");
-                index--;
                 console.log(
-                    `${user.gameName}#${user.tagLine}`,
-                    "progress:",
-                    index,
-                    "/",
-                    matchIds.length,
-                    "(rate limit!)",
+                    `${user.gameName}#${user.tagLine} (${user.region}) progress: ${index} / ${newMatchIds.length} (rate limit!)`,
                 );
 
+                if (error instanceof RateLimitError && error.status === 429) {
+                    const retryAfter = (error.rateLimits.RetryAfter || 60) + 1;
+                    console.log(`[Game] Rate limited. Retrying after ${retryAfter} seconds...`);
+                    await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
+                    newMatchIds.push(matchId);
+                } else {
+                    console.log({ error });
+                }
                 failedGames.push(matchId);
             }
         }

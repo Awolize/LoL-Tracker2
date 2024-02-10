@@ -88,7 +88,9 @@ export const processingApiRouter = createTRPCRouter({
                 )
                 .filter(Boolean) as Participant[];
 
-            console.log(`${user.gameName}#${user.tagLine}`, "Found", filteredInfoParticipants?.length, "games");
+            console.log(
+                `${user.gameName}#${user.tagLine} (${user.region}) found ${filteredInfoParticipants?.length} games`,
+            );
 
             const loses: Participant[] = [];
             const wins: Participant[] = [];
@@ -135,7 +137,7 @@ export const processingApiRouter = createTRPCRouter({
                 console.error("Missing champ??");
             }
 
-            console.log(`${user.gameName}#${user.tagLine}`, matches.length, {
+            console.log(`${user.gameName}#${user.tagLine} (${user.region})`, matches.length, {
                 wins: uniqueWins.size,
                 loses: uniqueLoses.size,
             });
@@ -161,14 +163,7 @@ export const processingApiRouter = createTRPCRouter({
 
             // Update profile
             console.time("upsertSummoner");
-            const updatedUser = await upsertSummoner(
-                ctx.prisma,
-                ctx.lolApi,
-                user.puuid,
-                region,
-                user.gameName ?? input.gameName,
-                user.tagLine ?? input.tagLine,
-            );
+            const updatedUser = await upsertSummoner(ctx.prisma, ctx.lolApi, user.puuid, region);
             console.timeEnd("upsertSummoner");
 
             if (!updatedUser) {
@@ -211,14 +206,7 @@ export const processingApiRouter = createTRPCRouter({
 
             // Update profile
             console.time("upsertSummoner");
-            const updatedUser = await upsertSummoner(
-                ctx.prisma,
-                ctx.lolApi,
-                user.puuid,
-                region,
-                user.gameName ?? input.gameName,
-                user.tagLine ?? input.tagLine,
-            );
+            const updatedUser = await upsertSummoner(ctx.prisma, ctx.lolApi, user.puuid, region);
             console.timeEnd("upsertSummoner");
 
             if (!updatedUser) {
