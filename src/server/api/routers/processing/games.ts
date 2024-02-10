@@ -34,29 +34,26 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
         for (let index = 0; index < matchIds.length; index++) {
             const matchId = matchIds[index];
 
-            const gameRegion: Regions | null = matchId?.split("_")[0] as Regions | null;
-            const gameId = matchId?.split("_")[1];
-
             if (index % 50 === 0) {
                 console.log(`${user.gameName}#${user.tagLine} progress: ${index} / ${matchIds.length}`);
             }
 
             try {
-                if (!matchId || !gameId || !gameRegion) continue;
+                if (!matchId || !matchId) continue;
 
                 // Create the Match record
                 const existingGame = await prisma.match.findFirst({
                     where: {
-                        gameId: gameId,
+                        gameId: matchId,
                     },
                 });
 
                 if (existingGame) {
-                    skippedGames.push(gameId);
+                    skippedGames.push(matchId);
                     continue;
                 }
 
-                const gameResponse = await lolApi.MatchV5.get(matchId, regionToRegionGroup(gameRegion));
+                const gameResponse = await lolApi.MatchV5.get(matchId, regionToRegionGroup(region));
                 const game = gameResponse.response;
 
                 const creationPromises = summonersFromGames(prisma, lolApi, game);
@@ -64,8 +61,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
 
                 await prisma.match.create({
                     data: {
-                        gameId: gameId,
-                        region: gameRegion,
+                        gameId: matchId,
                         MatchInfo: {
                             create: {
                                 gameCreation: new Date(game.info.gameCreation),
@@ -92,25 +88,25 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                     },
                 });
 
-                addedGames.push(gameId);
+                addedGames.push(matchId);
 
                 // Delay for 5000 milliseconds (0.2 times per second)
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             } catch (error) {
-                if (!gameId) {
-                    console.error("gameid doesnt exist?", gameId);
+                if (!matchId) {
+                    console.error("gameid doesnt exist?", matchId);
                     console.error({ error });
                     continue;
                 }
 
                 // Retry the same game by decrementing the index
-                if (failedGames.includes(gameId)) {
-                    console.error("something went wrong on gameId:", gameId);
+                if (failedGames.includes(matchId)) {
+                    console.error("something went wrong on gameId:", matchId);
                     console.warn("continue");
                     continue;
                 }
 
-                console.error("something went wrong on gameId:", gameId);
+                console.error("something went wrong on gameId:", matchId);
                 console.warn("retry");
                 index--;
                 console.log(
@@ -122,7 +118,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                     "(rate limit!)",
                 );
 
-                failedGames.push(gameId);
+                failedGames.push(matchId);
             }
         }
         console.log({
