@@ -57,7 +57,18 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                 const game = gameResponse.response;
 
                 const creationPromises = summonersFromGames(prisma, lolApi, game);
-                const summoners = await Promise.all(creationPromises);
+                const summoners = await Promise.all(
+                    creationPromises.map(async (createPromise) => {
+                        try {
+                            return await createPromise;
+                        } catch (error) {
+                            console.error("Error creating summoner:", error);
+                            return null;
+                        }
+                    }),
+                );
+
+                const validSummoners = summoners.filter((summoner): summoner is Summoner => summoner !== null);
 
                 await prisma.match.create({
                     data: {
@@ -81,7 +92,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                             },
                         },
                         participants: {
-                            connect: summoners.map((summoner) => ({
+                            connect: validSummoners.map((summoner) => ({
                                 puuid: summoner.puuid,
                             })),
                         },
@@ -94,7 +105,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
                 await new Promise((resolve) => setTimeout(resolve, 5000));
             } catch (error) {
                 if (!matchId) {
-                    console.error("gameid doesnt exist?", matchId);
+                    console.error("GameId does'nt exist?", matchId);
                     console.error({ error });
                     continue;
                 }
