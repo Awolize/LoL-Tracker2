@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useRef } from "react";
 import superjson from "superjson";
 import { create, useStore } from "zustand";
-import { persist, type PersistStorage } from "zustand/middleware";
+import { PersistStorage, persist } from "zustand/middleware";
 import { SortOrder2 } from "../components/header";
 
 interface Store {
@@ -43,7 +43,7 @@ const initialState = {
 // const useOptionsStore: (persistName: string) => UseBoundStore<StoreApi<StoreState>>
 // const useOptionsStore: (persistName: string) => UseBoundStore<Write<StoreApi<StoreState>, StorePersist<StoreState, Store>>>
 
-export const useOptionsStore = (persistName: string) => {
+export const useOptionsPersistentStore = (persistName: string) => {
     console.log(persistName);
 
     return create<StoreState>()(
@@ -85,7 +85,7 @@ const storage: PersistStorage<Store> = {
     removeItem: (name) => localStorage.removeItem(name),
 };
 
-type OptionsStore = ReturnType<typeof useOptionsStore>;
+type OptionsStore = ReturnType<typeof useOptionsPersistentStore>;
 const OptionsContext = createContext<OptionsStore | null>(null);
 
 type OptionsProviderProps = React.PropsWithChildren<{ persistName: string }>;
@@ -93,13 +93,13 @@ type OptionsProviderProps = React.PropsWithChildren<{ persistName: string }>;
 export function OptionsProvider({ children, persistName }: OptionsProviderProps) {
     const storeRef = useRef<OptionsStore>();
     if (!storeRef.current) {
-        storeRef.current = useOptionsStore(persistName);
+        storeRef.current = useOptionsPersistentStore(persistName);
     }
 
     return <OptionsContext.Provider value={storeRef.current}>{children}</OptionsContext.Provider>;
 }
 
-export function useOptionsContext<T>(selector: (state: StoreState) => T): T {
+export function useOptionsPersistentContext<T>(selector: (state: StoreState) => T): T {
     const store = useContext(OptionsContext);
     if (!store) throw new Error("Missing OptionsContext.Provider in the tree");
     return useStore(store, selector);

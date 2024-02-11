@@ -1,10 +1,10 @@
-import { useOptionsContext } from "../stores/options-store";
+import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { useUserContext } from "../stores/user-store";
 
 export function ScaleSlider() {
     const user = useUserContext((s) => s.user);
-    const championsScale = useOptionsContext((s) => s.championsScale);
-    const setChampionsScale = useOptionsContext((s) => s.setChampionsScale);
+    const championsScale = useOptionsPersistentContext((s) => s.championsScale);
+    const setChampionsScale = useOptionsPersistentContext((s) => s.setChampionsScale);
 
     const handleSliderChange = (event) => {
         const newScale = parseInt(event.target.value, 10);

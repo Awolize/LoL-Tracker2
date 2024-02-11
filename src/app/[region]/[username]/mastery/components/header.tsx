@@ -3,10 +3,12 @@
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
 import { UpdateButton } from "~/app/_components/updateButton";
+import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { useOptionsContext } from "../stores/options-store";
+import { useMatchHistoryStore } from "../stores/match-history-store";
+import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { useUserContext } from "../stores/user-store";
-import SortOrder, { type Choice } from "./header-dropdown";
+import SortOrder, { Choice } from "./header-dropdown";
 import { ScaleSlider } from "./scale-slider";
 
 export enum SortOrder2 {
@@ -31,7 +33,8 @@ export default function Header() {
         toggleMasteryPoints,
         toggleSortedByRole,
         toggleShowSelectedChampions,
-    } = useOptionsContext((state) => state);
+    } = useOptionsPersistentContext((state) => state);
+    const toggleShowMatchHistory = useMatchHistoryStore((state) => state.toggleShowMatchHistory);
 
     const user = useUserContext((s) => s.user);
 
@@ -102,6 +105,9 @@ export default function Header() {
                 onChange={toggleShowSelectedChampions}
             />
             <ScaleSlider />
+            <Button variant="outline" onClick={toggleShowMatchHistory}>
+                Match history
+            </Button>
         </div>
     );
 }

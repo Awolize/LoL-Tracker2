@@ -1,7 +1,7 @@
 // ChampionList.jsx
 import ChampionItem from "~/app/_components/champion-item";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { useOptionsContext } from "../stores/options-store";
+import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";
 
 const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
@@ -15,7 +15,7 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
         showSelectedChampions,
         championsScale,
         toggleSelectedChampion,
-    } = useOptionsContext((state) => state);
+    } = useOptionsPersistentContext((state) => state);
 
     return (
         <div className="w-full p-4">

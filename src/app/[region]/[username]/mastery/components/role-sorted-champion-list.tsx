@@ -2,7 +2,7 @@
 import ChampionItem from "~/app/_components/champion-item";
 import RoleHeader from "~/app/_components/role-header";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { useOptionsContext } from "../stores/options-store";
+import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { type CompleteChampionInfo } from "./server-processing-helpers";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
@@ -17,7 +17,7 @@ const SortedChampionList = ({ champions }) => {
         showSelectedChampions,
         championsScale,
         toggleSelectedChampion,
-    } = useOptionsContext((state) => state);
+    } = useOptionsPersistentContext((state) => state);
 
     const playerChampionInfoSorted: CompleteChampionInfo[][] = [];
 

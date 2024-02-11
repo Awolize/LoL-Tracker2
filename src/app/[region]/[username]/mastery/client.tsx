@@ -10,7 +10,7 @@ import Header from "./components/header";
 import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
-import { OptionsProvider, useOptionsContext } from "./stores/options-store";
+import { OptionsProvider, useOptionsPersistentContext } from "./stores/options-persistent-store";
 import { UserProvider } from "./stores/user-store";
 
 export function Client({
@@ -57,7 +57,7 @@ function Main({
     challengesThresholds: string;
     matches: CompleteMatch[];
 }) {
-    const byRole = useOptionsContext((state) => state.byRole);
+    const byRole = useOptionsPersistentContext((state) => state.byRole);
 
     return (
         <main className="flex flex-col">

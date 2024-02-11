@@ -1,16 +1,16 @@
-import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "~/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "~/components/ui/sheet";
+import { useMatchHistoryStore } from "../stores/match-history-store";
 import MatchItem from "./match-history-item";
 import { type CompleteMatch } from "./server-processing-helpers";
 
 const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
+    const showMatchHistory = useMatchHistoryStore((state) => state.showMatchHistory);
+    const setShowMatchHistory = useMatchHistoryStore((state) => state.setShowMatchHistory);
+
     if (!matches.length)
         return (
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button>Match History</Button>
-                </SheetTrigger>
+            <Sheet open={showMatchHistory} onOpenChange={(open) => setShowMatchHistory(open)}>
                 <SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
                     <SheetHeader>
                         <SheetTitle className="text-center">Match history</SheetTitle>
@@ -25,10 +25,7 @@ const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
         );
 
     return (
-        <Sheet>
-            <SheetTrigger asChild>
-                <Button>Match History</Button>
-            </SheetTrigger>
+        <Sheet open={showMatchHistory} onOpenChange={(open) => setShowMatchHistory(open)}>
             <SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
                 <SheetHeader>
                     <SheetTitle className="text-center">Match history</SheetTitle>
