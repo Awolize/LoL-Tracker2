@@ -4,8 +4,6 @@ import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challeng
 
 import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
-import { Button } from "~/components/ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "~/components/ui/sheet";
 import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
@@ -71,23 +69,7 @@ function Main({
                 <ChampionList champions={playerChampionInfo} />
             )}
 
-            <Sheet>
-                <SheetTrigger asChild>
-                    <Button>Match History</Button>
-                </SheetTrigger>
-                <SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
-                    <SheetHeader>
-                        <SheetTitle className="text-center">Match history</SheetTitle>
-                        <SheetDescription className="text-center">
-                            If this is empty don't forget to press the update button!
-                            <br />
-                            This can take a LONG time but you should start seeing your latest games in a few minutes.
-                        </SheetDescription>
-                    </SheetHeader>
-
-                    <MatchHistory matches={matches} />
-                </SheetContent>
-            </Sheet>
+            <MatchHistory matches={matches} />
         </main>
     );
 }
