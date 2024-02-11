@@ -20,7 +20,6 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
         <div className="flex flex-row gap-4">
             <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={200} />
             <MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={100} />
-
             <div className="flex flex-col">
                 <div>{match.MatchInfo.gameStartTimestamp.toLocaleString()}</div>
                 <div>Mode: {match.MatchInfo.gameMode}</div>
@@ -29,7 +28,6 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
                 <div>{isWin ? "Win ✅" : "Lose ❌"}</div>
                 <div>{(match.MatchInfo.gameDuration / 60).toPrecision(3)} min</div>
             </div>
-
             {/* <div>{JSON.stringify(match.MatchInfo)}</div> */}{" "}
         </div>
     );
