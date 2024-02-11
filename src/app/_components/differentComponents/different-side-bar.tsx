@@ -92,12 +92,12 @@ export const DifferentSideBar = ({ region, username, selectedItem, setSelectedIt
         >
             {drawerOpen ? (
                 <ArrowLeftIcon
-                    className="bg-slate-900 text-white w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
+                    className="bg-slate-900 text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
                     onClick={() => setDrawerOpen(!drawerOpen)}
                 />
             ) : (
                 <ArrowRightIcon
-                    className="bg-slate-900 text-white w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
+                    className="bg-slate-900 text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
                     onClick={() => setDrawerOpen(!drawerOpen)}
                 />
             )}

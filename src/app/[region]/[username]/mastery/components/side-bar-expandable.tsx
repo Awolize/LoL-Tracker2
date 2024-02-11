@@ -9,7 +9,7 @@ export function SideBarExpandable({ children, alignment }: { children: React.Rea
     const buttonStyleToggle = drawerOpen
         ? "absolute left-1/2"
         : `absolute flex flex-1 w-fit ${alignment === "right" ? "-left" : "-right"}-44 z-30`;
-    const buttonStyle = `bg-zinc-900 whitespace-nowrap text-white rounded border-black cursor-pointer mt-5 py-2 px-4 z-30 ${buttonStyleToggle}`;
+    const buttonStyle = `bg-zinc-900 whitespace-nowrap text-foreground rounded border-black cursor-pointer mt-5 py-2 px-4 z-30 ${buttonStyleToggle}`;
 
     return (
         <div className={containerStyle}>

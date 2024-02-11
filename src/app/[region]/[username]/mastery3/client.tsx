@@ -228,7 +228,7 @@ export function Client(props: {
 
                 <div className="w-80 min-w-fit">
                     <div className="rounded-xl bg-gradient-to-r from-green-500 via-sky-500 to-purple-500 p-[3px]">
-                        <div className="flex h-full flex-col justify-between rounded-lg bg-black px-4 py-2 text-center text-white ">
+                        <div className="flex h-full flex-col justify-between rounded-lg bg-background px-4 py-2 text-center text-foreground ">
                             <p className="text-2xl">
                                 {markedSize} /{" "}
                                 {championMastery.filter((champ) => !hiddenChamps.has(champ.championId))?.length}

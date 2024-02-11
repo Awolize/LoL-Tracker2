@@ -1,9 +1,10 @@
-import "public/build.css";
-// import "~/styles/globals.css";
+// import "public/build.css";
+import "~/styles/globals.css";
 
 import { cookies } from "next/headers";
 
 import { type Metadata } from "next";
+import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
@@ -22,7 +23,11 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
+                <TRPCReactProvider cookies={cookies().toString()}>
+                    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+                        {children}
+                    </ThemeProvider>
+                </TRPCReactProvider>
             </body>
         </html>
     );

@@ -16,7 +16,7 @@ const RoleHeader: React.FC<RoleHeaderProps> = ({ role, finishedSize, size, hasHi
                 {hasHidden ? "*" : ""}
             </h4>
             <div className="mb-2 bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 pb-[3px]">
-                <div className="flex h-full flex-col justify-between bg-black text-gray-200">
+                <div className="flex h-full flex-col justify-between bg-background text-foreground">
                     <h4 className="text-xl font-bold">{role}</h4>
                 </div>
             </div>

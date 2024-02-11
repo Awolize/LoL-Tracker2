@@ -38,7 +38,7 @@ export default function Page() {
             </Head> */}
             <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
                 <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem] ">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-[2rem] ">
                         Search{" "}
                         <div className="inline-block">
                             <RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
@@ -53,13 +53,13 @@ export default function Page() {
                                 placeholder="lol.awot#dev"
                                 className="w-full h-12 rounded bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                             />
-                            <div className="text-white/50 text-xs">
+                            <div className="text-foreground/50 text-xs">
                                 Remember to include the # and tagline like: Awot#dev
                             </div>
                         </Column>
                         <button
                             type="submit"
-                            className="flex items-center justify-center gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+                            className="flex items-center justify-center gap-4 rounded-xl bg-white/10 p-4 text-foreground hover:bg-white/20"
                         >
                             {loading ? (
                                 <LoadingComponent />
