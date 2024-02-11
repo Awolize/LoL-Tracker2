@@ -1,6 +1,6 @@
 import { type PrismaClient, type Summoner } from "@prisma/client";
 import { type LolApi } from "twisted";
-import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
 

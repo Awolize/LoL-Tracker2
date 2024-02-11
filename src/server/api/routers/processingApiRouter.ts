@@ -1,4 +1,4 @@
-import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { type Participant } from "~/trpc/different_types";

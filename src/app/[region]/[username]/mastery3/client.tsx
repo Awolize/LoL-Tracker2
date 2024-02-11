@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useState } from "react";
 
-import { ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon as RefreshIcon } from "@heroicons/react/20/solid";
+import { ArrowPathIcon as RefreshIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { parse } from "superjson";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";

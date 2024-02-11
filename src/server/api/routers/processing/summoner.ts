@@ -1,6 +1,6 @@
 import { type PrismaClient } from "@prisma/client";
 import { type LolApi } from "twisted";
-import { regionToRegionGroup, type Regions } from "twisted/dist/constants";
+import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { type MatchV5DTOs } from "twisted/dist/models-dto";
 
