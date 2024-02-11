@@ -4,13 +4,14 @@ import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challeng
 
 import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
+import { Button } from "~/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "~/components/ui/sheet";
 import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
 import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
-import SideBarExpandable from "./components/side-bar-expandable";
 import { OptionsProvider, useOptionsContext } from "./stores/options-store";
 import { UserProvider } from "./stores/user-store";
 
@@ -70,17 +71,23 @@ function Main({
                 <ChampionList champions={playerChampionInfo} />
             )}
 
-            <SideBarExpandable alignment="right">
-                {matches.length !== 0 ? (
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button>Match History</Button>
+                </SheetTrigger>
+                <SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
+                    <SheetHeader>
+                        <SheetTitle className="text-center">Match history</SheetTitle>
+                        <SheetDescription className="text-center">
+                            If this is empty don't forget to press the update button!
+                            <br />
+                            This can take a LONG time but you should start seeing your latest games in a few minutes.
+                        </SheetDescription>
+                    </SheetHeader>
+
                     <MatchHistory matches={matches} />
-                ) : (
-                    <div className="p-4 text-center">
-                        Don't forget to press the update button, this might take a while the first time.
-                        <br />
-                        After the first time it should take 2 min.
-                    </div>
-                )}
-            </SideBarExpandable>
+                </SheetContent>
+            </Sheet>
         </main>
     );
 }
