@@ -1,16 +1,22 @@
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { useDataDragonPath } from "~/app/_components/use-data-dragon-path";
 import { useUserContext } from "../stores/user-store";
+import { MatchPlayerData } from "./MatchPlayerData";
 
 interface MatchTableProps {
-    players: Array<any>;
+    players: Array<MatchPlayerData>;
     teamId: number;
 }
 
 const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
     const { getChampionImage } = useDataDragonPath();
     const user = useUserContext((s) => s.user);
+
+    const pathname = usePathname(); // "/EUW/awot-dev/mastery"
+    const regionPath = pathname.split("/")[1]; // "EUW"
 
     return (
         <div className="relative overflow-x-auto">
@@ -56,7 +62,9 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
                                     <div className="flex justify-center">{player.championName}</div>
                                 </td>
                                 <td className="px-2 py-2 font-medium min-w-48 text-gray-900 whitespace-nowrap dark:text-foreground">
-                                    {player.riotIdGameName}
+                                    <Link href={`/${regionPath}/${player.riotIdGameName}-${player.riotIdTagline}`}>
+                                        {player.riotIdGameName}
+                                    </Link>
                                 </td>
                                 <td className="px-4 py-2 font-medium min-w-24 text-gray-900 whitespace-nowrap dark:text-foreground">
                                     {player.kills}/{player.deaths}/{player.assists}
