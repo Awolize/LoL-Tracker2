@@ -1,3 +1,4 @@
+import { Slider } from "~/components/ui/slider";
 import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { useUserContext } from "../stores/user-store";
 
@@ -6,26 +7,18 @@ export function ScaleSlider() {
     const championsScale = useOptionsPersistentContext((s) => s.championsScale);
     const setChampionsScale = useOptionsPersistentContext((s) => s.setChampionsScale);
 
-    const handleSliderChange = (event) => {
-        const newScale = parseInt(event.target.value, 10);
-        setChampionsScale(newScale);
+    const handleSliderChange = (value) => {
+        setChampionsScale(value[0]);
     };
 
     return (
-        <div className="flex items-center flex-col">
-            <label htmlFor="minmax-range" className="block mb-2 text-sm font-medium text-gray-900 dark:text-foreground">
-                Champion size
-            </label>
-            <input
-                id="minmax-range"
-                type="range"
-                min="40"
-                max="100"
-                step="5"
-                value={championsScale}
-                onChange={handleSliderChange}
-                className="w-48 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-            />
-        </div>
+        <Slider
+            min={40}
+            max={100}
+            step={5}
+            value={[championsScale]}
+            onValueChange={handleSliderChange}
+            className="w-40 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
     );
 }
