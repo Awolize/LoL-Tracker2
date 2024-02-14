@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { useDataDragonPath } from "~/app/_components/use-data-dragon-path";
+import { Button } from "~/components/ui/button";
 import { useUserContext } from "../stores/user-store";
 import { MatchPlayerData } from "./MatchPlayerData";
 
@@ -62,7 +63,10 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
                                     <div className="flex justify-center">{player.championName}</div>
                                 </td>
                                 <td className="px-2 py-2 font-medium min-w-48 text-gray-900 whitespace-nowrap dark:text-foreground">
-                                    <Link href={`/${regionPath}/${player.riotIdGameName}-${player.riotIdTagline}`}>
+                                    <Link
+                                        href={`/${regionPath}/${player.riotIdGameName}-${player.riotIdTagline}`}
+                                        className="hover:underline"
+                                    >
                                         {player.riotIdGameName}
                                     </Link>
                                 </td>

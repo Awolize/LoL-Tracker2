@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "../_components/loading-spinner";
 import RegionListSelector, { regions } from "../_components/region-list-selector";
-import Row from "../_components/row";
 
 export default function Page() {
     const router = useRouter();
@@ -40,7 +39,7 @@ export default function Page() {
                     Summoner Profile
                 </h1>
                 <form className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8" onSubmit={onSubmit}>
-                    <Row className={"gap-1 items-center"}>
+                    <div className={"flex flex-row gap-1 items-center"}>
                         <input
                             type="text"
                             ref={usernameRef}
@@ -54,7 +53,7 @@ export default function Page() {
                             placeholder="dev"
                             className="h-12 rounded bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
                         />
-                    </Row>
+                    </div>
                     <button
                         type="submit"
                         className="flex items-center justify-center gap-4 rounded-xl  bg-white/10 p-4 text-foreground hover:bg-white/20"

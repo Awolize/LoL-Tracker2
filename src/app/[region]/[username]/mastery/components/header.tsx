@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingComponent from "~/app/_components/loading-spinner";
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
 import { UpdateButton } from "~/app/_components/updateButton";
@@ -8,6 +9,7 @@ import { api } from "~/trpc/react";
 import { useMatchHistoryStore } from "../stores/match-history-store";
 import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { useUserContext } from "../stores/user-store";
+import { DropdownMenuRadioGroupDemo } from "./dropdown";
 import SortOrder, { Choice } from "./header-dropdown";
 import { ScaleSlider } from "./scale-slider";
 
@@ -86,28 +88,41 @@ export default function Header() {
             />
             <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
-            <UpdateButton label={"Update"} checked={updateChampions.isLoading} onChange={updateUser} />
-            <SortOrder
-                className={"w-32"}
-                callback={(choice) => setFilterPoints(choice.value)}
-                value={filteredChoices.find((el) => el.value === filterPoints)}
+            <DropdownMenuRadioGroupDemo
+                callback={(choice) => setFilterPoints(choice)}
+                menuLabel="Filter by"
+                // biome-ignore lint/style/noNonNullAssertion: This will always find a match
+                choice={filteredChoices.find((el) => el.value === filterPoints)!}
                 choices={filteredChoices}
             />
-            <SortOrder
-                className={"w-32"}
-                callback={(choice) => setSortOrder(choice.value)}
-                value={sortOrderChoices.find((el) => el.value === sortOrder)}
+            <DropdownMenuRadioGroupDemo
                 choices={sortOrderChoices}
+                menuLabel="Sort by"
+                // biome-ignore lint/style/noNonNullAssertion: This will always find a match
+                choice={sortOrderChoices.find((el) => el.value === sortOrder)!}
+                callback={(value) => setSortOrder(value)}
             />
+            <Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
+                Match history
+            </Button>
+            <Button
+                variant="secondary"
+                size={"sm"}
+                className={`${
+                    !updateChampions.isLoading
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-500"
+                        : "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
+                } relative inline-flex my-2 py-1 px-3 items-center justify-center rounded w-24`}
+                onClick={updateUser}
+            >
+                {updateChampions.isLoading ? <LoadingComponent /> : "Update"}
+            </Button>
             <ToggleEye
                 label="Hide selected champions"
                 checked={!showSelectedChampions}
                 onChange={toggleShowSelectedChampions}
             />
             <ScaleSlider />
-            <Button variant="outline" onClick={toggleShowMatchHistory}>
-                Match history
-            </Button>
         </div>
     );
 }
