@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-interface Choice {
+export interface Choice {
     text: string;
     value: number;
 }
@@ -25,7 +25,7 @@ interface Props {
     menuLabel?: string;
 }
 
-export function DropdownMenuRadioGroupDemo({ choices, choice, callback, menuLabel }: Props) {
+export function Dropdown({ choices, choice, callback, menuLabel }: Props) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -46,7 +46,9 @@ export function DropdownMenuRadioGroupDemo({ choices, choice, callback, menuLabe
                     onValueChange={(newValue) => callback(parseFloat(newValue))}
                 >
                     {choices.map((choice) => (
-                        <DropdownMenuRadioItem value={choice.value.toString()}>{choice.text}</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem key={choice.value.toString()} value={choice.value.toString()}>
+                            {choice.text}
+                        </DropdownMenuRadioItem>
                     ))}
                 </DropdownMenuRadioGroup>
             </DropdownMenuContent>

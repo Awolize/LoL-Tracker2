@@ -1,10 +1,10 @@
-import { Switch } from "@headlessui/react";
+import { Label } from "@radix-ui/react-label";
+import { Switch } from "@radix-ui/react-switch";
 
 export const ToggleEye = ({ label, checked, onChange }) => {
     return (
         <div className="flex flex-row items-center gap-2">
-            <Switch checked={checked} onChange={onChange}>
-                <span className="sr-only">{label}</span>
+            <Switch id="toggle-eye" checked={checked} onCheckedChange={onChange}>
                 <span className={"justify-center items-center content-center w-full h-full transform transition"}>
                     {checked ? (
                         <svg
@@ -15,6 +15,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
                             stroke="currentColor"
                             className="w-6 h-6"
                         >
+                            <title>Eye Open</title>
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -31,6 +32,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
                             stroke="currentColor"
                             className="w-6 h-6"
                         >
+                            <title>Eye Closed</title>
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -40,6 +42,9 @@ export const ToggleEye = ({ label, checked, onChange }) => {
                     )}
                 </span>
             </Switch>
+            <Label htmlFor="toggle-eye" className="sr-only">
+                {label}
+            </Label>
         </div>
     );
 };

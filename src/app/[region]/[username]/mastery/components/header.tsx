@@ -3,14 +3,12 @@
 import LoadingComponent from "~/app/_components/loading-spinner";
 import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
-import { UpdateButton } from "~/app/_components/updateButton";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 import { useMatchHistoryStore } from "../stores/match-history-store";
 import { useOptionsPersistentContext } from "../stores/options-persistent-store";
 import { useUserContext } from "../stores/user-store";
-import { DropdownMenuRadioGroupDemo } from "./dropdown";
-import SortOrder, { Choice } from "./header-dropdown";
+import { Choice, Dropdown } from "./dropdown";
 import { ScaleSlider } from "./scale-slider";
 
 export enum SortOrder2 {
@@ -88,14 +86,14 @@ export default function Header() {
             />
             <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
-            <DropdownMenuRadioGroupDemo
+            <Dropdown
                 callback={(choice) => setFilterPoints(choice)}
                 menuLabel="Filter by"
                 // biome-ignore lint/style/noNonNullAssertion: This will always find a match
                 choice={filteredChoices.find((el) => el.value === filterPoints)!}
                 choices={filteredChoices}
             />
-            <DropdownMenuRadioGroupDemo
+            <Dropdown
                 choices={sortOrderChoices}
                 menuLabel="Sort by"
                 // biome-ignore lint/style/noNonNullAssertion: This will always find a match
