@@ -37,11 +37,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
     if (hide) return <></>;
 
     return (
-        <li
-            key={champ.key as React.Key}
-            className="flex flex-col pb-2"
-            onClick={() => handleChampionClick(champ.championId)}
-        >
+        <li key={champ.key as React.Key} className="flex flex-col pb-2" onClick={() => handleChampionClick(champ.id)}>
             <div className="relative z-10">
                 {showLevel && (
                     <div className="absolute flex top-1 left-1 h-5 w-5 font-bold items-center justify-center bg-opacity-50 bg-gray-900 text-xs rounded-full">

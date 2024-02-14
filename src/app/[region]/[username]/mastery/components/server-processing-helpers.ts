@@ -13,7 +13,10 @@ interface Roles {
     role: string;
 }
 
-export type CompleteChampionInfo = ChampionMasteryDTO & ChampionDetails & Roles;
+export type CompleteChampionInfo = Partial<Omit<ChampionMasteryDTO, "championPoints" | "championLevel">> &
+    Pick<ChampionMasteryDTO, "championPoints" | "championLevel"> &
+    ChampionDetails &
+    Roles;
 export async function getCompleteChampionData(prisma: PrismaClient, region: Regions, user: Summoner) {
     const championMasteries = await masteryBySummoner(prisma, region, user);
     const champions = await prisma.championDetails.findMany();

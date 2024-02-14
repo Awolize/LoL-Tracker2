@@ -26,7 +26,7 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
                 {champions
                     .sort((a, b) => sortAlgorithm(sortOrder, a, b))
                     .map((championInfo) => {
-                        const hidden = selectedChampions.has(championInfo.championId);
+                        const hidden = selectedChampions.has(championInfo.id);
 
                         if (hidden && !showSelectedChampions) {
                             return null;
@@ -37,13 +37,13 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
                                 key={championInfo.id}
                                 champ={championInfo}
                                 filterPoints={filterPoints}
-                                hiddenChamp={selectedChampions.has(championInfo.championId)}
+                                hiddenChamp={selectedChampions.has(championInfo.id)}
                                 showLevel={showLevels}
                                 showChest={showAvailableChests}
                                 showFinished={false}
                                 showMasteryPoints={showMasteryPoints}
                                 handleChampionClick={() =>
-                                    showSelectedChampions && toggleSelectedChampion(championInfo.championId)
+                                    showSelectedChampions && toggleSelectedChampion(championInfo.id)
                                 }
                             />
                         );

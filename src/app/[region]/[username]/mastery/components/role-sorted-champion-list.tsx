@@ -42,7 +42,7 @@ const SortedChampionList = ({ champions }) => {
                             style={{ gridTemplateColumns: `repeat(auto-fill, ${championsScale}px)` }}
                         >
                             {roleChampions.map((championInfo) => {
-                                const hidden = selectedChampions.has(championInfo.championId);
+                                const hidden = selectedChampions.has(championInfo.id);
 
                                 if (hidden && !showSelectedChampions) {
                                     return null;
@@ -59,7 +59,7 @@ const SortedChampionList = ({ champions }) => {
                                         showMasteryPoints={showMasteryPoints}
                                         showFinished={false}
                                         handleChampionClick={() =>
-                                            showSelectedChampions && toggleSelectedChampion(championInfo.championId)
+                                            showSelectedChampions && toggleSelectedChampion(championInfo.id)
                                         }
                                     />
                                 );

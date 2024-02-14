@@ -31,7 +31,7 @@ interface StoreState extends Store {
 const initialState = {
     showMasteryPoints: true,
     showAvailableChests: false,
-    showLevels: false,
+    showLevels: true,
     byRole: true,
     filterPoints: Number.MAX_SAFE_INTEGER,
     selectedChampions: new Set<number>(),
