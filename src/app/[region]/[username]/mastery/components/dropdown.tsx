@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import * as React from "react";
 import { Button } from "~/components/ui/button";
 import {
