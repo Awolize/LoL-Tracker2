@@ -7,6 +7,7 @@ import { useMatchHistoryStore } from "~/components/stores/match-history-store";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { useUserContext } from "~/components/stores/user-store";
 import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
 import { api } from "~/trpc/react";
 import { Choice, Dropdown } from "./dropdown";
 import { ScaleSlider } from "./scale-slider";
@@ -77,14 +78,20 @@ export default function Header() {
     ];
 
     return (
-        <div className="flex flex-row gap-4 px-4 py-2 items-center">
-            <SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
-            <SwitchWithLabel
-                label={"Available Chests"}
-                checked={showAvailableChests}
-                onChange={toggleAvailableChests}
-            />
-            <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
+        <div className="flex flex-row gap-4 px-4 py-2 items-center justify-center">
+            <Button
+                variant="secondary"
+                size={"sm"}
+                className={`${
+                    !updateChampions.isLoading
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-500"
+                        : "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
+                } relative inline-flex my-2 py-1 px-3 items-center justify-center rounded w-24`}
+                onClick={updateUser}
+            >
+                {updateChampions.isLoading ? <LoadingComponent /> : "Update"}
+            </Button>
+            <div className="h-8 bg-gray-500 w-[1px]" />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
             <Dropdown
                 callback={(choice) => setFilterPoints(choice)}
@@ -100,27 +107,27 @@ export default function Header() {
                 choice={sortOrderChoices.find((el) => el.value === sortOrder)!}
                 callback={(value) => setSortOrder(value)}
             />
-            <Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
-                Match history
-            </Button>
-            <Button
-                variant="secondary"
-                size={"sm"}
-                className={`${
-                    !updateChampions.isLoading
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-500"
-                        : "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
-                } relative inline-flex my-2 py-1 px-3 items-center justify-center rounded w-24`}
-                onClick={updateUser}
-            >
-                {updateChampions.isLoading ? <LoadingComponent /> : "Update"}
-            </Button>
             <ToggleEye
                 label="Hide selected champions"
                 checked={!showSelectedChampions}
                 onChange={toggleShowSelectedChampions}
             />
-            <ScaleSlider />
+            <div className="h-8 bg-gray-500 w-[1px]" />
+            <SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
+            <SwitchWithLabel
+                label={"Available Chests"}
+                checked={showAvailableChests}
+                onChange={toggleAvailableChests}
+            />
+            <SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
+            <div className="flex flex-col items-center gap-3">
+                <Label>Image size</Label>
+                <ScaleSlider />
+            </div>
+            <div className="h-8 bg-gray-500 w-[1px]" />
+            <Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
+                Match history
+            </Button>
         </div>
     );
 }
