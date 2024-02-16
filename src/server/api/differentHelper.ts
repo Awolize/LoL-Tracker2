@@ -1,7 +1,9 @@
 import type { PrismaClient, Summoner } from "@prisma/client";
-import type { LolApi, RiotApi } from "twisted";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import type { ChampionsDataDragonDetails, MatchV5DTOs } from "twisted/dist/models-dto";
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
 
 const splitUsername = (username) => {
     return {
@@ -10,26 +12,17 @@ const splitUsername = (username) => {
     };
 };
 
-const getUserInfo = async (ctx, username, region) => {
+const getUserInfo = async (username, region) => {
     const { gameName, tagLine } = splitUsername(username);
-    const accountInfo = (
-        await (ctx.riotApi as RiotApi).Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region))
-    ).response;
-    const userInfo = (await (ctx.lolApi as LolApi).Summoner.getByPUUID(accountInfo.puuid, region)).response;
+    const accountInfo = (await riotApi.Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region)))
+        .response;
+    const userInfo = (await lolApi.Summoner.getByPUUID(accountInfo.puuid, region)).response;
     return { userInfo, accountInfo };
 };
 
-export async function getUserByNameAndRegion(
-    ctx: {
-        prisma: PrismaClient;
-        lolApi: LolApi;
-        riotApi: RiotApi;
-    },
-    username: string,
-    region: Regions,
-) {
+export async function getUserByNameAndRegion(username: string, region: Regions) {
     try {
-        const user = await ctx.prisma.summoner.findFirst({
+        const user = await prisma.summoner.findFirst({
             where: {
                 gameName: {
                     equals: username.split("#")[0],
@@ -49,7 +42,7 @@ export async function getUserByNameAndRegion(
 
         console.log("Could not find summoner in DB", username, region);
 
-        const { userInfo, accountInfo } = await getUserInfo(ctx, username, region);
+        const { userInfo, accountInfo } = await getUserInfo(username, region);
 
         // Map API response to Summoner
         const newUser: Summoner = {
@@ -68,7 +61,7 @@ export async function getUserByNameAndRegion(
         };
 
         // Use upsert to save the new user or update an existing one
-        const savedUser = await ctx.prisma.summoner.upsert({
+        const savedUser = await prisma.summoner.upsert({
             where: {
                 puuid: newUser.puuid,
             },
@@ -83,18 +76,12 @@ export async function getUserByNameAndRegion(
     }
 }
 
-export const prepareSummonersCreation = (
-    ctx: {
-        prisma: PrismaClient;
-        lolApi: LolApi;
-    },
-    game: MatchV5DTOs.MatchDto,
-) => {
+export const prepareSummonersCreation = (game: MatchV5DTOs.MatchDto) => {
     const participantSummoners = game.metadata.participants;
 
     // Create or find existing Summoner records for each participant
     const summonerPromises = participantSummoners.map(async (participant) => {
-        const existingSummoner = await ctx.prisma.summoner.findUnique({
+        const existingSummoner = await prisma.summoner.findUnique({
             where: {
                 puuid: participant,
             },
@@ -109,8 +96,8 @@ export const prepareSummonersCreation = (
             console.log(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
             throw new Error(`could not prepareSummonersCreation based on matchId splice ${game.metadata.matchId}`);
         }
-        const user = (await ctx.lolApi.Summoner.getByPUUID(participant, region)).response;
-        const upsertedSummoner = await ctx.prisma.summoner.upsert({
+        const user = (await lolApi.Summoner.getByPUUID(participant, region)).response;
+        const upsertedSummoner = await prisma.summoner.upsert({
             where: {
                 puuid: user.puuid,
             },
@@ -187,11 +174,8 @@ export const flattenChamp = (obj: ChampionsDataDragonDetails) => {
     return flattenedObj;
 };
 
-export const updateChampionDetails = async (ctx: {
-    prisma: PrismaClient;
-    lolApi: LolApi;
-}) => {
-    const data = await ctx.lolApi.DataDragon.getChampion();
+export const updateChampionDetails = async () => {
+    const data = await lolApi.DataDragon.getChampion();
 
     for (const championKey in data.data) {
         const champion = data.data[championKey];
@@ -200,7 +184,7 @@ export const updateChampionDetails = async (ctx: {
 
         const championDetails = flattenChamp(champion);
 
-        await ctx.prisma.championDetails.upsert({
+        await prisma.championDetails.upsert({
             where: { id: Number(champion.key) }, // data dragon champions key is the real id (the fake id is the name of the champ)
             update: championDetails,
             create: championDetails,
@@ -219,14 +203,8 @@ const matchFilterSettings = {
     },
 };
 
-export async function getMatchesForSummonerBySummoner(
-    ctx: {
-        prisma: PrismaClient;
-        lolApi: LolApi;
-    },
-    user: Summoner,
-) {
-    const summoner = await ctx.prisma.summoner.findFirst({
+export async function getMatchesForSummonerBySummoner(user: Summoner) {
+    const summoner = await prisma.summoner.findFirst({
         where: {
             puuid: user.puuid,
         },
@@ -244,7 +222,7 @@ export async function getMatchesForSummonerBySummoner(
 
     return summoner?.matches;
 }
-export async function getMatchesForSummonerByMatch(prisma: PrismaClient, user) {
+export async function getMatchesForSummonerByMatch(user) {
     const matches = await prisma.match.findMany({
         where: {
             participants: {

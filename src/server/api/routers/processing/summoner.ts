@@ -1,11 +1,12 @@
-import { type PrismaClient } from "@prisma/client";
-import { type LolApi } from "twisted";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { type MatchV5DTOs } from "twisted/dist/models-dto";
 
-export const upsertSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid: string, region: Regions) => {
-    const { account, summoner } = await getSummonerRateLimit(lolApi, puuid, region);
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+
+export const upsertSummoner = async (puuid: string, region: Regions) => {
+    const { account, summoner } = await getSummonerRateLimit(puuid, region);
 
     if (!summoner) {
         console.log("Could not find summoner", puuid, region);
@@ -44,7 +45,7 @@ export const upsertSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid
     return upsertedSummoner;
 };
 
-export const createSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid: string, region: Regions) => {
+export const createSummoner = async (puuid: string, region: Regions) => {
     const existingSummoner = await prisma.summoner.findUnique({
         where: {
             puuid: puuid,
@@ -55,7 +56,7 @@ export const createSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid
         return existingSummoner;
     }
 
-    const { account, summoner } = await getSummonerRateLimit(lolApi, puuid, region);
+    const { account, summoner } = await getSummonerRateLimit(puuid, region);
 
     const upsertedSummoner = await prisma.summoner.create({
         data: {
@@ -74,7 +75,7 @@ export const createSummoner = async (prisma: PrismaClient, lolApi: LolApi, puuid
     return upsertedSummoner;
 };
 
-export const summonersFromGames = (prisma: PrismaClient, lolApi: LolApi, game: MatchV5DTOs.MatchDto) => {
+export const summonersFromGames = (game: MatchV5DTOs.MatchDto) => {
     const participantSummoners = game.metadata.participants;
 
     // Create or find existing Summoner records for each participant
@@ -86,7 +87,7 @@ export const summonersFromGames = (prisma: PrismaClient, lolApi: LolApi, game: M
             throw new Error(`could not summonersFromGames based on matchId splice ${game.metadata.matchId}`);
         }
 
-        const upsertedSummoner = createSummoner(prisma, lolApi, participant, region);
+        const upsertedSummoner = createSummoner(participant, region);
 
         return upsertedSummoner;
     });
@@ -94,7 +95,7 @@ export const summonersFromGames = (prisma: PrismaClient, lolApi: LolApi, game: M
     return summonerPromises;
 };
 
-const getSummonerRateLimit = async (lolApi: LolApi, puuid: string, region: Regions) => {
+const getSummonerRateLimit = async (puuid: string, region: Regions) => {
     let retryCount = 0;
     const maxRetries = 30;
 

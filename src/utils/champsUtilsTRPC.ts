@@ -1,25 +1,20 @@
 import type { ChampionMastery, PrismaClient, Summoner } from "@prisma/client";
-import type { LolApi, RiotApi } from "twisted";
 import type { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
+
 import { getUserByNameAndRegion } from "../server/api/differentHelper";
 
-export const updateSummoner = async (
-    ctx: {
-        prisma: PrismaClient;
-        lolApi: LolApi;
-        riotApi: RiotApi;
-    },
-    username: string,
-    region: Regions,
-) => {
-    const user = await getUserByNameAndRegion(ctx, username.toLowerCase(), region);
+export const updateSummoner = async (username: string, region: Regions) => {
+    const user = await getUserByNameAndRegion(username.toLowerCase(), region);
 
-    await masteryBySummoner(ctx.prisma, ctx.lolApi, user, region);
+    await masteryBySummoner(user, region);
 };
 
-export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
+export const masteryBySummoner = async (user: Summoner, region: Regions) => {
     try {
         // Check if the summoner exists in the database
         let dbUser = await prisma.summoner.findUnique({
@@ -32,7 +27,7 @@ export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, us
         console.log("Updating summoner in db with mastery scores");
         try {
             const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
-            await updateSummonerDb(prisma, user, region, masteryData);
+            await updateSummonerDb(user, region, masteryData);
             console.log("Done - Updating summoner in db with mastery scores");
         } catch (error) {
             console.error("Failed - Updating summoner in db with mastery scores");
@@ -71,7 +66,6 @@ export const masteryBySummoner = async (prisma: PrismaClient, lolApi: LolApi, us
 };
 
 const updateSummonerDb = async (
-    prisma: PrismaClient,
     user: Summoner,
     region: Regions,
     championMasteryData: ChampionMastery[] | ChampionMasteryDTO[],

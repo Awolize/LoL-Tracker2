@@ -1,10 +1,10 @@
 import type { Challenge, Summoner } from "@prisma/client";
-import { type PrismaClient } from "@prisma/client";
-import type { LolApi } from "twisted";
 import { Regions } from "twisted/dist/constants";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 import { type CompleteChampionInfo } from "~/app/[region]/[username]/mastery/components/server-processing-helpers";
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     const disabled: boolean = champ.championPoints > filterPoints;
@@ -63,7 +63,7 @@ export const regionToConstant = (region: string) => {
     return regionMap[region] as Regions;
 };
 
-export const masteryBySummoner = async (prisma: PrismaClient, region: Regions, user: Summoner) => {
+export const masteryBySummoner = async (region: Regions, user: Summoner) => {
     try {
         // Check if the summoner exists in the database
         const dbUser = await prisma.summoner.findFirst({
@@ -121,8 +121,8 @@ export type ChallengeIds = 202303 | 210001 | 401106;
 
 export const isChallengeId = (id: number): id is ChallengeIds => [202303, 210001, 401106].includes(id);
 
-export const getPlayerChallengesData = async (api: LolApi, region: Regions, user: Summoner) => {
-    const response = await api.Challenges.getPlayerData(user.puuid, region);
+export const getPlayerChallengesData = async (region: Regions, user: Summoner) => {
+    const response = await lolApi.Challenges.getPlayerData(user.puuid, region);
     const filteredChallenges = response.response.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
     const challengesMap = filteredChallenges.reduce((map, challenge: ChallengeV1DTO) => {
         map.set(challenge.challengeId as ChallengeIds, challenge);
@@ -132,7 +132,7 @@ export const getPlayerChallengesData = async (api: LolApi, region: Regions, user
     return challengesMap;
 };
 
-export const getPlayerChallengesData2 = async (prisma: PrismaClient, user: Summoner) => {
+export const getPlayerChallengesData2 = async (user: Summoner) => {
     const challengesDetails = await prisma.challengesDetails.findFirst({
         where: { puuid: user.puuid },
         include: { challenges: true },
@@ -152,7 +152,7 @@ export const getPlayerChallengesData2 = async (prisma: PrismaClient, user: Summo
     return challengesMap;
 };
 
-export const getChallengesThresholds = async (lolApi: LolApi, region: Regions) => {
+export const getChallengesThresholds = async (region: Regions) => {
     const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
     const promises = challengeIds.map(async (challengeId) => {
         const thresholds = (await lolApi.Challenges.getChallengeConfig(challengeId, region)).response;
@@ -169,7 +169,7 @@ export const getChallengesThresholds = async (lolApi: LolApi, region: Regions) =
     return thresholdsMap;
 };
 
-export const getChallengesThresholds2 = async (prisma: PrismaClient) => {
+export const getChallengesThresholds2 = async () => {
     const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
     const promises = challengeIds.map(async (challengeId) => {
         const thresholds = (await prisma.challengesConfig.findFirst({ where: { id: challengeId } }))?.thresholds;

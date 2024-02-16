@@ -1,18 +1,21 @@
-import { type PrismaClient, type Summoner } from "@prisma/client";
-import { type LolApi } from "twisted";
+import { type Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
 
-export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Summoner, region: Regions) => {
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
+
+export const updateGames = async (user: Summoner, region: Regions) => {
     try {
         console.log(`UpdateGames for user ${user.gameName}#${user.tagLine} (${user.region})`);
 
-        const matchIds = await fetchMatchIds(lolApi, user.puuid, region);
+        const matchIds = await fetchMatchIds(user.puuid, region);
 
         console.log("Fetching", matchIds.length, "matches. For user", user.gameName, user.tagLine);
 
-        const { addedGames, skippedGames, failedGames } = await processMatches(prisma, lolApi, user, region, matchIds);
+        const { addedGames, skippedGames, failedGames } = await processMatches(user, region, matchIds);
 
         console.log({
             addedGames: addedGames.length,
@@ -26,7 +29,7 @@ export const updateGames = async (prisma: PrismaClient, lolApi: LolApi, user: Su
     }
 };
 
-const fetchMatchIds = async (lolApi: LolApi, puuid: string, region: Regions): Promise<string[]> => {
+const fetchMatchIds = async (puuid: string, region: Regions): Promise<string[]> => {
     let totalCount = 1000; // Total number of matches requested
     const matchIds: string[] = [];
     let start = 0;
@@ -50,8 +53,6 @@ const fetchMatchIds = async (lolApi: LolApi, puuid: string, region: Regions): Pr
 };
 
 const processMatches = async (
-    prisma: PrismaClient,
-    lolApi: LolApi,
     user: Summoner,
     region: Regions,
     matchIds: string[],
@@ -93,7 +94,7 @@ const processMatches = async (
                 continue;
             }
 
-            await processSingleMatch(prisma, lolApi, region, matchId);
+            await processSingleMatch(region, matchId);
 
             addedGames.push(matchId);
         } catch (error) {
@@ -122,11 +123,11 @@ const processMatches = async (
     return { addedGames, skippedGames, failedGames };
 };
 
-const processSingleMatch = async (prisma: PrismaClient, lolApi: LolApi, region: Regions, matchId: string) => {
+const processSingleMatch = async (region: Regions, matchId: string) => {
     const gameResponse = await lolApi.MatchV5.get(matchId, regionToRegionGroup(region));
     const game = gameResponse.response;
 
-    const creationPromises = summonersFromGames(prisma, lolApi, game);
+    const creationPromises = summonersFromGames(game);
     const summoners = await Promise.all(
         creationPromises.map(async (createPromise) => {
             try {

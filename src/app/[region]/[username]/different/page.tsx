@@ -1,9 +1,10 @@
 "use server";
 
-import { type ChampionDetails, PrismaClient } from "@prisma/client";
+import { type ChampionDetails } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { z } from "zod";
 
+import { prisma } from "~/server/db";
 import rolesJson from "../roles.json";
 import Client from "./client";
 
@@ -32,8 +33,6 @@ const paramsSchema = z.object({
 export default async function Page({ params }) {
     const { region, username: parsedUsername } = paramsSchema.parse(params);
     const username = parsedUsername.replace("-", "#");
-
-    const prisma = new PrismaClient();
 
     const championsDD = await prisma.championDetails.findMany();
 

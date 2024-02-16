@@ -1,8 +1,10 @@
-import { type PrismaClient } from "@prisma/client";
-import { type LolApi } from "twisted";
 import { flattenChamp } from "../../differentHelper";
 
-export async function updateChampionDetails(prisma: PrismaClient, lolApi: LolApi) {
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
+
+export async function updateChampionDetails() {
     const data = await lolApi.DataDragon.getChampion();
     const champions = Object.values(data.data);
 

@@ -1,8 +1,11 @@
-import { type PrismaClient, type Summoner } from "@prisma/client";
-import { type LolApi } from "twisted";
+import { type Summoner } from "@prisma/client";
 import { type Regions } from "twisted/dist/constants";
 
-export const upsertMastery = async (user: Summoner, prisma: PrismaClient, lolApi: LolApi, region: Regions) => {
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
+
+export const upsertMastery = async (user: Summoner, region: Regions) => {
     try {
         const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
 

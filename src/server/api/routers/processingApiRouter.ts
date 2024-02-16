@@ -12,12 +12,16 @@ import { updateGames } from "./processing/games";
 import { upsertMastery } from "./processing/mastery";
 import { upsertSummoner } from "./processing/summoner";
 
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
+
 export const processingApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
         .mutation(async ({ input, ctx }) => {
             const region = regionToConstant(input.region.toUpperCase());
-            const data = (await ctx.lolApi.Challenges.getConfig(region)).response;
+            const data = (await lolApi.Challenges.getConfig(region)).response;
 
             try {
                 await ctx.prisma.$transaction([
@@ -76,7 +80,7 @@ export const processingApiRouter = createTRPCRouter({
 
             if (!user) return;
 
-            const matches = await getMatchesForSummonerBySummoner(ctx, user);
+            const matches = await getMatchesForSummonerBySummoner(user);
 
             if (!matches) return;
 
@@ -133,7 +137,7 @@ export const processingApiRouter = createTRPCRouter({
                     },
                 });
             } catch (error) {
-                await updateChampionDetails(ctx.prisma, ctx.lolApi);
+                await updateChampionDetails();
                 console.error("Missing champ??");
             }
 
@@ -146,13 +150,13 @@ export const processingApiRouter = createTRPCRouter({
         }),
     updateGames: publicProcedure
         .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
-        .mutation(async ({ ctx, input }) => {
+        .mutation(async ({ input }) => {
             console.time("updateSummoner");
 
             const region = input.region as Regions;
             const regionGroup = regionToRegionGroup(region);
 
-            const user = (await ctx.lolApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
+            const user = (await riotApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
                 .response;
 
             if (!user.puuid) {
@@ -163,7 +167,7 @@ export const processingApiRouter = createTRPCRouter({
 
             // Update profile
             console.time("upsertSummoner");
-            const updatedUser = await upsertSummoner(ctx.prisma, ctx.lolApi, user.puuid, region);
+            const updatedUser = await upsertSummoner(user.puuid, region);
             console.timeEnd("upsertSummoner");
 
             if (!updatedUser) {
@@ -174,7 +178,7 @@ export const processingApiRouter = createTRPCRouter({
 
             // update games
             console.time("updateGames");
-            await updateGames(ctx.prisma, ctx.lolApi, updatedUser, region);
+            await updateGames(updatedUser, region);
             console.timeEnd("updateGames");
         }),
     updateChampions: publicProcedure
@@ -185,7 +189,7 @@ export const processingApiRouter = createTRPCRouter({
             const region = input.region as Regions;
             const regionGroup = regionToRegionGroup(region);
 
-            const user = (await ctx.lolApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
+            const user = (await riotApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
                 .response;
 
             if (!user.puuid) {
@@ -196,17 +200,17 @@ export const processingApiRouter = createTRPCRouter({
 
             // Update global challenges
             console.time("updateChallengesConfig");
-            await updateChallengesConfig(ctx.prisma, ctx.lolApi, region);
+            await updateChallengesConfig(region);
             console.timeEnd("updateChallengesConfig");
 
             // Update global champions
             console.time("championDetails");
-            await updateChampionDetails(ctx.prisma, ctx.lolApi);
+            await updateChampionDetails();
             console.timeEnd("championDetails");
 
             // Update profile
             console.time("upsertSummoner");
-            const updatedUser = await upsertSummoner(ctx.prisma, ctx.lolApi, user.puuid, region);
+            const updatedUser = await upsertSummoner(user.puuid, region);
             console.timeEnd("upsertSummoner");
 
             if (!updatedUser) {
@@ -217,17 +221,17 @@ export const processingApiRouter = createTRPCRouter({
 
             // Update championMasteries
             console.time("upsertMastery");
-            await upsertMastery(updatedUser, ctx.prisma, ctx.lolApi, region);
+            await upsertMastery(updatedUser, region);
             console.timeEnd("upsertMastery");
 
             // update challenges
             console.time("upsertChallenges");
-            await upsertChallenges(ctx.lolApi, ctx.prisma, region, updatedUser);
+            await upsertChallenges(region, updatedUser);
             console.timeEnd("upsertChallenges");
 
             // update games
             console.time("updateGames");
-            await updateGames(ctx.prisma, ctx.lolApi, updatedUser, region);
+            await updateGames(updatedUser, region);
             console.timeEnd("updateGames");
 
             console.timeEnd("updateSummoner");

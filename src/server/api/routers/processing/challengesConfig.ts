@@ -1,12 +1,12 @@
-import { type PrismaClient } from "@prisma/client";
-import { type LolApi } from "twisted";
-// configUpdater.ts
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
 
 import { type ChallengesConfig } from "@prisma/client";
 import { type Regions } from "twisted/dist/constants";
 import { type ChallengeConfigV1DTO } from "twisted/dist/models-dto";
 
-const updateConfig = async (prisma: PrismaClient, config: ChallengeConfigV1DTO): Promise<ChallengesConfig> => {
+const updateConfig = async (config: ChallengeConfigV1DTO): Promise<ChallengesConfig> => {
     const upsertedConfig = await prisma.challengesConfig.upsert({
         where: { id: config.id },
         update: {
@@ -45,11 +45,11 @@ const updateConfig = async (prisma: PrismaClient, config: ChallengeConfigV1DTO):
     return upsertedConfig;
 };
 
-export const updateChallengesConfig = async (prisma: PrismaClient, lolApi: LolApi, region: Regions) => {
+export const updateChallengesConfig = async (region: Regions) => {
     const challengesConfig: ChallengeConfigV1DTO[] = (await lolApi.Challenges.getConfig(region)).response;
     const upsertedConfigs = await Promise.all(
         challengesConfig.map(async (config) => {
-            return updateConfig(prisma, config);
+            return updateConfig(config);
         }),
     );
     return upsertedConfigs;

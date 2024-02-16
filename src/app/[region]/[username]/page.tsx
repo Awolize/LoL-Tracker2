@@ -4,9 +4,12 @@ import { z } from "zod";
 
 import { getUserByNameAndRegion } from "../../../server/api/differentHelper";
 
-import { useApi } from "~/app/_components/use-api";
 import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
+
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
 
 const paramsSchema = z.object({
     region: z.string(),
@@ -19,9 +22,7 @@ export default async function Page({ params }) {
 
     const region = regionToConstant(rawRegion.toUpperCase());
 
-    const { prisma, lolApi, riotApi } = useApi();
-
-    const user = await getUserByNameAndRegion({ prisma, lolApi, riotApi }, username, region);
+    const user = await getUserByNameAndRegion(username, region);
 
     const patch = (await prisma.championDetails.findMany())[0]?.version;
 
