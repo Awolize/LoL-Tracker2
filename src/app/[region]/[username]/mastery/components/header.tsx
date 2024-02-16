@@ -1,13 +1,13 @@
 "use client";
 
+import { SwitchWithLabel } from "~/app/[region]/[username]/mastery/components/switch-with-label";
 import LoadingComponent from "~/app/_components/loading-spinner";
-import { SwitchWithLabel } from "~/app/_components/switch-w-label";
 import { ToggleEye } from "~/app/_components/toggle-eye";
+import { useMatchHistoryStore } from "~/components/stores/match-history-store";
+import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
+import { useUserContext } from "~/components/stores/user-store";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { useMatchHistoryStore } from "../stores/match-history-store";
-import { useOptionsPersistentContext } from "../stores/options-persistent-store";
-import { useUserContext } from "../stores/user-store";
 import { Choice, Dropdown } from "./dropdown";
 import { ScaleSlider } from "./scale-slider";
 

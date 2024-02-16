@@ -1,6 +1,6 @@
+import { useMatchHistoryStore } from "~/components/stores/match-history-store";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "~/components/ui/sheet";
-import { useMatchHistoryStore } from "../stores/match-history-store";
 import MatchItem from "./match-history-item";
 import { type CompleteMatch } from "./server-processing-helpers";
 

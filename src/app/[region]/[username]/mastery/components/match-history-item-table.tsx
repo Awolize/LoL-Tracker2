@@ -3,8 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { useDataDragonPath } from "~/app/_components/use-data-dragon-path";
-import { Button } from "~/components/ui/button";
-import { useUserContext } from "../stores/user-store";
+import { useUserContext } from "~/components/stores/user-store";
 import { MatchPlayerData } from "./MatchPlayerData";
 
 interface MatchTableProps {

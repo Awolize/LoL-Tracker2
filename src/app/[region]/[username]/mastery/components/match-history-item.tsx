@@ -1,4 +1,4 @@
-import { useUserContext } from "../stores/user-store";
+import { useUserContext } from "~/components/stores/user-store";
 import MatchTable from "./match-history-item-table";
 import { type CompleteMatch } from "./server-processing-helpers";
 

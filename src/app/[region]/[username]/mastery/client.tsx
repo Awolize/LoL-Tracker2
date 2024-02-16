@@ -4,14 +4,14 @@ import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challeng
 
 import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
+import { OptionsProvider, useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
+import { UserProvider } from "~/components/stores/user-store";
 import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
 import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
 import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
-import { OptionsProvider, useOptionsPersistentContext } from "./stores/options-persistent-store";
-import { UserProvider } from "./stores/user-store";
 
 export function Client({
     user,
