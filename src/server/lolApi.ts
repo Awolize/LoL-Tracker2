@@ -7,4 +7,6 @@ const globalForLolApi = globalThis as unknown as {
 
 export const lolApi = globalForLolApi.lolApi ?? new LolApi();
 
-if (env.NODE_ENV !== "production") globalForLolApi.lolApi = lolApi;
+if (env.NODE_ENV !== "production") {
+    globalForLolApi.lolApi = lolApi;
+}
