@@ -5,7 +5,7 @@ import React from "react";
 import Image from "next/image";
 
 import { filteredOut } from "~/utils/champsUtils";
-import { type CompleteChampionInfo } from "../[region]/[username]/mastery/components/server-processing-helpers";
+import { CompleteChampionInfo } from "../[region]/[username]/mastery/page";
 import { useDataDragonPath } from "./use-data-dragon-path";
 
 interface ChampionItemProps {
@@ -52,6 +52,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
                             fill="currentColor"
                             className="w-6 h-6"
                         >
+                            <title>chestGranted</title>
                             <path
                                 d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z"
                                 stroke="black"

@@ -3,7 +3,7 @@ import ChampionItem from "~/app/_components/champion-item";
 import RoleHeader from "~/app/_components/role-header";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { type CompleteChampionInfo } from "./server-processing-helpers";
+import { CompleteChampionInfo } from "../page";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 const SortedChampionList = ({ champions }) => {

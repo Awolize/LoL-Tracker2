@@ -1,4 +1,4 @@
-import type { PrismaClient, Summoner } from "@prisma/client";
+import type { Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import type { ChampionsDataDragonDetails, MatchV5DTOs } from "twisted/dist/models-dto";
 import { prisma } from "~/server/db";

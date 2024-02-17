@@ -1,6 +1,6 @@
 import { useUserContext } from "~/components/stores/user-store";
+import { CompleteMatch } from "~/server/api/routers/processing/champions";
 import MatchTable from "./match-history-item-table";
-import { type CompleteMatch } from "./server-processing-helpers";
 
 const MatchItem = ({ match }: { match: CompleteMatch }) => {
     const user = useUserContext((s) => s.user);

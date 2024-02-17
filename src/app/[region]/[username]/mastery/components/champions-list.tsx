@@ -2,7 +2,7 @@
 import ChampionItem from "~/app/_components/champion-item";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { type CompleteChampionInfo } from "./server-processing-helpers";
+import { CompleteChampionInfo } from "../page";
 
 const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
     const {

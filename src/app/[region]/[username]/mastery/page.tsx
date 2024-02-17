@@ -4,17 +4,29 @@ import "react-lazy-load-image-component/src/effects/opacity.css";
 import { stringify } from "superjson";
 import { z } from "zod";
 
-import type { ChallengeIds } from "../../../../utils/champsUtils";
-import { getChallengesThresholds2, getPlayerChallengesData2, regionToConstant } from "../../../../utils/champsUtils";
+import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUtils";
 
+import { ChampionDetails } from "@prisma/client";
+import { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import { getUserByNameAndRegion } from "~/server/api/differentHelper";
+import { getChallengesThresholds2, getPlayerChallengesData2 } from "~/server/api/routers/processing/challenges";
+import { getCompleteChampionData } from "~/server/api/routers/processing/champions";
+import { getMatches } from "~/server/api/routers/processing/games";
 import { Client } from "./client";
-import { getCompleteChampionData, getMatches } from "./components/server-processing-helpers";
 
 const paramsSchema = z.object({
     region: z.string(),
     username: z.string(),
 });
+
+interface Roles {
+    role: string;
+}
+
+export type CompleteChampionInfo = Partial<Omit<ChampionMasteryDTO, "championPoints" | "championLevel">> &
+    Pick<ChampionMasteryDTO, "championPoints" | "championLevel"> &
+    ChampionDetails &
+    Roles;
 
 export default async function Page({ params }) {
     const { region: rawRegion, username: rawUsername } = paramsSchema.parse(params);

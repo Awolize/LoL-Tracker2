@@ -1,4 +1,4 @@
-import { type Summoner } from "@prisma/client";
+import { Match, MatchInfo, type Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
@@ -6,6 +6,7 @@ import { summonersFromGames } from "./summoner";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
+import { CompleteMatch } from "./champions";
 
 export const updateGames = async (user: Summoner, region: Regions) => {
     try {
@@ -170,3 +171,31 @@ const processSingleMatch = async (region: Regions, matchId: string) => {
         },
     });
 };
+
+export async function getMatches(user: Summoner) {
+    const matches: (Match & {
+        MatchInfo: MatchInfo | null;
+        participants: Summoner[];
+    })[] = await prisma.match.findMany({
+        where: {
+            participants: {
+                some: user,
+            },
+        },
+        include: {
+            MatchInfo: true,
+            participants: true,
+        },
+        take: 25,
+        orderBy: {
+            MatchInfo: {
+                gameStartTimestamp: "desc",
+            },
+        },
+    });
+
+    // Filter out null values and ensure MatchInfo is not null
+    const filteredMatches = matches.filter((match): match is CompleteMatch => match?.MatchInfo !== null);
+
+    return filteredMatches;
+}

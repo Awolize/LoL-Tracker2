@@ -6,12 +6,13 @@ import { type Summoner } from "@prisma/client";
 import { parse } from "superjson";
 import { OptionsProvider, useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { UserProvider } from "~/components/stores/user-store";
+import { CompleteMatch } from "~/server/api/routers/processing/champions";
 import { type ChallengeIds } from "~/utils/champsUtils";
 import ChampionList from "./components/champions-list";
 import Header from "./components/header";
 import MatchHistory from "./components/match-history";
 import SortedChampionList from "./components/role-sorted-champion-list";
-import { type CompleteChampionInfo, type CompleteMatch } from "./components/server-processing-helpers";
+import { CompleteChampionInfo } from "./page";
 
 export function Client({
     user,

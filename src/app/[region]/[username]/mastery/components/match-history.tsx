@@ -1,8 +1,8 @@
 import { useMatchHistoryStore } from "~/components/stores/match-history-store";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "~/components/ui/sheet";
+import { CompleteMatch } from "~/server/api/routers/processing/champions";
 import MatchItem from "./match-history-item";
-import { type CompleteMatch } from "./server-processing-helpers";
 
 const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
     const showMatchHistory = useMatchHistoryStore((state) => state.showMatchHistory);

@@ -1,9 +1,11 @@
-import { type Summoner } from "@prisma/client";
+import { Challenge, type Summoner } from "@prisma/client";
 import { type Regions } from "twisted/dist/constants";
+import { ChallengeV1DTO } from "twisted/dist/models-dto";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
+import { ChallengeIds, isChallengeId } from "~/utils/champsUtils";
 
 export const upsertChallenges = async (region: Regions, user: Summoner) => {
     const response = (await lolApi.Challenges.getPlayerData(user.puuid, region)).response;
@@ -132,4 +134,69 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
     });
 
     return upsertedChallenges;
+};
+
+export const getChallengesThresholds2 = async () => {
+    const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
+    const promises = challengeIds.map(async (challengeId) => {
+        const thresholds = (await prisma.challengesConfig.findFirst({ where: { id: challengeId } }))?.thresholds;
+        return { challengeId, thresholds: thresholds };
+    });
+
+    const results = await Promise.all(promises);
+
+    const thresholdsMap = new Map<ChallengeIds, Record<string, number>>();
+    for (const { challengeId, thresholds } of results) {
+        thresholdsMap.set(challengeId, thresholds as Record<string, number>);
+    }
+
+    return thresholdsMap;
+};
+
+export const getPlayerChallengesData2 = async (user: Summoner) => {
+    const challengesDetails = await prisma.challengesDetails.findFirst({
+        where: { puuid: user.puuid },
+        include: { challenges: true },
+    });
+
+    if (!challengesDetails) {
+        console.error(`Could not find summoner challenge data, puuid: ${user.puuid}`);
+        return new Map<ChallengeIds, Challenge>();
+    }
+
+    const filteredChallenges = challengesDetails.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
+    const challengesMap = filteredChallenges.reduce((map, challenge) => {
+        map.set(challenge.challengeId as ChallengeIds, challenge);
+        return map;
+    }, new Map<ChallengeIds, Challenge>());
+
+    return challengesMap;
+};
+
+export const getPlayerChallengesData = async (region: Regions, user: Summoner) => {
+    const response = await lolApi.Challenges.getPlayerData(user.puuid, region);
+    const filteredChallenges = response.response.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
+    const challengesMap = filteredChallenges.reduce((map, challenge: ChallengeV1DTO) => {
+        map.set(challenge.challengeId as ChallengeIds, challenge);
+        return map;
+    }, new Map<ChallengeIds, ChallengeV1DTO>());
+
+    return challengesMap;
+};
+
+export const getChallengesThresholds = async (region: Regions) => {
+    const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
+    const promises = challengeIds.map(async (challengeId) => {
+        const thresholds = (await lolApi.Challenges.getChallengeConfig(challengeId, region)).response;
+        return { challengeId, thresholds: thresholds.thresholds };
+    });
+
+    const results = await Promise.all(promises);
+
+    const thresholdsMap = new Map<ChallengeIds, Record<string, number>>();
+    for (const { challengeId, thresholds } of results) {
+        thresholdsMap.set(challengeId, thresholds);
+    }
+
+    return thresholdsMap;
 };
