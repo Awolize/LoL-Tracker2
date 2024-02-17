@@ -8,7 +8,7 @@ interface RoleHeaderProps {
     percentage: number;
 }
 
-const RoleHeader: React.FC<RoleHeaderProps> = ({ role, finishedSize, size, hasHidden, percentage }) => {
+export function RoleHeader({ role, finishedSize, size, hasHidden, percentage }: RoleHeaderProps) {
     return (
         <div className="text-md flex flex-row  justify-evenly align-bottom">
             <h4 className="my-auto p-2">
@@ -23,6 +23,6 @@ const RoleHeader: React.FC<RoleHeaderProps> = ({ role, finishedSize, size, hasHi
             <h4 className="my-auto p-2">{percentage.toFixed(1)} %</h4>
         </div>
     );
-};
+}
 
 export default RoleHeader;

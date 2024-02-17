@@ -1,8 +1,8 @@
 // SortedChampionList.jsx
 import ChampionItem from "~/components/old/champion-item";
-import RoleHeader from "~/components/old/role-header";
+import { RoleHeader } from "~/components/old/role-header";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
-import { sortAlgorithm } from "~/utils/champsUtils";
+import { filteredOut, sortAlgorithm } from "~/utils/champsUtils";
 import { CompleteChampionInfo } from "../../app/[region]/[username]/mastery/page";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
@@ -32,10 +32,20 @@ const SortedChampionList = ({ champions }) => {
                 const role = ROLES[index] ?? `Unknown ${index}`;
 
                 roleChampions.sort((a, b) => sortAlgorithm(sortOrder, a, b));
+                const finishedChamps = roleChampions.filter(
+                    (champ) => filteredOut(champ, filterPoints) || selectedChampions.has(champ.id),
+                );
+                const finishedChampsPercentage = (finishedChamps.length / roleChampions.length) * 100;
 
                 return (
                     <div className="w-full p-4" key={role}>
-                        <RoleHeader role={role} finishedSize={0} hasHidden={false} size={0} percentage={0} />
+                        <RoleHeader
+                            role={role}
+                            finishedSize={finishedChamps.length}
+                            hasHidden={false}
+                            size={roleChampions.length}
+                            percentage={finishedChampsPercentage}
+                        />
 
                         <div
                             className="grid justify-between"
