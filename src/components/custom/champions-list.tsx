@@ -1,8 +1,8 @@
 // ChampionList.jsx
-import ChampionItem from "~/app/_components/champion-item";
+import ChampionItem from "~/components/old/champion-item";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { CompleteChampionInfo } from "../page";
+import { CompleteChampionInfo } from "../../app/[region]/[username]/mastery/page";
 
 const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
     const {

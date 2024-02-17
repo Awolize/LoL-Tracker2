@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { useDataDragonPath } from "~/app/_components/use-data-dragon-path";
+import { useDataDragonPath } from "~/components/old/use-data-dragon-path";
 import { useUserContext } from "~/components/stores/user-store";
 import { MatchPlayerData } from "./MatchPlayerData";
 

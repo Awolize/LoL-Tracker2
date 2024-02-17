@@ -1,8 +1,8 @@
 "use client";
 
-import { SwitchWithLabel } from "~/app/[region]/[username]/mastery/components/switch-with-label";
-import LoadingComponent from "~/app/_components/loading-spinner";
-import { ToggleEye } from "~/app/_components/toggle-eye";
+import { SwitchWithLabel } from "~/components/custom/switch-with-label";
+import LoadingComponent from "~/components/old/loading-spinner";
+import { ToggleEye } from "~/components/old/toggle-eye";
 import { useMatchHistoryStore } from "~/components/stores/match-history-store";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { useUserContext } from "~/components/stores/user-store";

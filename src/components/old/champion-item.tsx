@@ -5,7 +5,7 @@ import React from "react";
 import Image from "next/image";
 
 import { filteredOut } from "~/utils/champsUtils";
-import { CompleteChampionInfo } from "../[region]/[username]/mastery/page";
+import { CompleteChampionInfo } from "../../app/[region]/[username]/mastery/page";
 import { useDataDragonPath } from "./use-data-dragon-path";
 
 interface ChampionItemProps {

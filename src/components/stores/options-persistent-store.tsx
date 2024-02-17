@@ -2,8 +2,7 @@ import React, { createContext, useContext, useRef } from "react";
 import superjson from "superjson";
 import { create, useStore } from "zustand";
 import { PersistStorage, persist } from "zustand/middleware";
-import { SortOrder2 } from "../../app/[region]/[username]/mastery/components/header";
-
+import { SortOrder2 } from "../custom/header";
 interface Store {
     showMasteryPoints: boolean;
     showAvailableChests: boolean;

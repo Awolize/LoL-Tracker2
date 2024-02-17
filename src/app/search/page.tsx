@@ -3,8 +3,8 @@
 import { useRef, useState } from "react";
 
 import { useRouter } from "next/navigation";
-import LoadingComponent from "../_components/loading-spinner";
-import RegionListSelector, { regions } from "../_components/region-list-selector";
+import LoadingComponent from "../../components/old/loading-spinner";
+import RegionListSelector, { regions } from "../../components/old/region-list-selector";
 
 export default function Page() {
     const router = useRouter();

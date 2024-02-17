@@ -5,10 +5,10 @@ import { useMemo, useState } from "react";
 import type { ChampionDetails } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 
-import { DifferentChampionItem } from "~/app/_components/differentComponents/different-champion-item";
-import { DifferentHeader } from "~/app/_components/differentComponents/different-header";
-import { DifferentRoleHeader } from "~/app/_components/differentComponents/different-role-header";
-import { DifferentSideBar } from "~/app/_components/differentComponents/different-side-bar";
+import { DifferentChampionItem } from "~/components/different/different-champion-item";
+import { DifferentHeader } from "~/components/different/different-header";
+import { DifferentRoleHeader } from "~/components/different/different-role-header";
+import { DifferentSideBar } from "~/components/different/different-side-bar";
 import { api } from "~/trpc/react";
 import { type CompleteChampionInfo } from "./page";
 

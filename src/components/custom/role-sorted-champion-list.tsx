@@ -1,9 +1,9 @@
 // SortedChampionList.jsx
-import ChampionItem from "~/app/_components/champion-item";
-import RoleHeader from "~/app/_components/role-header";
+import ChampionItem from "~/components/old/champion-item";
+import RoleHeader from "~/components/old/role-header";
 import { useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { sortAlgorithm } from "~/utils/champsUtils";
-import { CompleteChampionInfo } from "../page";
+import { CompleteChampionInfo } from "../../app/[region]/[username]/mastery/page";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
 const SortedChampionList = ({ champions }) => {
