@@ -40,7 +40,7 @@ export default function Header() {
     const user = useUserContext((s) => s.user);
 
     const utils = api.useUtils();
-    const updateChampions = api.processingApi.updateChampions.useMutation({
+    const updateChampions = api.processingApi.fullUpdateSummoner.useMutation({
         onSuccess() {
             utils.invalidate();
         },
