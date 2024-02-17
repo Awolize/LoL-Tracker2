@@ -115,9 +115,8 @@ const processMatches = async (
             } else {
                 console.error("something went wrong on gameId:", matchId);
                 console.error({ error });
+                failedGames.push(matchId);
             }
-
-            failedGames.push(matchId);
         }
     }
 
