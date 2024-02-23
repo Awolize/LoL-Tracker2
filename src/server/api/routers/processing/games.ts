@@ -10,11 +10,9 @@ import { CompleteMatch } from "./champions";
 
 export const updateGames = async (user: Summoner, region: Regions) => {
     try {
-        console.log(`UpdateGames for user ${user.gameName}#${user.tagLine} (${user.region})`);
-
         const matchIds = await fetchMatchIds(user.puuid, region);
 
-        console.log("Fetching", matchIds.length, "matches. For user", user.gameName, user.tagLine);
+        console.log(`UpdateGames for user ${user.gameName}#${user.tagLine} (${user.region}), ${matchIds.length} games`);
 
         const { addedGames, skippedGames, failedGames } = await processMatches(user, region, matchIds);
 
@@ -75,8 +73,6 @@ const processMatches = async (
         }
         return newGame;
     });
-
-    console.log(`Filtered ${skippedGames.length} before starting.`);
 
     for (const [index, matchId] of newMatchIds.entries()) {
         if (index % 50 === 0) {

@@ -1,4 +1,4 @@
-import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
+import { Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
 import { type Participant } from "~/trpc/different_types";
@@ -25,10 +25,10 @@ export const processingApiRouter = createTRPCRouter({
             const data = (await lolApi.Challenges.getConfig(region)).response;
 
             try {
-                await ctx.prisma.$transaction([
+                await prisma.$transaction([
                     // upsertMany "hack"
-                    ctx.prisma.challengesConfig.deleteMany(),
-                    ctx.prisma.challengesConfig.createMany({
+                    prisma.challengesConfig.deleteMany(),
+                    prisma.challengesConfig.createMany({
                         data: data.map((challenge) => {
                             // There is one challenge that got an endtimestamp (id: 600012)
                             //  "name":"Challenges are Here!"
@@ -43,7 +43,7 @@ export const processingApiRouter = createTRPCRouter({
                         }),
                         skipDuplicates: true,
                     }),
-                    ctx.prisma.challengeLocalization.createMany({
+                    prisma.challengeLocalization.createMany({
                         data: data.map((challenge) => {
                             const enUSLocalization = challenge.localizedNames.en_US;
 
@@ -69,7 +69,7 @@ export const processingApiRouter = createTRPCRouter({
 
             const region = regionToConstant(input.region.toUpperCase());
 
-            const user = await ctx.prisma.summoner.findFirst({
+            const user = await prisma.summoner.findFirst({
                 where: {
                     username: {
                         mode: "insensitive",
@@ -109,14 +109,14 @@ export const processingApiRouter = createTRPCRouter({
             }
 
             const challenges = (
-                await ctx.prisma.summoner.findFirst({
+                await prisma.summoner.findFirst({
                     where: { puuid: user.puuid },
                     include: { challenges: true },
                 })
             )?.challenges;
 
             if (!challenges) {
-                await ctx.prisma.challenges.create({
+                await prisma.challenges.create({
                     data: {
                         summoner: { connect: { puuid: user.puuid } },
                     },
@@ -127,7 +127,7 @@ export const processingApiRouter = createTRPCRouter({
             const uniqueLoses = new Set<number>(loses.map((lose) => lose.championId));
 
             try {
-                await ctx.prisma.challenges.update({
+                await prisma.challenges.update({
                     where: {
                         puuid: user.puuid,
                     },
@@ -182,9 +182,26 @@ export const processingApiRouter = createTRPCRouter({
             await updateGames(updatedUser, region);
             console.timeEnd("updateGames");
         }),
+
+    updateGlobals: publicProcedure.mutation(async () => {
+        console.time("Globals");
+
+        // Update global challenges
+        console.time("Globals updateChallengesConfig");
+        await updateChallengesConfig("EUW1" as Regions);
+        console.timeEnd("Globals updateChallengesConfig");
+
+        // Update global champions
+        console.time("Globals updateChampionDetails");
+        await updateChampionDetails();
+        console.timeEnd("Globals updateChampionDetails");
+
+        console.timeEnd("Globals");
+    }),
+
     fullUpdateSummoner: publicProcedure
         .input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
-        .mutation(async ({ ctx, input }) => {
+        .mutation(async ({ input }) => {
             async function fullUpdateSummoner() {
                 const region = input.region as Regions;
                 const regionGroup = regionToRegionGroup(region);
@@ -198,13 +215,13 @@ export const processingApiRouter = createTRPCRouter({
                 }
 
                 // Update global challenges
-                await timeIt(user, updateChallengesConfig, region);
+                // await timeIt("updateChallengesConfig", user, updateChallengesConfig, region);
 
                 // Update global champions
-                await timeIt(user, updateChampionDetails);
+                // await timeIt("updateChampionDetails", user, updateChampionDetails);
 
                 // Update profile
-                const updatedUser = await timeIt(user, upsertSummoner, user.puuid, region);
+                const updatedUser = await timeIt("upsertSummoner", user, upsertSummoner, user.puuid, region);
 
                 if (!updatedUser) {
                     console.log(`${user.gameName}#${user.tagLine}: Could not update user`);
@@ -212,16 +229,20 @@ export const processingApiRouter = createTRPCRouter({
                 }
 
                 // Update championMasteries
-                await timeIt(user, upsertMastery, updatedUser, region);
+                await timeIt("upsertMastery", user, upsertMastery, updatedUser, region);
 
                 // update challenges
-                await timeIt(user, upsertChallenges, region, updatedUser);
+                await timeIt("upsertChallenges", user, upsertChallenges, region, updatedUser);
 
                 // update games
-                await timeIt(user, updateGames, updatedUser, region);
+                // await timeIt("updateGames", user, updateGames, updatedUser, region);
             }
 
-            await timeIt({ gameName: input.gameName, tagLine: input.tagLine }, fullUpdateSummoner);
+            await timeIt(
+                "fullUpdateSummoner",
+                { gameName: input.gameName, tagLine: input.tagLine },
+                fullUpdateSummoner,
+            );
         }),
 });
 
@@ -229,12 +250,13 @@ export const processingApiRouter = createTRPCRouter({
 type AnyFunction = (...args: any[]) => Promise<any>;
 
 async function timeIt<T extends AnyFunction>(
+    functionName: string,
     user: Pick<AccountDTO, "gameName" | "tagLine">,
     func: T,
     ...args: Parameters<T>
 ): Promise<ReturnType<T>> {
-    console.time(`${user.gameName}#${user.tagLine}: ${func.name}`);
+    console.time(`${user.gameName}#${user.tagLine}: ${functionName}`);
     const result = await func(...args);
-    console.timeEnd(`${user.gameName}#${user.tagLine}: ${func.name}`);
+    console.timeEnd(`${user.gameName}#${user.tagLine}: ${functionName}`);
     return result;
 }

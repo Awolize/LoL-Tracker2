@@ -28,9 +28,6 @@ import { riotApi } from "~/server/riotApi";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
     return {
-        prisma,
-        lolApi,
-        riotApi,
         ...opts,
     };
 };

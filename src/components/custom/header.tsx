@@ -10,6 +10,7 @@ import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { api } from "~/trpc/react";
 import { Choice, Dropdown } from "./dropdown";
+import { FullSummonerUpdate } from "./full-summoner-update";
 import { ScaleSlider } from "./scale-slider";
 
 export enum SortOrder2 {
@@ -40,21 +41,6 @@ export default function Header() {
     const user = useUserContext((s) => s.user);
 
     const utils = api.useUtils();
-    const updateChampions = api.processingApi.fullUpdateSummoner.useMutation({
-        onSuccess() {
-            utils.invalidate();
-        },
-    });
-
-    const updateUser = async () => {
-        if (user.gameName && user.tagLine) {
-            updateChampions.mutate({
-                gameName: user.gameName,
-                tagLine: user.tagLine,
-                region: user.region,
-            });
-        }
-    };
 
     const filteredChoices: Choice[] = [
         {
@@ -79,18 +65,7 @@ export default function Header() {
 
     return (
         <div className="flex flex-row gap-4 px-4 py-2 items-center justify-center">
-            <Button
-                variant="secondary"
-                size={"sm"}
-                className={`${
-                    !updateChampions.isLoading
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-500"
-                        : "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
-                } relative inline-flex my-2 py-1 px-3 items-center justify-center rounded w-24`}
-                onClick={updateUser}
-            >
-                {updateChampions.isLoading ? <LoadingComponent /> : "Update"}
-            </Button>
+            <FullSummonerUpdate user={user} />
             <div className="h-8 bg-gray-500 w-[1px]" />
             <SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
             <Dropdown

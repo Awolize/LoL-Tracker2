@@ -4,11 +4,13 @@ import { regionToConstant } from "../../../utils/champsUtils";
 import { getUserByNameAndRegion } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
+import { prisma } from "~/server/db";
+
 export const differentApiRouter = createTRPCRouter({
     getChallengesConfig: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
-        .query(async ({ ctx }) => {
-            const data = await ctx.prisma.challengesConfig.findMany({
+        .query(async () => {
+            const data = await prisma.challengesConfig.findMany({
                 select: {
                     id: true,
                     localizedNames: true,
@@ -18,7 +20,7 @@ export const differentApiRouter = createTRPCRouter({
                 },
             });
 
-            const keystones = await ctx.prisma.challengesConfig.findMany({
+            const keystones = await prisma.challengesConfig.findMany({
                 select: {
                     id: true,
                     localizedNames: true,
@@ -31,13 +33,13 @@ export const differentApiRouter = createTRPCRouter({
         }),
     getJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
-        .query(async ({ input, ctx }) => {
+        .query(async ({ input }) => {
             const region = regionToConstant(input.region.toUpperCase());
             const user = await getUserByNameAndRegion(input.username.toLowerCase(), region);
 
             const getJackOfAllChamps = async (puuid) => {
                 return (
-                    await ctx.prisma.challenges.findFirst({
+                    await prisma.challenges.findFirst({
                         where: {
                             puuid: puuid,
                         },

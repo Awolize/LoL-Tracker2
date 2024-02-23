@@ -5,10 +5,12 @@ import { regionToConstant } from "~/utils/champsUtils";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { updateSummoner } from "./processing/summoner";
 
+import { lolApi } from "~/server/lolApi";
+
 export const riotApiRouter = createTRPCRouter({
-    getUserByName: publicProcedure.input(z.object({ username: z.string() })).query(async ({ input, ctx }) => {
+    getUserByName: publicProcedure.input(z.object({ username: z.string() })).query(async ({ input }) => {
         try {
-            const response = await ctx.lolApi.Summoner.getByName(input.username, Constants.Regions.EU_WEST);
+            const response = await lolApi.Summoner.getByName(input.username, Constants.Regions.EU_WEST);
 
             return response.response;
         } catch (error) {
