@@ -235,7 +235,7 @@ export const processingApiRouter = createTRPCRouter({
                 await timeIt("upsertChallenges", user, upsertChallenges, region, updatedUser);
 
                 // update games
-                // await timeIt("updateGames", user, updateGames, updatedUser, region);
+                await timeIt("updateGames", user, updateGames, updatedUser, region);
             }
 
             await timeIt(
