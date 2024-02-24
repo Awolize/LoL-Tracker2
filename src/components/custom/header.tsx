@@ -43,18 +43,21 @@ export default function Header() {
     const utils = api.useUtils();
 
     const filteredChoices: Choice[] = [
+        { text: "100", value: 100 },
+        { text: "500", value: 500 },
+        { text: "1,000", value: 1000 },
+        { text: "1,800 (Level 2)", value: 1800 },
+        { text: "5,000", value: 5000 },
+        { text: "6000 (Level 3)", value: 6000 },
+        { text: "10,000", value: 10000 },
+        { text: "12,600 (Level 4)", value: 12600 },
+        { text: "21,600 (Level 5)", value: 21600 },
+        { text: "50,000", value: 50000 },
+        { text: "100,000", value: 100000 },
         {
             text: "All",
             value: Number.MAX_SAFE_INTEGER,
         },
-        { text: "100", value: 100 },
-        { text: "500", value: 500 },
-        { text: "1,000", value: 1000 },
-        { text: "5,000", value: 5000 },
-        { text: "10,000", value: 10000 },
-        { text: "21,600", value: 21600 },
-        { text: "50,000", value: 50000 },
-        { text: "100,000", value: 100000 },
     ];
 
     const sortOrderChoices: Choice[] = [

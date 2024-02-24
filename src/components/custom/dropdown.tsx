@@ -29,12 +29,16 @@ export function Dropdown({ choices, choice, callback, menuLabel }: Props) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size={"sm"} className="flex flex-row w-32 justify-between">
-                    <div>{choice.text}</div>
+                <Button
+                    variant="secondary"
+                    size={"sm"}
+                    className="flex flex-row min-w-32 max-w-auto gap-2 justify-between"
+                >
+                    {choice.text}
                     <ChevronUpDownIcon className="h-5 w-5 mt-[2px] text-gray-100" aria-hidden="true" />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-32">
+            <DropdownMenuContent className="w-auto">
                 {menuLabel && (
                     <>
                         <DropdownMenuLabel>{menuLabel}</DropdownMenuLabel>
