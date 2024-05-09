@@ -44,29 +44,39 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 
         const { userInfo, accountInfo } = await getUserInfo(username, region);
 
-        // Map API response to Summoner
-        const newUser: Summoner = {
-            puuid: userInfo.puuid,
-            summonerId: userInfo.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            region,
-            username: userInfo.name,
-            gameName: accountInfo.gameName ?? null,
-            tagLine: accountInfo.tagLine ?? null,
-            profileIconId: userInfo.profileIconId,
-            summonerLevel: userInfo.summonerLevel,
-            revisionDate: new Date(userInfo.revisionDate),
-            accountId: userInfo.accountId,
-        };
-
         // Use upsert to save the new user or update an existing one
         const savedUser = await prisma.summoner.upsert({
             where: {
-                puuid: newUser.puuid,
+                puuid: userInfo.puuid,
             },
-            update: newUser,
-            create: newUser,
+            update: {
+                puuid: userInfo.puuid,
+                summonerId: userInfo.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                region,
+                username: "deprecated",
+                gameName: accountInfo.gameName ?? null,
+                tagLine: accountInfo.tagLine ?? null,
+                profileIconId: userInfo.profileIconId,
+                summonerLevel: userInfo.summonerLevel,
+                revisionDate: new Date(userInfo.revisionDate),
+                accountId: userInfo.accountId,
+            },
+            create: {
+                puuid: userInfo.puuid,
+                summonerId: userInfo.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                region,
+                username: "deprecated",
+                gameName: accountInfo.gameName ?? null,
+                tagLine: accountInfo.tagLine ?? null,
+                profileIconId: userInfo.profileIconId,
+                summonerLevel: userInfo.summonerLevel,
+                revisionDate: new Date(userInfo.revisionDate),
+                accountId: userInfo.accountId,
+            },
         });
 
         return savedUser;

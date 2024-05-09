@@ -240,7 +240,6 @@ const updateSummonerDb = async (
             update: {
                 summonerId: user.summonerId,
                 region: region,
-                username: user.username,
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
@@ -250,7 +249,7 @@ const updateSummonerDb = async (
                 puuid: user.puuid,
                 summonerId: user.summonerId,
                 region: region,
-                username: user.username,
+                username: "deprecated",
                 profileIconId: user.profileIconId,
                 summonerLevel: user.summonerLevel,
                 revisionDate: new Date(user.revisionDate),
