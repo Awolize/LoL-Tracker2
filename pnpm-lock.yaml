@@ -16,7 +16,7 @@ importers:
         version: 2.1.3(react@18.2.0)
       '@prisma/client':
         specifier: 4.15.0
-        version: 4.15.0(prisma@4.15.0)
+        version: 4.15.0(prisma@5.13.0)
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -100,7 +100,7 @@ importers:
         version: 1.0.7(tailwindcss@3.4.3)
       twisted:
         specifier: https://github.com/Awolize/twisted#build-dist
-        version: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940
+        version: git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -142,8 +142,8 @@ importers:
         specifier: ^8.4.35
         version: 8.4.38
       prisma:
-        specifier: 4.15.0
-        version: 4.15.0
+        specifier: 5.13.0
+        version: 5.13.0
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.3
@@ -493,11 +493,23 @@ packages:
       prisma:
         optional: true
 
+  '@prisma/debug@5.13.0':
+    resolution: {integrity: sha512-699iqlEvzyCj9ETrXhs8o8wQc/eVW+FigSsHpiskSFydhjVuwTJEfj/nIYqTaWFYuxiWQRfm3r01meuW97SZaQ==}
+
   '@prisma/engines-version@4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944':
     resolution: {integrity: sha512-sVOig4tjGxxlYaFcXgE71f/rtFhzyYrfyfNFUsxCIEJyVKU9rdOWIlIwQ2NQ7PntvGnn+x0XuFo4OC1jvPJKzg==}
 
-  '@prisma/engines@4.15.0':
-    resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
+  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b':
+    resolution: {integrity: sha512-AyUuhahTINGn8auyqYdmxsN+qn0mw3eg+uhkp8zwknXYIqoT3bChG4RqNY/nfDkPvzWAPBa9mrDyBeOnWSgO6A==}
+
+  '@prisma/engines@5.13.0':
+    resolution: {integrity: sha512-hIFLm4H1boj6CBZx55P4xKby9jgDTeDG0Jj3iXtwaaHmlD5JmiDkZhh8+DYWkTGchu+rRF36AVROLnk0oaqhHw==}
+
+  '@prisma/fetch-engine@5.13.0':
+    resolution: {integrity: sha512-Yh4W+t6YKyqgcSEB3odBXt7QyVSm0OQlBSldQF2SNXtmOgMX8D7PF/fvH6E6qBCpjB/yeJLy/FfwfFijoHI6sA==}
+
+  '@prisma/get-platform@5.13.0':
+    resolution: {integrity: sha512-B/WrQwYTzwr7qCLifQzYOmQhZcFmIFhR81xC45gweInSUn2hTEbfKUPd2keAog+y5WI5xLAFNJ3wkXplvSVkSw==}
 
   '@radix-ui/number@1.0.1':
     resolution: {integrity: sha512-T5gIdVO2mmPW3NNhjNgEP3cqMXjXL9UbO0BzWcXfvdBs+BohbQxvd/K5hSVKmn9/lbTdsQVKbUcP5WLCwvUbBg==}
@@ -1691,9 +1703,9 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prisma@4.15.0:
-    resolution: {integrity: sha512-iKZZpobPl48gTcSZVawLMQ3lEy6BnXwtoMj7hluoGFYu2kQ6F9LBuBrUyF95zRVnNo8/3KzLXJXJ5TEnLSJFiA==}
-    engines: {node: '>=14.17'}
+  prisma@5.13.0:
+    resolution: {integrity: sha512-kGtcJaElNRAdAGsCNykFSZ7dBKpL14Cbs+VaQ8cECxQlRPDjBlMHNFYeYt0SKovAVy2Y65JXQwB3A5+zIQwnTg==}
+    engines: {node: '>=16.13'}
     hasBin: true
 
   promise-queue@2.2.5:
@@ -1915,8 +1927,8 @@ packages:
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940}
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
+    resolution: {commit: d1b2765f04d712967536c638bc2be71720251940, repo: git@github.com:Awolize/twisted.git, type: git}
     version: 1.56.1
     engines: {node: '>=8.6.0'}
 
@@ -2293,15 +2305,34 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@prisma/client@4.15.0(prisma@4.15.0)':
+  '@prisma/client@4.15.0(prisma@5.13.0)':
     dependencies:
       '@prisma/engines-version': 4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944
     optionalDependencies:
-      prisma: 4.15.0
+      prisma: 5.13.0
+
+  '@prisma/debug@5.13.0': {}
 
   '@prisma/engines-version@4.15.0-28.8fbc245156db7124f997f4cecdd8d1219e360944': {}
 
-  '@prisma/engines@4.15.0': {}
+  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b': {}
+
+  '@prisma/engines@5.13.0':
+    dependencies:
+      '@prisma/debug': 5.13.0
+      '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
+      '@prisma/fetch-engine': 5.13.0
+      '@prisma/get-platform': 5.13.0
+
+  '@prisma/fetch-engine@5.13.0':
+    dependencies:
+      '@prisma/debug': 5.13.0
+      '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
+      '@prisma/get-platform': 5.13.0
+
+  '@prisma/get-platform@5.13.0':
+    dependencies:
+      '@prisma/debug': 5.13.0
 
   '@radix-ui/number@1.0.1':
     dependencies:
@@ -3502,9 +3533,9 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prisma@4.15.0:
+  prisma@5.13.0:
     dependencies:
-      '@prisma/engines': 4.15.0
+      '@prisma/engines': 5.13.0
 
   promise-queue@2.2.5: {}
 
@@ -3743,7 +3774,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
     dependencies:
       axios: 1.6.8
       dotenv: 16.4.5
