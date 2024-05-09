@@ -19,6 +19,9 @@ const ChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
 
     return (
         <div className="w-full p-4">
+            <p>
+                {selectedChampions.size}/{champions.length}
+            </p>
             <div
                 className="grid justify-between gap-2"
                 style={{ gridTemplateColumns: `repeat(auto-fill, ${championsScale}px)` }}
