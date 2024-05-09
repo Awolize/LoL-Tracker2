@@ -45,7 +45,7 @@
 		"server-only": "^0.0.1",
 		"sharp": "^0.33.2",
 		"superjson": "^2.2.1",
-		"tailwind-merge": "^2.2.1",
+		"tailwind-merge": "^2.3.0",
 		"tailwindcss-animate": "^1.0.7",
 		"twisted": "github:Awolize/twisted#build-dist",
 		"zod": "^3.22.4",
