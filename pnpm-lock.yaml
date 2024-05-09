@@ -39,8 +39,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@t3-oss/env-nextjs':
-        specifier: ^0.7.1
-        version: 0.7.3(typescript@5.4.5)(zod@3.23.8)
+        specifier: ^0.10.1
+        version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
       '@tanstack/react-query':
         specifier: ^4.36.1
         version: 4.36.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -100,7 +100,7 @@ importers:
         version: 1.0.7(tailwindcss@3.4.3)
       twisted:
         specifier: https://github.com/Awolize/twisted#build-dist
-        version: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940
+        version: git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -836,19 +836,19 @@ packages:
   '@swc/helpers@0.5.2':
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
 
-  '@t3-oss/env-core@0.7.3':
-    resolution: {integrity: sha512-hhtj59TKC6TKVdwJ0CcbKsvkr9R8Pc/SNKd4IgGUIC9T9X6moB8EZZ3FTJdABA/h9UABCK4J+KsF8gzmvMvHPg==}
+  '@t3-oss/env-core@0.10.1':
+    resolution: {integrity: sha512-GcKZiCfWks5CTxhezn9k5zWX3sMDIYf6Kaxy2Gx9YEQftFcz8hDRN56hcbylyAO3t4jQnQ5ifLawINsNgCDpOg==}
     peerDependencies:
-      typescript: '>=4.7.2'
+      typescript: '>=5.0.0'
       zod: ^3.0.0
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  '@t3-oss/env-nextjs@0.7.3':
-    resolution: {integrity: sha512-90TNffS17vjkQwfYyMUb4Zw9yqHwFV40f78qFug4JiQa5+N6DydTdlLOpzOcj8Cna/qpAVDwMSypofF/TVQDuA==}
+  '@t3-oss/env-nextjs@0.10.1':
+    resolution: {integrity: sha512-iy2qqJLnFh1RjEWno2ZeyTu0ufomkXruUsOZludzDIroUabVvHsrSjtkHqwHp1/pgPUzN3yBRHMILW162X7x2Q==}
     peerDependencies:
-      typescript: '>=4.7.2'
+      typescript: '>=5.0.0'
       zod: ^3.0.0
     peerDependenciesMeta:
       typescript:
@@ -1915,8 +1915,8 @@ packages:
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940}
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
+    resolution: {commit: d1b2765f04d712967536c638bc2be71720251940, repo: git@github.com:Awolize/twisted.git, type: git}
     version: 1.56.1
     engines: {node: '>=8.6.0'}
 
@@ -2663,15 +2663,15 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  '@t3-oss/env-core@0.7.3(typescript@5.4.5)(zod@3.23.8)':
+  '@t3-oss/env-core@0.10.1(typescript@5.4.5)(zod@3.23.8)':
     dependencies:
       zod: 3.23.8
     optionalDependencies:
       typescript: 5.4.5
 
-  '@t3-oss/env-nextjs@0.7.3(typescript@5.4.5)(zod@3.23.8)':
+  '@t3-oss/env-nextjs@0.10.1(typescript@5.4.5)(zod@3.23.8)':
     dependencies:
-      '@t3-oss/env-core': 0.7.3(typescript@5.4.5)(zod@3.23.8)
+      '@t3-oss/env-core': 0.10.1(typescript@5.4.5)(zod@3.23.8)
       zod: 3.23.8
     optionalDependencies:
       typescript: 5.4.5
@@ -3743,7 +3743,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
     dependencies:
       axios: 1.6.8
       dotenv: 16.4.5
