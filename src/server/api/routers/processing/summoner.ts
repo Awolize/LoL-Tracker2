@@ -106,9 +106,6 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
             const summoner = (await lolApi.Summoner.getByPUUID(account.puuid, region)).response;
             return { account, summoner };
         } catch (error) {
-            // Check if the error is due to rate limiting
-            console.log("type:", typeof error);
-
             if (error instanceof RateLimitError && error.status === 429) {
                 const retryAfter = (error.rateLimits.RetryAfter || 60) + 1;
                 console.log(`[Summoner] Rate limited. Retrying after ${retryAfter} seconds...`);
