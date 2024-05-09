@@ -215,10 +215,10 @@ export const processingApiRouter = createTRPCRouter({
                 }
 
                 // Update global challenges
-                // await timeIt("updateChallengesConfig", user, updateChallengesConfig, region);
+                await timeIt("updateChallengesConfig", user, updateChallengesConfig, region);
 
                 // Update global champions
-                // await timeIt("updateChampionDetails", user, updateChampionDetails);
+                await timeIt("updateChampionDetails", user, updateChampionDetails);
 
                 // Update profile
                 const updatedUser = await timeIt("upsertSummoner", user, upsertSummoner, user.puuid, region);
