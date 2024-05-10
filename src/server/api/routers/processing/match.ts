@@ -167,7 +167,7 @@ const processSingleMatch = async (region: Regions, matchId: string) => {
     });
 };
 
-export async function getMatches(user: Summoner) {
+export async function getMatches(user: Summoner, take = 25) {
     const matches: (Match & {
         MatchInfo: MatchInfo | null;
         participants: Summoner[];
@@ -181,7 +181,7 @@ export async function getMatches(user: Summoner) {
             MatchInfo: true,
             participants: true,
         },
-        take: 25,
+        take,
         orderBy: {
             MatchInfo: {
                 gameStartTimestamp: "desc",

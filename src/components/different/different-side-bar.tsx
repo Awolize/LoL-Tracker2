@@ -1,15 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
-import type { ChallengeLocalization } from "@prisma/client";
+import type { ChallengeLocalization, Summoner } from "@prisma/client";
 import { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
 
-export const DifferentSideBar = ({ region, username, selectedItem, setSelectedItem, mappedCases }) => {
+export const DifferentSideBar = ({
+    region,
+    user,
+    selectedItem,
+    setSelectedItem,
+    mappedCases,
+}: {
+    region: Regions;
+    user: Summoner;
+    selectedItem: number;
+    setSelectedItem: Dispatch<SetStateAction<number>>;
+    mappedCases: number[];
+}) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
     const [showAll, setShowAll] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,20 +30,23 @@ export const DifferentSideBar = ({ region, username, selectedItem, setSelectedIt
         if (selectedItem !== itemId) {
             setSelectedItem(itemId);
         } else {
-            setSelectedItem(null);
+            setSelectedItem(0);
         }
     };
     const utils = api.useUtils();
 
-    const refreshQuery = api.processingApi.updateChallengeConfig.useMutation();
-    const refreshQuery2 = api.processingApi.updateGames.useMutation();
-    const refreshQuery3 = api.processingApi.updateJackOfAllChamps.useMutation({
+    const refreshQueryUpdateChallengeConfig = api.processingApi.updateChallengeConfig.useMutation();
+    const refreshQueryUpdateGames = api.processingApi.updateGames.useMutation();
+    const refreshQueryUpdateJackOfAllChamps = api.processingApi.updateJackOfAllChamps.useMutation({
         onSuccess: async () => {
             await utils.differentApi.getChallengesConfig.invalidate();
         },
     });
 
-    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({ region, username });
+    const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({
+        username: `${user.gameName}#${user.tagLine}`,
+        region,
+    });
 
     // Filter challenges based on search term and mappedCases
     const filteredChallenges = challenges?.data.filter((item) => {
@@ -49,7 +64,7 @@ export const DifferentSideBar = ({ region, username, selectedItem, setSelectedIt
 
     const LastItem = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery.mutate({ region, username });
+            refreshQueryUpdateChallengeConfig.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -61,7 +76,7 @@ export const DifferentSideBar = ({ region, username, selectedItem, setSelectedIt
     };
     const LastItem2 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery2.mutate({ gameName: "awot", tagLine: "dev", region: Regions.EU_WEST }); // <- todo
+            refreshQueryUpdateGames.mutate({ gameName: "awot", tagLine: "dev", region: Regions.EU_WEST }); // <- todo
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
@@ -73,7 +88,7 @@ export const DifferentSideBar = ({ region, username, selectedItem, setSelectedIt
     };
     const LastItem3 = ({ selected }) => {
         const handleClick = () => {
-            refreshQuery3.mutate({ region, username });
+            refreshQueryUpdateJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;

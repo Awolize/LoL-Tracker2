@@ -18,7 +18,7 @@ export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails;
                     alt={`${champ.name}`}
                     height={90}
                     width={90}
-                    fill
+                    // fill
                     // hidden={hideAll}
                     // blurDataURL="/placeholder.png"
                 />

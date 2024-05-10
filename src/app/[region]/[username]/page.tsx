@@ -1,15 +1,12 @@
 "use server";
 
 import { z } from "zod";
-
-import { getUserByNameAndRegion } from "../../../server/api/differentHelper";
-
-import { regionToConstant } from "../../../utils/champsUtils";
-import Client from "./client";
-
+import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
+import { regionToConstant } from "../../../utils/champsUtils";
+import Client from "./client";
 
 const paramsSchema = z.object({
     region: z.string(),

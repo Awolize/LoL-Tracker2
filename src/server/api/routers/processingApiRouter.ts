@@ -3,14 +3,13 @@ import { z } from "zod";
 
 import type { Participant } from "~/trpc/different_types";
 import { regionToConstant } from "~/utils/champsUtils";
-import { getMatchesForSummonerBySummoner } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
 import { updateChampionDetails } from "./processing/champions";
-import { updateGames } from "./processing/games";
 import { upsertMastery } from "./processing/mastery";
-import { upsertSummoner } from "./processing/summoner";
+import { getMatches, updateGames } from "./processing/match";
+import { getUserByNameAndRegion, upsertSummoner } from "./processing/summoner";
 
 import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
 import { prisma } from "~/server/db";
@@ -62,27 +61,18 @@ export const processingApiRouter = createTRPCRouter({
                 console.log(error);
             }
         }),
+
     updateJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
         .mutation(async ({ input, ctx }) => {
             console.log(`updateJackOfAllChamps for user ${input.username} (${input.region.toUpperCase()})`);
 
-            const region = regionToConstant(input.region.toUpperCase());
+            const region = input.region as Regions;
 
-            const user = await prisma.summoner.findFirst({
-                where: {
-                    username: {
-                        mode: "insensitive",
-                        equals: input.username,
-                    },
-                    region: region,
-                },
-            });
-
+            const user = await getUserByNameAndRegion(input.username, region);
             if (!user) return;
 
-            const matches = await getMatchesForSummonerBySummoner(user);
-
+            const matches = await getMatches(user, 10000);
             if (!matches) return;
 
             const filteredInfoParticipants = matches

@@ -5,7 +5,7 @@ import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { getUserByNameAndRegion } from "../../differentHelper";
+import { riotApi } from "~/server/riotApi";
 
 export const upsertSummoner = async (puuid: string, region: Regions) => {
     const { account, summoner } = await getSummonerRateLimit(puuid, region);
@@ -299,3 +299,84 @@ const updateSummonerDb = async (
         console.log("Error:", error);
     }
 };
+
+const splitUsername = (username) => {
+    return {
+        gameName: decodeURI(username.split("#")[0]),
+        tagLine: username.split("#")[1],
+    };
+};
+
+const getUserInfo = async (username, region) => {
+    const { gameName, tagLine } = splitUsername(username);
+    const accountInfo = (await riotApi.Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region)))
+        .response;
+    const userInfo = (await lolApi.Summoner.getByPUUID(accountInfo.puuid, region)).response;
+    return { userInfo, accountInfo };
+};
+
+export async function getUserByNameAndRegion(username: string, region: Regions) {
+    try {
+        const user = await prisma.summoner.findFirst({
+            where: {
+                gameName: {
+                    equals: username.split("#")[0],
+                    mode: "insensitive",
+                },
+                tagLine: {
+                    equals: username.split("#")[1],
+                    mode: "insensitive",
+                },
+                region: region,
+            },
+        });
+
+        if (user) {
+            return user; // is existing user;
+        }
+
+        console.log("Could not find summoner in DB", username, region);
+
+        const { userInfo, accountInfo } = await getUserInfo(username, region);
+
+        // Use upsert to save the new user or update an existing one
+        const savedUser = await prisma.summoner.upsert({
+            where: {
+                puuid: userInfo.puuid,
+            },
+            update: {
+                puuid: userInfo.puuid,
+                summonerId: userInfo.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                region,
+                username: "deprecated",
+                gameName: accountInfo.gameName ?? null,
+                tagLine: accountInfo.tagLine ?? null,
+                profileIconId: userInfo.profileIconId,
+                summonerLevel: userInfo.summonerLevel,
+                revisionDate: new Date(userInfo.revisionDate),
+                accountId: userInfo.accountId,
+            },
+            create: {
+                puuid: userInfo.puuid,
+                summonerId: userInfo.id,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                region,
+                username: "deprecated",
+                gameName: accountInfo.gameName ?? null,
+                tagLine: accountInfo.tagLine ?? null,
+                profileIconId: userInfo.profileIconId,
+                summonerLevel: userInfo.summonerLevel,
+                revisionDate: new Date(userInfo.revisionDate),
+                accountId: userInfo.accountId,
+            },
+        });
+
+        return savedUser;
+    } catch (error) {
+        console.error("error:", new Date().toLocaleString(), new Date(), username, region, error);
+        throw new Error("Could not fetch summoner^", { cause: error });
+    }
+}

@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-import { regionToConstant } from "../../../utils/champsUtils";
-import { getUserByNameAndRegion } from "../differentHelper";
-import { createTRPCRouter, publicProcedure } from "../trpc";
-
+import type { Regions } from "twisted/dist/constants";
 import { prisma } from "~/server/db";
+import { createTRPCRouter, publicProcedure } from "../trpc";
+import { getUserByNameAndRegion } from "./processing/summoner";
 
 export const differentApiRouter = createTRPCRouter({
     getChallengesConfig: publicProcedure
@@ -31,10 +30,11 @@ export const differentApiRouter = createTRPCRouter({
             });
             return { data, keystones };
         }),
+
     getJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
         .query(async ({ input }) => {
-            const region = regionToConstant(input.region.toUpperCase());
+            const region = input.region as Regions;
             const user = await getUserByNameAndRegion(input.username.toLowerCase(), region);
 
             const getJackOfAllChamps = async (puuid) => {

@@ -2,30 +2,36 @@
 
 import { useMemo, useState } from "react";
 
-import type { ChampionDetails } from "@prisma/client";
+import type { ChampionDetails, Summoner } from "@prisma/client";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 
+import type { Regions } from "twisted/dist/constants";
 import { DifferentChampionItem } from "~/components/different/different-champion-item";
 import { DifferentHeader } from "~/components/different/different-header";
 import { DifferentRoleHeader } from "~/components/different/different-role-header";
 import { DifferentSideBar } from "~/components/different/different-side-bar";
 import { api } from "~/trpc/react";
-import type { CompleteChampionInfo } from "./page";
+import type { CompleteChampionInfo } from "../mastery/page";
 
 export default function Client({
-    username,
+    user,
     region,
     patch,
-    champData: champs,
+    playerChampionInfo,
 }: {
-    username: string;
-    region: string;
-    champData: CompleteChampionInfo[];
-    patch: string | null | undefined;
+    user: Summoner;
+    region: Regions;
+    playerChampionInfo: CompleteChampionInfo[];
+    patch: string;
 }) {
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(401106);
 
-    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({ region, username });
+    console.log(`${user.gameName}#${user.tagLine}`);
+
+    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({
+        username: `${user.gameName}#${user.tagLine}`,
+        region,
+    });
 
     const selectedChallengeQuery = useMemo(() => {
         console.log("selected challenge", selectedItem);
@@ -52,7 +58,7 @@ export default function Client({
             <aside className="z-10">
                 <DifferentSideBar
                     region={region}
-                    username={username}
+                    user={user}
                     selectedItem={selectedItem}
                     setSelectedItem={setSelectedItem}
                     mappedCases={selectedChallengeQuery.cases}
@@ -61,15 +67,15 @@ export default function Client({
 
             <div className="flex flex-1 flex-col">
                 <header className="h-24">
-                    <DifferentHeader finished={completedChampsLength} total={champs.length} patch={patch} />
+                    <DifferentHeader finished={completedChampsLength} total={playerChampionInfo.length} patch={patch} />
                 </header>
 
                 <div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
                     <main className="flex-grow overflow-y-auto flex flex-row gap-2 ">
                         {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-                            if (!champs[0]) return;
+                            if (!playerChampionInfo[0]) return;
 
-                            const champsWithRole = champs.filter((champ) => champ?.role === role);
+                            const champsWithRole = playerChampionInfo.filter((champ) => champ?.role === role);
 
                             return (
                                 <div className="w-full px-4" key={role}>

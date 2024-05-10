@@ -1,17 +1,15 @@
 "use server";
 
 import "react-lazy-load-image-component/src/effects/opacity.css";
-import { stringify } from "superjson";
-import { z } from "zod";
-
-import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUtils";
-
 import type { ChampionDetails } from "@prisma/client";
+import { stringify } from "superjson";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
-import { getUserByNameAndRegion } from "~/server/api/differentHelper";
+import { z } from "zod";
 import { getChallengesThresholds2, getPlayerChallengesData2 } from "~/server/api/routers/processing/challenges";
 import { getCompleteChampionData } from "~/server/api/routers/processing/champions";
-import { getMatches } from "~/server/api/routers/processing/games";
+import { getMatches } from "~/server/api/routers/processing/match";
+import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
+import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUtils";
 import { Client } from "./client";
 
 const paramsSchema = z.object({
@@ -39,7 +37,7 @@ export default async function Page({ params }) {
         getCompleteChampionData(region, user),
         getPlayerChallengesData2(user),
         getChallengesThresholds2(),
-        getMatches(user),
+        getMatches(user, 25),
     ]);
 
     const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
