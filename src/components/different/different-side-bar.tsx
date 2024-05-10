@@ -6,7 +6,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
 import type { ChallengeLocalization, Summoner } from "@prisma/client";
-import { Regions } from "twisted/dist/constants";
+import type { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
 
 export const DifferentSideBar = ({
@@ -76,7 +76,7 @@ export const DifferentSideBar = ({
     };
     const LastItem2 = ({ selected }) => {
         const handleClick = () => {
-            refreshQueryUpdateGames.mutate({ gameName: "awot", tagLine: "dev", region: Regions.EU_WEST }); // <- todo
+            refreshQueryUpdateGames.mutate({ gameName: `${user.gameName}`, tagLine: `${user.tagLine}`, region });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
