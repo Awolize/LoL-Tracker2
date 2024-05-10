@@ -1,5 +1,5 @@
-import { type Summoner } from "@prisma/client";
-import { type Regions } from "twisted/dist/constants";
+import type { Summoner } from "@prisma/client";
+import type { Regions } from "twisted/dist/constants";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";

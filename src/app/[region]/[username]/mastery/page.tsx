@@ -6,8 +6,8 @@ import { z } from "zod";
 
 import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUtils";
 
-import { ChampionDetails } from "@prisma/client";
-import { ChampionMasteryDTO } from "twisted/dist/models-dto";
+import type { ChampionDetails } from "@prisma/client";
+import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import { getUserByNameAndRegion } from "~/server/api/differentHelper";
 import { getChallengesThresholds2, getPlayerChallengesData2 } from "~/server/api/routers/processing/challenges";
 import { getCompleteChampionData } from "~/server/api/routers/processing/champions";

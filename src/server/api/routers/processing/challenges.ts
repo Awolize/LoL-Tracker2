@@ -1,11 +1,10 @@
-import { Challenge, type Summoner } from "@prisma/client";
-import { type Regions } from "twisted/dist/constants";
-import { ChallengeV1DTO } from "twisted/dist/models-dto";
+import type { Challenge, Summoner } from "@prisma/client";
+import type { Regions } from "twisted/dist/constants";
+import type { ChallengeV1DTO } from "twisted/dist/models-dto";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
-import { ChallengeIds, isChallengeId } from "~/utils/champsUtils";
+import { type ChallengeIds, isChallengeId } from "~/utils/champsUtils";
 
 export const upsertChallenges = async (region: Regions, user: Summoner) => {
     const response = (await lolApi.Challenges.getPlayerData(user.puuid, region)).response;

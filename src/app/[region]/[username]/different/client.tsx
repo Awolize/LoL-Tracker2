@@ -10,7 +10,7 @@ import { DifferentHeader } from "~/components/different/different-header";
 import { DifferentRoleHeader } from "~/components/different/different-role-header";
 import { DifferentSideBar } from "~/components/different/different-side-bar";
 import { api } from "~/trpc/react";
-import { type CompleteChampionInfo } from "./page";
+import type { CompleteChampionInfo } from "./page";
 
 export default function Client({
     username,

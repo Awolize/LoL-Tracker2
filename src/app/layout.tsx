@@ -3,7 +3,7 @@ import "~/styles/globals.css";
 
 import { cookies } from "next/headers";
 
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
 

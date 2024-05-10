@@ -47,7 +47,7 @@ export function Dropdown({ choices, choice, callback, menuLabel }: Props) {
                 )}
                 <DropdownMenuRadioGroup
                     value={choice.value.toString()}
-                    onValueChange={(newValue) => callback(parseFloat(newValue))}
+                    onValueChange={(newValue) => callback(Number.parseFloat(newValue))}
                 >
                     {choices.map((choice) => (
                         <DropdownMenuRadioItem key={choice.value.toString()} value={choice.value.toString()}>

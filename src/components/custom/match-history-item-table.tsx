@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import type React from "react";
 import { useDataDragonPath } from "~/components/old/use-data-dragon-path";
 import { useUserContext } from "~/components/stores/user-store";
-import { MatchPlayerData } from "./MatchPlayerData";
+import type { MatchPlayerData } from "./MatchPlayerData";
 
 interface MatchTableProps {
     players: Array<MatchPlayerData>;

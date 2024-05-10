@@ -1,4 +1,4 @@
-import { Match, MatchInfo, type Summoner } from "@prisma/client";
+import type { Match, MatchInfo, Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
@@ -6,7 +6,7 @@ import { summonersFromGames } from "./summoner";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
-import { CompleteMatch } from "./champions";
+import type { CompleteMatch } from "./champions";
 
 export const updateGames = async (user: Summoner, region: Regions) => {
     try {

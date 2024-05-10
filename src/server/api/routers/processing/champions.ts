@@ -1,6 +1,6 @@
-import { Match, MatchInfo, Summoner } from "@prisma/client";
-import { Regions } from "twisted/dist/constants";
-import { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
+import type { Match, MatchInfo, Summoner } from "@prisma/client";
+import type { Regions } from "twisted/dist/constants";
+import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 import { flattenChamp } from "../../differentHelper";
 
 import { prisma } from "~/server/db";

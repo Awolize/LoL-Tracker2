@@ -1,4 +1,4 @@
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
     return {

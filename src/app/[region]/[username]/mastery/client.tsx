@@ -2,7 +2,7 @@
 
 import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
 
-import { type Summoner } from "@prisma/client";
+import type { Summoner } from "@prisma/client";
 import { parse } from "superjson";
 import ChampionList from "~/components/custom/champions-list";
 import Header from "~/components/custom/header";
@@ -10,9 +10,9 @@ import MatchHistory from "~/components/custom/match-history";
 import SortedChampionList from "~/components/custom/role-sorted-champion-list";
 import { OptionsProvider, useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { UserProvider } from "~/components/stores/user-store";
-import { CompleteMatch } from "~/server/api/routers/processing/champions";
-import { type ChallengeIds } from "~/utils/champsUtils";
-import { CompleteChampionInfo } from "./page";
+import type { CompleteMatch } from "~/server/api/routers/processing/champions";
+import type { ChallengeIds } from "~/utils/champsUtils";
+import type { CompleteChampionInfo } from "./page";
 
 export function Client({
     user,

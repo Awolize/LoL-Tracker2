@@ -1,5 +1,6 @@
-import { type Summoner } from "@prisma/client";
-import React, { createContext, useContext, useRef } from "react";
+import type { Summoner } from "@prisma/client";
+import type React from "react";
+import { createContext, useContext, useRef } from "react";
 import { createStore, useStore } from "zustand";
 
 interface Store {

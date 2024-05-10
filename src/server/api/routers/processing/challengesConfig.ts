@@ -2,9 +2,9 @@ import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
 
-import { type ChallengesConfig } from "@prisma/client";
-import { type Regions } from "twisted/dist/constants";
-import { type ChallengeConfigV1DTO } from "twisted/dist/models-dto";
+import type { ChallengesConfig } from "@prisma/client";
+import type { Regions } from "twisted/dist/constants";
+import type { ChallengeConfigV1DTO } from "twisted/dist/models-dto";
 
 const updateConfig = async (config: ChallengeConfigV1DTO): Promise<ChallengesConfig> => {
     const upsertedConfig = await prisma.challengesConfig.upsert({

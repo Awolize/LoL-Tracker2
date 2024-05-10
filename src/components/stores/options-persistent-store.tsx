@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useRef } from "react";
+import type React from "react";
+import { createContext, useContext, useRef } from "react";
 import superjson from "superjson";
 import { create, useStore } from "zustand";
-import { PersistStorage, persist } from "zustand/middleware";
+import { type PersistStorage, persist } from "zustand/middleware";
 import { SortOrder2 } from "../custom/header";
 interface Store {
     showMasteryPoints: boolean;

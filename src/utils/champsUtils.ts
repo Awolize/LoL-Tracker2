@@ -1,5 +1,5 @@
 import { Regions } from "twisted/dist/constants";
-import { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
+import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 
 export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
     const disabled: boolean = champ.championPoints > filterPoints;

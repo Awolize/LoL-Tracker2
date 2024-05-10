@@ -1,7 +1,7 @@
-import { Regions, regionToRegionGroup } from "twisted/dist/constants";
+import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import { z } from "zod";
 
-import { type Participant } from "~/trpc/different_types";
+import type { Participant } from "~/trpc/different_types";
 import { regionToConstant } from "~/utils/champsUtils";
 import { getMatchesForSummonerBySummoner } from "../differentHelper";
 import { createTRPCRouter, publicProcedure } from "../trpc";
@@ -12,7 +12,7 @@ import { updateGames } from "./processing/games";
 import { upsertMastery } from "./processing/mastery";
 import { upsertSummoner } from "./processing/summoner";
 
-import { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
+import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";

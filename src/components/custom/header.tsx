@@ -9,7 +9,7 @@ import { useUserContext } from "~/components/stores/user-store";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { api } from "~/trpc/react";
-import { Choice, Dropdown } from "./dropdown";
+import { type Choice, Dropdown } from "./dropdown";
 import { FullSummonerUpdate } from "./full-summoner-update";
 import { ScaleSlider } from "./scale-slider";
 
