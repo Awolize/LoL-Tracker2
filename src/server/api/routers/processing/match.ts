@@ -194,3 +194,38 @@ export async function getMatches(user: Summoner, take = 25) {
 
     return filteredMatches;
 }
+
+export async function getArenaMatches(user: Summoner) {
+    const matches: (Match & {
+        MatchInfo: MatchInfo | null;
+        participants: Summoner[];
+    })[] = await prisma.match.findMany({
+        where: {
+            participants: {
+                some: user,
+            },
+            MatchInfo: {
+                mapId: 30, // Filter by mapId 30 (Arena Map)
+                gameStartTimestamp: {
+                    gte: new Date("2024-01-01T00:00:00Z"), // Unix timestamp of January 1, 2024
+                },
+                gameMode: "CHERRY",
+                gameType: "MATCHED_GAME",
+            },
+        },
+        include: {
+            MatchInfo: true,
+            participants: true,
+        },
+        orderBy: {
+            MatchInfo: {
+                gameStartTimestamp: "desc",
+            },
+        },
+    });
+
+    // Filter out null values and ensure MatchInfo is not null
+    const filteredMatches = matches.filter((match): match is CompleteMatch => match?.MatchInfo !== null);
+
+    return filteredMatches;
+}

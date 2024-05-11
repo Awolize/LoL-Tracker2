@@ -24,11 +24,15 @@ export default function Client({
     playerChampionInfo: CompleteChampionInfo[];
     patch: string;
 }) {
-    const [selectedItem, setSelectedItem] = useState(401106);
+    const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
     console.log(`${user.gameName}#${user.tagLine}`);
 
     const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({
+        username: `${user.gameName}#${user.tagLine}`,
+        region,
+    });
+    const getChampionOcean = api.differentApi.getChampionOcean.useQuery({
         username: `${user.gameName}#${user.tagLine}`,
         region,
     });
@@ -38,6 +42,7 @@ export default function Client({
 
         const challengeDataMap = {
             401106: selectedChallenge?.data ?? [],
+            602001: getChampionOcean?.data ?? [],
         };
 
         const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
@@ -49,7 +54,7 @@ export default function Client({
             data: mappedData,
             cases: mappedCases,
         };
-    }, [selectedItem, selectedChallenge]);
+    }, [selectedItem, selectedChallenge, getChampionOcean]);
 
     const completedChampsLength = selectedChallengeQuery?.data.length;
 

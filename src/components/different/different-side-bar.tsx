@@ -18,8 +18,8 @@ export const DifferentSideBar = ({
 }: {
     region: Regions;
     user: Summoner;
-    selectedItem: number;
-    setSelectedItem: Dispatch<SetStateAction<number>>;
+    selectedItem: number | null;
+    setSelectedItem: Dispatch<SetStateAction<number | null>>;
     mappedCases: number[];
 }) => {
     const [drawerOpen, setDrawerOpen] = useState(true);
@@ -42,6 +42,11 @@ export const DifferentSideBar = ({
             await utils.differentApi.getChallengesConfig.invalidate();
         },
     });
+    const refreshQueryupdateChampionOcean = api.processingApi.updateChampionOcean.useMutation({
+        onSuccess: async () => {
+            await utils.differentApi.getChallengesConfig.invalidate();
+        },
+    });
 
     const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({
         username: `${user.gameName}#${user.tagLine}`,
@@ -49,16 +54,18 @@ export const DifferentSideBar = ({
     });
 
     // Filter challenges based on search term and mappedCases
-    const filteredChallenges = challenges?.data.filter((item) => {
-        const local = item?.localizedNames;
-        const enUSName = local.find((name) => name.language === "en_US")?.name;
-        const enUSDescription = local.find((name) => name.language === "en_US")?.description;
+    const filteredChallenges = challenges?.data
+        .filter((item) => {
+            const local = item?.localizedNames;
+            const enUSName = local.find((name) => name.language === "en_US")?.name;
+            const enUSDescription = local.find((name) => name.language === "en_US")?.description;
 
-        const nameMatch = enUSName?.toLowerCase().includes(searchTerm.toLowerCase());
-        const descriptionMatch = enUSDescription?.toLowerCase().includes(searchTerm.toLowerCase());
+            const nameMatch = enUSName?.toLowerCase().includes(searchTerm.toLowerCase());
+            const descriptionMatch = enUSDescription?.toLowerCase().includes(searchTerm.toLowerCase());
 
-        return nameMatch ?? descriptionMatch;
-    });
+            return nameMatch ?? descriptionMatch;
+        })
+        .sort((a, b) => a.id - b.id);
 
     // const keystoneChallenges = challenges?.keystones;
 
@@ -95,6 +102,18 @@ export const DifferentSideBar = ({
         return (
             <button type="button" className={itemClasses} onClick={handleClick}>
                 Update jack of all champs
+            </button>
+        );
+    };
+    const LastItem4 = ({ selected }) => {
+        const handleClick = () => {
+            refreshQueryupdateChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+        };
+
+        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
+        return (
+            <button type="button" className={itemClasses} onClick={handleClick}>
+                Update Champion Ocean
             </button>
         );
     };
@@ -164,6 +183,7 @@ export const DifferentSideBar = ({
                     <LastItem selected />
                     <LastItem2 selected />
                     <LastItem3 selected />
+                    <LastItem4 selected />
                 </div>
             )}
         </nav>
@@ -196,6 +216,7 @@ const Item = ({
     const description = localized.description;
 
     return (
+        // biome-ignore lint/a11y/useKeyWithClickEvents: <Not sure how to fix this and keep the current formatting, not worth the time at this point in time>
         <li
             className={`relative duration-300 py-2 cursor-pointer rounded-sm ${selected ? "bg-gray-800" : ""}`}
             onClick={handleClick}
