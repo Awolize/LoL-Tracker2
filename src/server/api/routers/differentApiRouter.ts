@@ -50,8 +50,6 @@ export const differentApiRouter = createTRPCRouter({
                 )?.championOcean;
             };
 
-            console.log((await getChampionOcean(user.puuid))?.map((e) => e.name));
-
             return await getChampionOcean(user.puuid);
         }),
     getJackOfAllChamps: publicProcedure
