@@ -8,6 +8,7 @@ import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
 import type { ChallengeLocalization, Summoner } from "@prisma/client";
 import type { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
+import LoadingComponent from "../old/loading-spinner";
 
 export const DifferentSideBar = ({
     region,
@@ -37,7 +38,7 @@ export const DifferentSideBar = ({
 
     const refreshQueryUpdateChallengeConfig = api.processingApi.updateChallengeConfig.useMutation();
     const refreshQueryUpdateGames = api.processingApi.updateGames.useMutation({
-        onSuccess: async () => {            
+        onSuccess: async () => {
             refreshQueryUpdateJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
             refreshQueryupdateChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
         },
@@ -45,13 +46,13 @@ export const DifferentSideBar = ({
     const refreshQueryUpdateJackOfAllChamps = api.processingApi.updateJackOfAllChamps.useMutation({
         onSuccess: async () => {
             await utils.differentApi.getChallengesConfig.invalidate();
-            await utils.differentApi.getJackOfAllChamps.invalidate()
+            await utils.differentApi.getJackOfAllChamps.invalidate();
         },
     });
     const refreshQueryupdateChampionOcean = api.processingApi.updateChampionOcean.useMutation({
         onSuccess: async () => {
             await utils.differentApi.getChallengesConfig.invalidate();
-            await utils.differentApi.getChampionOcean.invalidate()
+            await utils.differentApi.getChampionOcean.invalidate();
         },
     });
 
@@ -81,21 +82,42 @@ export const DifferentSideBar = ({
             refreshQueryUpdateChallengeConfig.mutate({ username: `${user.gameName}#${user.tagLine}`, region });
         };
 
+        const isLoading = refreshQueryUpdateChallengeConfig.isLoading;
+
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
+
         return (
-            <button type="button" className={itemClasses} onClick={handleClick}>
+            <button
+                type="button"
+                className={`px-4 duration-300 py-2 cursor-pointer text-center ${
+                    selected ? "bg-gray-800" : ""
+                } flex flex-row justify-center gap-2`}
+                onClick={handleClick}
+            >
+                {!!isLoading && <LoadingComponent />}
                 Update global config
             </button>
         );
     };
     const UpdatePlayerChallenges = ({ selected }) => {
         const handleClick = () => {
-            refreshQueryUpdateGames.mutate({ gameName: `${user.gameName}`, tagLine: `${user.tagLine}`, region })
+            refreshQueryUpdateGames.mutate({ gameName: `${user.gameName}`, tagLine: `${user.tagLine}`, region });
         };
 
-        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
+        const isLoading =
+            refreshQueryUpdateGames.isLoading ||
+            refreshQueryUpdateJackOfAllChamps.isLoading ||
+            refreshQueryupdateChampionOcean.isLoading;
+
         return (
-            <button type="button" className={itemClasses} onClick={handleClick}>
+            <button
+                type="button"
+                className={`px-4 duration-300 py-2 cursor-pointer text-center ${
+                    selected ? "bg-gray-800" : ""
+                } flex flex-row justify-center gap-2`}
+                onClick={handleClick}
+            >
+                {!!isLoading && <LoadingComponent />}
                 Update
             </button>
         );
