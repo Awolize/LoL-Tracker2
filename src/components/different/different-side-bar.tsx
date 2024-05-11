@@ -84,8 +84,6 @@ export const DifferentSideBar = ({
 
         const isLoading = refreshQueryUpdateChallengeConfig.isLoading;
 
-        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
-
         return (
             <button
                 type="button"
