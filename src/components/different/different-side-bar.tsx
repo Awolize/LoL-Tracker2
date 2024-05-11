@@ -36,15 +36,22 @@ export const DifferentSideBar = ({
     const utils = api.useUtils();
 
     const refreshQueryUpdateChallengeConfig = api.processingApi.updateChallengeConfig.useMutation();
-    const refreshQueryUpdateGames = api.processingApi.updateGames.useMutation();
+    const refreshQueryUpdateGames = api.processingApi.updateGames.useMutation({
+        onSuccess: async () => {            
+            refreshQueryUpdateJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+            refreshQueryupdateChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+        },
+    });
     const refreshQueryUpdateJackOfAllChamps = api.processingApi.updateJackOfAllChamps.useMutation({
         onSuccess: async () => {
             await utils.differentApi.getChallengesConfig.invalidate();
+            await utils.differentApi.getJackOfAllChamps.invalidate()
         },
     });
     const refreshQueryupdateChampionOcean = api.processingApi.updateChampionOcean.useMutation({
         onSuccess: async () => {
             await utils.differentApi.getChallengesConfig.invalidate();
+            await utils.differentApi.getChampionOcean.invalidate()
         },
     });
 
@@ -69,51 +76,27 @@ export const DifferentSideBar = ({
 
     // const keystoneChallenges = challenges?.keystones;
 
-    const LastItem = ({ selected }) => {
+    const UpdateGlobalConfig = ({ selected }) => {
         const handleClick = () => {
-            refreshQueryUpdateChallengeConfig.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+            refreshQueryUpdateChallengeConfig.mutate({ username: `${user.gameName}#${user.tagLine}`, region });
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
         return (
             <button type="button" className={itemClasses} onClick={handleClick}>
-                Update db
+                Update global config
             </button>
         );
     };
-    const LastItem2 = ({ selected }) => {
+    const UpdatePlayerChallenges = ({ selected }) => {
         const handleClick = () => {
-            refreshQueryUpdateGames.mutate({ gameName: `${user.gameName}`, tagLine: `${user.tagLine}`, region });
+            refreshQueryUpdateGames.mutate({ gameName: `${user.gameName}`, tagLine: `${user.tagLine}`, region })
         };
 
         const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
         return (
             <button type="button" className={itemClasses} onClick={handleClick}>
-                Update games
-            </button>
-        );
-    };
-    const LastItem3 = ({ selected }) => {
-        const handleClick = () => {
-            refreshQueryUpdateJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-        };
-
-        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
-        return (
-            <button type="button" className={itemClasses} onClick={handleClick}>
-                Update jack of all champs
-            </button>
-        );
-    };
-    const LastItem4 = ({ selected }) => {
-        const handleClick = () => {
-            refreshQueryupdateChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-        };
-
-        const itemClasses = `px-4 duration-300 py-2 cursor-pointer text-center ${selected ? "bg-gray-800" : ""}`;
-        return (
-            <button type="button" className={itemClasses} onClick={handleClick}>
-                Update Champion Ocean
+                Update
             </button>
         );
     };
@@ -180,10 +163,8 @@ export const DifferentSideBar = ({
                             );
                         })}
                     </ul>
-                    <LastItem selected />
-                    <LastItem2 selected />
-                    <LastItem3 selected />
-                    <LastItem4 selected />
+                    {user.tagLine === "dev" && <UpdateGlobalConfig selected />}
+                    <UpdatePlayerChallenges selected />
                 </div>
             )}
         </nav>

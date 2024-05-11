@@ -20,7 +20,7 @@ export const processingApiRouter = createTRPCRouter({
     updateChallengeConfig: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
         .mutation(async ({ input, ctx }) => {
-            const region = regionToConstant(input.region.toUpperCase());
+            const region = input.region as Regions;
             const data = (await lolApi.Challenges.getConfig(region)).response;
 
             try {
