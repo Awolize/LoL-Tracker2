@@ -72,7 +72,7 @@ export const processingApiRouter = createTRPCRouter({
             const user = await getUserByNameAndRegion(input.username, region);
             if (!user) return;
 
-            const matches = await getArenaMatches(user); // Arena Map, https://static.developer.riotgames.com/docs/lol/maps.json
+            const matches = await getArenaMatches(user);
             if (!matches) return;
 
             const participants = matches
@@ -106,6 +106,65 @@ export const processingApiRouter = createTRPCRouter({
                     },
                     data: {
                         championOcean: {
+                            connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+                        },
+                    },
+                });
+            } catch (error) {
+                await updateChampionDetails();
+                console.error("Missing champ??");
+            }
+
+            console.log(`${user.gameName}#${user.tagLine} (${user.region})`, matches.length, uniqueChampIds.size);
+
+            return { numberOfGames: matches.length, uniqueChampIds };
+        }),
+
+    updateAdaptToAllSituations: publicProcedure
+        .input(z.object({ username: z.string(), region: z.string() }))
+        .mutation(async ({ input }) => {
+            console.log(`updateAdaptToAllSituations for user ${input.username} (${input.region.toUpperCase()})`);
+
+            const region = input.region as Regions;
+
+            const user = await getUserByNameAndRegion(input.username, region);
+            if (!user) return;
+
+            const matches = await getArenaMatches(user);
+            if (!matches) return;
+
+            const participants = matches
+                .flatMap((match) => match.MatchInfo.participants)
+                .filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
+                .filter((p) => (p as unknown as { placement?: number })?.placement === 1)
+                .filter(Boolean) as unknown as Participant[];
+
+            console.log(`${user.gameName}#${user.tagLine} (${user.region}) found ${participants?.length} games`);
+
+            const uniqueChampIds: Set<number> = new Set(participants.map((p) => p.championId));
+
+            const challenges = (
+                await prisma.summoner.findFirst({
+                    where: { puuid: user.puuid },
+                    include: { challenges: true },
+                })
+            )?.challenges;
+
+            if (!challenges) {
+                await prisma.challenges.create({
+                    data: {
+                        summoner: { connect: { puuid: user.puuid } },
+                    },
+                });
+            }
+
+            try {
+                await prisma.challenges.update({
+                    where: {
+                        puuid: user.puuid,
+                    },
+                    data: {
+                        adaptToAllSituations: {
                             connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
                         },
                     },

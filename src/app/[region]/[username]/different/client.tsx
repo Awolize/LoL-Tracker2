@@ -28,14 +28,14 @@ export default function Client({
 
     console.log(`${user.gameName}#${user.tagLine}`);
 
-    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery({
+
+    const queryParams = {
         username: `${user.gameName}#${user.tagLine}`,
         region,
-    });
-    const getChampionOcean = api.differentApi.getChampionOcean.useQuery({
-        username: `${user.gameName}#${user.tagLine}`,
-        region,
-    });
+    }
+    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
+    const getChampionOcean = api.differentApi.getChampionOcean.useQuery(queryParams);
+    const getAdaptToAllSituations = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
 
     const selectedChallengeQuery = useMemo(() => {
         console.log("selected challenge", selectedItem);
@@ -43,6 +43,7 @@ export default function Client({
         const challengeDataMap = {
             401106: selectedChallenge?.data ?? [],
             602001: getChampionOcean?.data ?? [],
+            602002: getAdaptToAllSituations?.data ?? [],
         };
 
         const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
@@ -54,7 +55,7 @@ export default function Client({
             data: mappedData,
             cases: mappedCases,
         };
-    }, [selectedItem, selectedChallenge, getChampionOcean]);
+    }, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations]);
 
     const completedChampsLength = selectedChallengeQuery?.data.length;
 

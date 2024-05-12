@@ -195,6 +195,7 @@ export async function getMatches(user: Summoner, take = 25) {
     return filteredMatches;
 }
 
+// Arena Map, https://static.developer.riotgames.com/docs/lol/maps.json
 export async function getArenaMatches(user: Summoner) {
     const matches: (Match & {
         MatchInfo: MatchInfo | null;

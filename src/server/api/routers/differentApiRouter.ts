@@ -52,6 +52,27 @@ export const differentApiRouter = createTRPCRouter({
 
             return await getChampionOcean(user.puuid);
         }),
+    getAdaptToAllSituations: publicProcedure
+        .input(z.object({ username: z.string(), region: z.string() }))
+        .query(async ({ input }) => {
+            const region = input.region as Regions;
+            const user = await getUserByNameAndRegion(input.username.toLowerCase(), region);
+
+            const getAdaptToAllSituations = async (puuid) => {
+                return (
+                    await prisma.challenges.findFirst({
+                        where: {
+                            puuid: puuid,
+                        },
+                        include: {
+                            adaptToAllSituations: true,
+                        },
+                    })
+                )?.adaptToAllSituations;
+            };
+
+            return await getAdaptToAllSituations(user.puuid);
+        }),
     getJackOfAllChamps: publicProcedure
         .input(z.object({ username: z.string(), region: z.string() }))
         .query(async ({ input }) => {
