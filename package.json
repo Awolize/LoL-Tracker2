@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
+	"packageManager": "pnpm@9.0.4",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
@@ -69,6 +70,5 @@
 	},
 	"ct3aMetadata": {
 		"initVersion": "7.24.2"
-	},
-	"packageManager": "pnpm@9.1.0"
+	}
 }
