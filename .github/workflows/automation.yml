@@ -44,11 +44,13 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      
+          build-args: |
+            "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}"
+            "PROCESSING_URL=${{ secrets.PROCESSING_URL }}"
       
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
