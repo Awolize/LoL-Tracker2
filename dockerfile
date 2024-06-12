@@ -1,4 +1,7 @@
 FROM node:22-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable 
 
 # Step 1. Rebuild the source code only when needed
 FROM base AS builder
@@ -6,10 +9,6 @@ FROM base AS builder
 WORKDIR /app
 
 RUN apk add --no-cache git
-
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable 
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
