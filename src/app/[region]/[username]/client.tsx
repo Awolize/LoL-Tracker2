@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { DATA_DRAGON_PROFILE_ICON, DATA_DRAGON_URL_SHORT } from "~/utils/constants";
+
+
 
 export default async function Client({ region, username: rawUsername, profileIconId, summonerLevel, patch }) {
     const username = rawUsername.replace("-", "#");
-
+    const DATA_DRAGON_URL_SHORT = "https://ddragon.leagueoflegends.com/cdn";
+    const DATA_DRAGON_PROFILE_ICON = "img/profileicon";
     const profileIconUrl = `${DATA_DRAGON_URL_SHORT}/${patch}/${DATA_DRAGON_PROFILE_ICON}/${profileIconId}.png`;
 
     return (
@@ -63,6 +65,10 @@ export default async function Client({ region, username: rawUsername, profileIco
                         </div>
                     </div>
                 </ul>
+                <div className="flex flex-grow"></div>
+                <footer>
+                    Github link
+                </footer>
             </div>
         </div>
     );
