@@ -65,10 +65,10 @@ export default async function Client({ region, username: rawUsername, profileIco
                         </div>
                     </div>
                 </ul>
-                <div className="flex flex-grow"></div>
+                {/* <div className="flex flex-grow"></div>
                 <footer>
                     Github link
-                </footer>
+                </footer> */}
             </div>
         </div>
     );
