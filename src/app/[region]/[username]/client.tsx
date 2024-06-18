@@ -49,13 +49,15 @@ export default async function Client({ region, username: rawUsername, profileIco
                             </div>
                             <div>
                                 <Link href={`${rawUsername}/different`} className="underline">
-                                    [WIP] Champion Tracker
+                                    Champion Tracker
                                 </Link>
                                 <div className="text-sm">
                                     Manually keep track of specific heroes. For challenges such as{" "}
                                     <span className="italic font-bold">All Random All Champions</span>, with{" "}
                                     <span className="italic font-bold">Jack of All Champs</span>, and{" "}
                                     <span className="italic font-bold">Protean Override</span>
+                                    <br />
+                                    More trackers can be added. If you have a specific one in mind that you believe is simple to add just create a new issue on Github
                                 </div>
                             </div>
                         </div>
