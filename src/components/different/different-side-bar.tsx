@@ -95,7 +95,7 @@ export const DifferentSideBar = ({
 			<button
 				type="button"
 				className={`px-4 duration-300 py-2 cursor-pointer text-center ${
-					selected ? "bg-gray-800" : ""
+					selected ? "bg-background" : ""
 				} flex flex-row justify-center gap-2`}
 				onClick={handleClick}
 			>
@@ -119,7 +119,7 @@ export const DifferentSideBar = ({
 			<button
 				type="button"
 				className={`px-4 duration-300 py-2 cursor-pointer text-center ${
-					selected ? "bg-gray-800" : ""
+					selected ? "bg-background" : ""
 				} flex flex-row justify-center gap-2`}
 				onClick={handleClick}
 			>
@@ -131,43 +131,43 @@ export const DifferentSideBar = ({
 
 	return (
 		<nav
-			className={`bg-slate-900 h-full py-4 ${
+			className={`bg-primary-foreground h-full py-4 ${
 				drawerOpen ? "pl-2 pr-2 w-72" : "px-2 w-0"
 			} duration-300 relative rounded-r-lg`}
 		>
 			{drawerOpen ? (
 				<ArrowLeftIcon
-					className="bg-slate-900 text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
+					className="bg-primary-foreground text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border-2 border-background cursor-pointer"
 					onClick={() => setDrawerOpen(!drawerOpen)}
 				/>
 			) : (
 				<ArrowRightIcon
-					className="bg-slate-900 text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border border-black cursor-pointer"
+					className="bg-primary-foreground text-foreground w-8 rounded-full absolute -right-4 top-[52px] p-1 border-2 border-background cursor-pointer"
 					onClick={() => setDrawerOpen(!drawerOpen)}
 				/>
 			)}
 
 			{drawerOpen && (
 				<div className="flex flex-col h-full gap-1">
-					<p className="text-center border-b border-gray-600 ">Challenges</p>
+					<p className="text-center border-b border-gray-600">Challenges</p>
 					<div className="inline-flex justify-evenly">
 						<input
 							type="text"
 							placeholder="Search..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="bg-gray-800 rounded px-2 py-1 my-1"
+							className="text-foreground bg-background rounded px-2 py-1 my-1"
 						/>
 						{showAll ? (
 							<OutlineFunnelIcon
 								onClick={() => setShowAll(!showAll)}
-								className="text-gray-500 bg-gray-800 rounded h-8 px-2 py-1 my-1"
+								className="text-foreground bg-background rounded h-8 px-2 py-1 my-1"
 								aria-checked={showAll}
 							/>
 						) : (
 							<SolidFunnelIcon
 								onClick={() => setShowAll(!showAll)}
-								className="text-gray-500 bg-gray-800 rounded h-8 px-2 py-1 my-1"
+								className="text-foreground bg-background rounded h-8 px-2 py-1 my-1"
 								aria-checked={showAll}
 							/>
 						)}
@@ -227,12 +227,12 @@ const Item = ({
 	return (
 		// biome-ignore lint/a11y/useKeyWithClickEvents: <Not sure how to fix this and keep the current formatting, not worth the time at this point in time>
 		<li
-			className={`relative duration-300 py-2 cursor-pointer rounded-sm ${selected ? "bg-gray-800" : ""}`}
+			className={`relative duration-300 py-2 cursor-pointer rounded-sm border ${selected ? "bg-background" : ""}`}
 			onClick={handleClick}
 		>
 			<div className="flex px-2 gap-x-2 ">
 				<span className="w-3 text-green-500">{implemented && "●"}</span>
-				<div className="w-full ">
+				<div className="w-full">
 					<p className="text-sm">{text}</p>
 					<p className="text-xs opacity-50">{description}</p>
 				</div>
