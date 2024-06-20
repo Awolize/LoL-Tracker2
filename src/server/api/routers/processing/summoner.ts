@@ -109,7 +109,7 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
             const rateLimitError = error as RateLimitError;
             // error instanceof RateLimitError - did not work for some reason
             if (rateLimitError.status === 429) {
-                const retryAfter = (rateLimitError.rateLimits?.RetryAfter || 60) + 1;
+                const retryAfter = (rateLimitError.rateLimits?.RetryAfter ?? 60) + 1;
                 console.log(`[Summoner] Rate limited. Retrying after ${retryAfter} seconds...`);
                 await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
                 retryCount++;

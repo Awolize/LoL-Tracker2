@@ -82,7 +82,7 @@ export const processingApiRouter = createTRPCRouter({
 
             console.log(`${user.gameName}#${user.tagLine} (${user.region}) found ${participants?.length} games`);
 
-            const uniqueChampIds: Set<number> = new Set(participants.map((p) => p.championId));
+            const uniqueChampIds = new Set<number>(participants.map((p) => p.championId));
 
             const challenges = (
                 await prisma.summoner.findFirst({
@@ -141,7 +141,7 @@ export const processingApiRouter = createTRPCRouter({
 
             console.log(`${user.gameName}#${user.tagLine} (${user.region}) found ${participants?.length} games`);
 
-            const uniqueChampIds: Set<number> = new Set(participants.map((p) => p.championId));
+            const uniqueChampIds = new Set<number>(participants.map((p) => p.championId));
 
             const challenges = (
                 await prisma.summoner.findFirst({

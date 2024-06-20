@@ -1,6 +1,5 @@
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
 
 import type { ChallengesConfig } from "@prisma/client";
 import type { Regions } from "twisted/dist/constants";

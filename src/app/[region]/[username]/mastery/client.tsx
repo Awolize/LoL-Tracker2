@@ -11,7 +11,6 @@ import SortedChampionList from "~/components/custom/role-sorted-champion-list";
 import { OptionsProvider, useOptionsPersistentContext } from "~/components/stores/options-persistent-store";
 import { UserProvider } from "~/components/stores/user-store";
 import type { CompleteMatch } from "~/server/api/routers/processing/champions";
-import type { ChallengeIds } from "~/utils/champsUtils";
 import type { CompleteChampionInfo } from "./page";
 
 export function Client({
@@ -27,9 +26,9 @@ export function Client({
     challengesThresholds: string;
     matches: CompleteMatch[];
 }) {
-    const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
-    const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
-    const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
+    // const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
+    // const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
+    // const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
 
     playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -44,11 +43,8 @@ export function Client({
 
 // need to access the useOptionsContext inside the provider
 function Main({
-    user,
-    patch,
     playerChampionInfo,
     matches,
-    ...props
 }: {
     user: Summoner;
     playerChampionInfo: CompleteChampionInfo[];

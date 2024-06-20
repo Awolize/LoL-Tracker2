@@ -3,8 +3,6 @@
 import { z } from "zod";
 import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
 import { prisma } from "~/server/db";
-import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
 import { regionToConstant } from "../../../utils/champsUtils";
 import Client from "./client";
 
