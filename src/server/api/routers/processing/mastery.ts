@@ -3,7 +3,6 @@ import type { Regions } from "twisted/dist/constants";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
 
 export const upsertMastery = async (user: Summoner, region: Regions) => {
     try {

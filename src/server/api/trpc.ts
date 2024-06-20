@@ -10,10 +10,6 @@ import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { prisma } from "~/server/db";
-import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
-
 /**
  * 1. CONTEXT
  *

@@ -5,7 +5,6 @@ import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/pag
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
 import rolesJson from "./roles.json";
 import { masteryBySummoner } from "./summoner";
 

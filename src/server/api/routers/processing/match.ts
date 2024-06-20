@@ -5,7 +5,6 @@ import { summonersFromGames } from "./summoner";
 
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
 import type { CompleteMatch } from "./champions";
 
 export const updateGames = async (user: Summoner, region: Regions) => {
