@@ -127,16 +127,17 @@ const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: an
 
 const riotApiAccountByUsername = async (gameName: string, tagLine: string, region: Regions) => {
 	const regionGroup = regionToRegionGroup(region);
-	return (await rateLimitWrapper(riotApi.Account.getByGameNameAndTagLine, gameName, tagLine, regionGroup)).response;
+	return (await rateLimitWrapper(() => riotApi.Account.getByGameNameAndTagLine(gameName, tagLine, regionGroup)))
+		.response;
 };
 
 const lolApiSummonerByPUUID = async (puuid: string, region: Regions) => {
-	return (await rateLimitWrapper(lolApi.Summoner.getByPUUID, puuid, region)).response;
+	return (await rateLimitWrapper(() => lolApi.Summoner.getByPUUID(puuid, region))).response;
 };
 
 const riotApiAccountByPUUID = async (puuid: string, region: Regions) => {
 	const regionGroup = regionToRegionGroup(region);
-	return (await rateLimitWrapper(riotApi.Account.getByPUUID, puuid, regionGroup)).response;
+	return (await rateLimitWrapper(() => riotApi.Account.getByPUUID(puuid, regionGroup))).response;
 };
 
 const getSummonerRateLimit = async (puuid: string, region: Regions) => {

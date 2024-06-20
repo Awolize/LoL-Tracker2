@@ -50,7 +50,7 @@ export const differentApiRouter = createTRPCRouter({
 				)?.championOcean;
 			};
 
-			return await getChampionOcean(user.puuid);
+			return (await getChampionOcean(user.puuid)) ?? [];
 		}),
 	getAdaptToAllSituations: publicProcedure
 		.input(z.object({ username: z.string(), region: z.string() }))
@@ -71,7 +71,7 @@ export const differentApiRouter = createTRPCRouter({
 				)?.adaptToAllSituations;
 			};
 
-			return await getAdaptToAllSituations(user.puuid);
+			return (await getAdaptToAllSituations(user.puuid)) ?? [];
 		}),
 	getJackOfAllChamps: publicProcedure
 		.input(z.object({ username: z.string(), region: z.string() }))
@@ -92,6 +92,6 @@ export const differentApiRouter = createTRPCRouter({
 				)?.jackOfAllChamps;
 			};
 
-			return await getJackOfAllChamps(user.puuid);
+			return (await getJackOfAllChamps(user.puuid)) ?? [];
 		}),
 });
