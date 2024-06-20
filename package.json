@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@headlessui/react": "^2.0.4",
 		"@heroicons/react": "^2.1.4",
-		"@prisma/client": "4.15.0",
+		"@prisma/client": "5.15.1",
 		"@radix-ui/react-dialog": "^1.1.0",
 		"@radix-ui/react-dropdown-menu": "^2.1.0",
 		"@radix-ui/react-label": "^2.1.0",
@@ -64,7 +64,7 @@
 		"autoprefixer": "^10.4.16",
 		"eslint": "^9.5.0",
 		"postcss": "^8.4.35",
-		"prisma": "4.15.0",
+		"prisma": "5.15.1",
 		"tailwindcss": "^3.4.4",
 		"typescript": "^5.3.3"
 	},
