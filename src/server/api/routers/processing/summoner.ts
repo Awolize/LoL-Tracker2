@@ -1,4 +1,5 @@
 import type { ChampionMastery, Summoner } from "@prisma/client";
+import assert from "node:assert";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import type { RateLimitError } from "twisted/dist/errors";
 import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
@@ -143,12 +144,13 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
 };
 
 const getSummonerByUsernameRateLimit = async (username: string, region: Regions) => {
-	const gameName = decodeURI(username.split("#")[0]);
-	const tagLine = username.split("#")[1];
+	assert(username.includes("#"), "Username did not include a #");
 
-	// assert(gameName);
-	// assert(tagLine);
+	const [gameNameEncoded, tagLine] = username.split("#");
+	assert(gameNameEncoded, "Game name part is missing");
+	assert(tagLine, "Tag line part is missing");
 
+	const gameName = decodeURI(gameNameEncoded);
 	const account = await riotApiAccountByUsername(gameName, tagLine, region);
 	const summoner = await lolApiSummonerByPUUID(account.puuid, region);
 
