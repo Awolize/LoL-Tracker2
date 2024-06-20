@@ -96,21 +96,20 @@ export const summonersFromGames = (game: MatchV5DTOs.MatchDto) => {
     return summonerPromises;
 };
 
-const getSummonerRateLimit = async (puuid: string, region: Regions) => {
+type RateLimitedCallback<T> = (...args: any[]) => Promise<T>;
+
+const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: any[]): Promise<T> => {
     let retryCount = 0;
     const maxRetries = 30;
 
     while (retryCount < maxRetries) {
         try {
-            const account = (await lolApi.Account.getByPUUID(puuid, regionToRegionGroup(region))).response;
-            const summoner = (await lolApi.Summoner.getByPUUID(account.puuid, region)).response;
-            return { account, summoner };
+            return await callback(...args);
         } catch (error) {
             const rateLimitError = error as RateLimitError;
-            // error instanceof RateLimitError - did not work for some reason
             if (rateLimitError.status === 429) {
                 const retryAfter = (rateLimitError.rateLimits?.RetryAfter ?? 60) + 1;
-                console.log(`[Summoner] Rate limited. Retrying after ${retryAfter} seconds...`);
+                console.log(`Rate limited. Retrying after ${retryAfter} seconds...`);
                 await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
                 retryCount++;
             } else {
@@ -120,7 +119,40 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
     }
 
     // If max retries are reached, throw an error or handle it accordingly
-    throw new Error(`Max retries (${maxRetries}) reached. Unable to get summoner data.`);
+    throw new Error(`Max retries (${maxRetries}) reached. Unable to complete the request.`);
+};
+
+const riotApiAccountByUsername = async (gameName: string, tagLine: string, region: Regions) => {
+    const regionGroup = regionToRegionGroup(region);
+    return (await rateLimitWrapper(riotApi.Account.getByGameNameAndTagLine, gameName, tagLine, regionGroup)).response;
+};
+
+const lolApiSummonerByPUUID = async (puuid: string, region: Regions) => {
+    return (await rateLimitWrapper(lolApi.Summoner.getByPUUID, puuid, region)).response;
+};
+
+const riotApiAccountByPUUID = async (puuid: string, region: Regions) => {
+    const regionGroup = regionToRegionGroup(region);
+    return (await rateLimitWrapper(riotApi.Account.getByPUUID, puuid, regionGroup)).response;
+};
+
+const getSummonerRateLimit = async (puuid: string, region: Regions) => {
+    const account = await riotApiAccountByPUUID(puuid, region);
+    const summoner = await lolApiSummonerByPUUID(puuid, region);
+    return { account, summoner };
+};
+
+const getSummonerByUsernameRateLimit = async (username: string, region: Regions) => {
+    const gameName = decodeURI(username.split("#")[0]);
+    const tagLine = username.split("#")[1];
+
+    // assert(gameName);
+    // assert(tagLine);
+
+    const account = await riotApiAccountByUsername(gameName, tagLine, region);
+    const summoner = await lolApiSummonerByPUUID(account.puuid, region);
+
+    return { summoner, account };
 };
 
 export const masteryBySummoner = async (region: Regions, user: Summoner) => {
@@ -301,21 +333,6 @@ const updateSummonerDb = async (
     }
 };
 
-const splitUsername = (username) => {
-    return {
-        gameName: decodeURI(username.split("#")[0]),
-        tagLine: username.split("#")[1],
-    };
-};
-
-const getUserInfo = async (username, region) => {
-    const { gameName, tagLine } = splitUsername(username);
-    const accountInfo = (await riotApi.Account.getByGameNameAndTagLine(gameName, tagLine, regionToRegionGroup(region)))
-        .response;
-    const userInfo = (await lolApi.Summoner.getByPUUID(accountInfo.puuid, region)).response;
-    return { userInfo, accountInfo };
-};
-
 export async function getUserByNameAndRegion(username: string, region: Regions) {
     try {
         const user = await prisma.summoner.findFirst({
@@ -338,40 +355,40 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 
         console.log("Could not find summoner in DB", username, region);
 
-        const { userInfo, accountInfo } = await getUserInfo(username, region);
+        const { summoner, account } = await getSummonerByUsernameRateLimit(username, region);
 
         // Use upsert to save the new user or update an existing one
         const savedUser = await prisma.summoner.upsert({
             where: {
-                puuid: userInfo.puuid,
+                puuid: summoner.puuid,
             },
             update: {
-                puuid: userInfo.puuid,
-                summonerId: userInfo.id,
+                puuid: summoner.puuid,
+                summonerId: summoner.id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 region,
                 username: "deprecated",
-                gameName: accountInfo.gameName ?? null,
-                tagLine: accountInfo.tagLine ?? null,
-                profileIconId: userInfo.profileIconId,
-                summonerLevel: userInfo.summonerLevel,
-                revisionDate: new Date(userInfo.revisionDate),
-                accountId: userInfo.accountId,
+                gameName: account.gameName ?? null,
+                tagLine: account.tagLine ?? null,
+                profileIconId: summoner.profileIconId,
+                summonerLevel: summoner.summonerLevel,
+                revisionDate: new Date(summoner.revisionDate),
+                accountId: summoner.accountId,
             },
             create: {
-                puuid: userInfo.puuid,
-                summonerId: userInfo.id,
+                puuid: summoner.puuid,
+                summonerId: summoner.id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 region,
                 username: "deprecated",
-                gameName: accountInfo.gameName ?? null,
-                tagLine: accountInfo.tagLine ?? null,
-                profileIconId: userInfo.profileIconId,
-                summonerLevel: userInfo.summonerLevel,
-                revisionDate: new Date(userInfo.revisionDate),
-                accountId: userInfo.accountId,
+                gameName: account.gameName ?? null,
+                tagLine: account.tagLine ?? null,
+                profileIconId: summoner.profileIconId,
+                summonerLevel: summoner.summonerLevel,
+                revisionDate: new Date(summoner.revisionDate),
+                accountId: summoner.accountId,
             },
         });
 

@@ -6,12 +6,15 @@
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true
+            "recommended": true,
+            "suspicious": {
+                "noExplicitAny": "warn"
+            }
         },
         "ignore": [".next"]
     },
     "formatter": {
-        "indentStyle": "space",
+        "indentStyle": "tab",
         "ignore": [".next", "./public/getConfig.json"],
         "indentWidth": 4,
         "lineWidth": 120

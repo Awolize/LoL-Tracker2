@@ -24,7 +24,7 @@ export default async function Page({ params }) {
     const props = {
         user,
         region,
-        playerChampionInfo: completeChampsData.completeChampionsData,
+        playerChampionInfo: completeChampsData.completeChampionsData.sort((a,b) => a.name.localeCompare(b.name)),
         patch: completeChampsData.patch,
     };
 
