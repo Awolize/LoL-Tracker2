@@ -14,59 +14,59 @@ import type { CompleteMatch } from "~/server/api/routers/processing/champions";
 import type { CompleteChampionInfo } from "./page";
 
 export function Client({
-    user,
-    playerChampionInfo,
-    ...props
+	user,
+	playerChampionInfo,
+	...props
 }: {
-    user: Summoner;
-    playerChampionInfo: CompleteChampionInfo[];
-    patch: string;
-    challengeIds: string;
-    playerChallengesData: string;
-    challengesThresholds: string;
-    matches: CompleteMatch[];
+	user: Summoner;
+	playerChampionInfo: CompleteChampionInfo[];
+	patch: string;
+	challengeIds: string;
+	playerChallengesData: string;
+	challengesThresholds: string;
+	matches: CompleteMatch[];
 }) {
-    // const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
-    // const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
-    // const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
+	// const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
+	// const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
+	// const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
 
-    playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
+	playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
 
-    return (
-        <UserProvider user={user}>
-            <OptionsProvider persistName={`${user.gameName}-${user.tagLine}`}>
-                <Main {...props} playerChampionInfo={playerChampionInfo} user={user} />
-            </OptionsProvider>
-        </UserProvider>
-    );
+	return (
+		<UserProvider user={user}>
+			<OptionsProvider persistName={`${user.gameName}-${user.tagLine}`}>
+				<Main {...props} playerChampionInfo={playerChampionInfo} user={user} />
+			</OptionsProvider>
+		</UserProvider>
+	);
 }
 
 // need to access the useOptionsContext inside the provider
 function Main({
-    playerChampionInfo,
-    matches,
+	playerChampionInfo,
+	matches,
 }: {
-    user: Summoner;
-    playerChampionInfo: CompleteChampionInfo[];
-    patch: string;
-    challengeIds: string;
-    playerChallengesData: string;
-    challengesThresholds: string;
-    matches: CompleteMatch[];
+	user: Summoner;
+	playerChampionInfo: CompleteChampionInfo[];
+	patch: string;
+	challengeIds: string;
+	playerChallengesData: string;
+	challengesThresholds: string;
+	matches: CompleteMatch[];
 }) {
-    const byRole = useOptionsPersistentContext((state) => state.byRole);
+	const byRole = useOptionsPersistentContext((state) => state.byRole);
 
-    return (
-        <main className="flex flex-col">
-            <Header />
+	return (
+		<main className="flex flex-col">
+			<Header />
 
-            {byRole ? (
-                <SortedChampionList champions={playerChampionInfo} />
-            ) : (
-                <ChampionList champions={playerChampionInfo} />
-            )}
+			{byRole ? (
+				<SortedChampionList champions={playerChampionInfo} />
+			) : (
+				<ChampionList champions={playerChampionInfo} />
+			)}
 
-            <MatchHistory matches={matches} />
-        </main>
-    );
+			<MatchHistory matches={matches} />
+		</main>
+	);
 }

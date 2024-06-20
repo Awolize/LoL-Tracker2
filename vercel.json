@@ -1,7 +1,7 @@
 {
-    "functions": {
-        "pages/**/*.tsx": {
-            "maxDuration": 10
-        }
-    }
+	"functions": {
+		"pages/**/*.tsx": {
+			"maxDuration": 10
+		}
+	}
 }

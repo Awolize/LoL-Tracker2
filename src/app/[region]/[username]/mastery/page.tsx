@@ -13,44 +13,44 @@ import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUti
 import { Client } from "./client";
 
 const paramsSchema = z.object({
-    region: z.string(),
-    username: z.string(),
+	region: z.string(),
+	username: z.string(),
 });
 
 interface Roles {
-    role: string;
+	role: string;
 }
 
 export type CompleteChampionInfo = Partial<Omit<ChampionMasteryDTO, "championPoints" | "championLevel">> &
-    Pick<ChampionMasteryDTO, "championPoints" | "championLevel"> &
-    ChampionDetails &
-    Roles;
+	Pick<ChampionMasteryDTO, "championPoints" | "championLevel"> &
+	ChampionDetails &
+	Roles;
 
 export default async function Page({ params }) {
-    const { region: rawRegion, username: rawUsername } = paramsSchema.parse(params);
-    const username = rawUsername.replace("-", "#").toLowerCase();
-    const region = regionToConstant(rawRegion.toUpperCase());
+	const { region: rawRegion, username: rawUsername } = paramsSchema.parse(params);
+	const username = rawUsername.replace("-", "#").toLowerCase();
+	const region = regionToConstant(rawRegion.toUpperCase());
 
-    const user = await getUserByNameAndRegion(username, region);
+	const user = await getUserByNameAndRegion(username, region);
 
-    const [completeChampionsData, playerChallenges, challengesThresholds, matches] = await Promise.all([
-        getCompleteChampionData(region, user),
-        getPlayerChallengesData2(user),
-        getChallengesThresholds2(),
-        getMatches(user, 25),
-    ]);
+	const [completeChampionsData, playerChallenges, challengesThresholds, matches] = await Promise.all([
+		getCompleteChampionData(region, user),
+		getPlayerChallengesData2(user),
+		getChallengesThresholds2(),
+		getMatches(user, 25),
+	]);
 
-    const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
+	const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
 
-    return (
-        <Client
-            user={user}
-            playerChampionInfo={completeChampionsData.completeChampionsData}
-            patch={completeChampionsData.patch}
-            challengeIds={stringify(challengeIds)}
-            playerChallengesData={stringify(playerChallenges)}
-            challengesThresholds={stringify(challengesThresholds)}
-            matches={matches}
-        />
-    );
+	return (
+		<Client
+			user={user}
+			playerChampionInfo={completeChampionsData.completeChampionsData}
+			patch={completeChampionsData.patch}
+			challengeIds={stringify(challengeIds)}
+			playerChallengesData={stringify(playerChallenges)}
+			challengesThresholds={stringify(challengesThresholds)}
+			matches={matches}
+		/>
+	);
 }

@@ -14,95 +14,94 @@ import { api } from "~/trpc/react";
 import type { CompleteChampionInfo } from "../mastery/page";
 
 export default function Client({
-    user,
-    region,
-    patch,
-    playerChampionInfo,
+	user,
+	region,
+	patch,
+	playerChampionInfo,
 }: {
-    user: Summoner;
-    region: Regions;
-    playerChampionInfo: CompleteChampionInfo[];
-    patch: string;
+	user: Summoner;
+	region: Regions;
+	playerChampionInfo: CompleteChampionInfo[];
+	patch: string;
 }) {
-    const [selectedItem, setSelectedItem] = useState<number | null>(null);
+	const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
-    console.log(`${user.gameName}#${user.tagLine}`);
+	console.log(`${user.gameName}#${user.tagLine}`);
 
+	const queryParams = {
+		username: `${user.gameName}#${user.tagLine}`,
+		region,
+	};
+	const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
+	const getChampionOcean = api.differentApi.getChampionOcean.useQuery(queryParams);
+	const getAdaptToAllSituations = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
 
-    const queryParams = {
-        username: `${user.gameName}#${user.tagLine}`,
-        region,
-    }
-    const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
-    const getChampionOcean = api.differentApi.getChampionOcean.useQuery(queryParams);
-    const getAdaptToAllSituations = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
+	const selectedChallengeQuery = useMemo(() => {
+		console.log("selected challenge", selectedItem);
 
-    const selectedChallengeQuery = useMemo(() => {
-        console.log("selected challenge", selectedItem);
+		const challengeDataMap = {
+			401106: selectedChallenge?.data ?? [],
+			602001: getChampionOcean?.data ?? [],
+			602002: getAdaptToAllSituations?.data ?? [],
+		};
 
-        const challengeDataMap = {
-            401106: selectedChallenge?.data ?? [],
-            602001: getChampionOcean?.data ?? [],
-            602002: getAdaptToAllSituations?.data ?? [],
-        };
+		const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
+		const mappedCases = Object.keys(challengeDataMap)
+			.map(Number)
+			.filter((key) => challengeDataMap[key] !== null);
 
-        const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
-        const mappedCases = Object.keys(challengeDataMap)
-            .map(Number)
-            .filter((key) => challengeDataMap[key] !== null);
+		return {
+			data: mappedData,
+			cases: mappedCases,
+		};
+	}, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations]);
 
-        return {
-            data: mappedData,
-            cases: mappedCases,
-        };
-    }, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations]);
+	const completedChampsLength = selectedChallengeQuery?.data.length;
 
-    const completedChampsLength = selectedChallengeQuery?.data.length;
+	return (
+		<div className="flex h-screen w-screen justify-center">
+			<aside className="z-10">
+				<DifferentSideBar
+					region={region}
+					user={user}
+					selectedItem={selectedItem}
+					setSelectedItem={setSelectedItem}
+					mappedCases={selectedChallengeQuery.cases}
+				/>
+			</aside>
 
-    return (
-        <div className="flex h-screen w-screen justify-center">
-            <aside className="z-10">
-                <DifferentSideBar
-                    region={region}
-                    user={user}
-                    selectedItem={selectedItem}
-                    setSelectedItem={setSelectedItem}
-                    mappedCases={selectedChallengeQuery.cases}
-                />
-            </aside>
+			<div className="flex flex-1 flex-col">
+				<header className="h-24">
+					<DifferentHeader finished={completedChampsLength} total={playerChampionInfo.length} patch={patch} />
+				</header>
 
-            <div className="flex flex-1 flex-col">
-                <header className="h-24">
-                    <DifferentHeader finished={completedChampsLength} total={playerChampionInfo.length} patch={patch} />
-                </header>
+				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
+					<main className="flex-grow overflow-y-auto flex flex-row gap-2 ">
+						{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
+							if (!playerChampionInfo[0]) return;
 
-                <div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
-                    <main className="flex-grow overflow-y-auto flex flex-row gap-2 ">
-                        {["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-                            if (!playerChampionInfo[0]) return;
+							const champsWithRole = playerChampionInfo.filter((champ) => champ?.role === role);
 
-                            const champsWithRole = playerChampionInfo.filter((champ) => champ?.role === role);
+							return (
+								<div className="w-full px-4" key={role}>
+									<DifferentRoleHeader role={role} />
+									<ul
+										className="grid justify-between"
+										style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
+									>
+										{champsWithRole?.map((champ) => {
+											const jacks = selectedChallengeQuery?.data.map((el) => el.key) ?? [];
+											const hide = jacks.includes(champ.key);
 
-                            return (
-                                <div className="w-full px-4" key={role}>
-                                    <DifferentRoleHeader role={role} />
-                                    <ul
-                                        className="grid justify-between"
-                                        style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
-                                    >
-                                        {champsWithRole?.map((champ) => {
-                                            const jacks = selectedChallengeQuery?.data.map((el) => el.key) ?? [];
-                                            const hide = jacks.includes(champ.key);
-
-                                            return <DifferentChampionItem key={champ.key} hide={hide} champ={champ} />;
-                                        })}
-                                    </ul>
-                                </div>
-                            );
-                        })}
-                    </main>
-                </div>
-            </div>
-        </div>
-    );
+											return <DifferentChampionItem key={champ.key} hide={hide} champ={champ} />;
+										})}
+									</ul>
+								</div>
+							);
+						})}
+					</main>
+				</div>
+			</div>
+		</div>
+	);
 }
