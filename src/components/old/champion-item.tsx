@@ -37,6 +37,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
 	if (hide) return <></>;
 
 	return (
+		// biome-ignore lint/a11y/useKeyWithClickEvents: Not sure how to solve this. Putting it off until later date, more pressing matters
 		<li key={champ.key as React.Key} className="flex flex-col pb-2" onClick={() => handleChampionClick(champ.id)}>
 			<div className="relative z-10">
 				{showLevel && (

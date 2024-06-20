@@ -1,5 +1,5 @@
-import type { ChampionMastery, Summoner } from "@prisma/client";
 import assert from "node:assert";
+import type { ChampionMastery, Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
 import type { RateLimitError } from "twisted/dist/errors";
 import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
@@ -97,8 +97,10 @@ export const summonersFromGames = (game: MatchV5DTOs.MatchDto) => {
 	return summonerPromises;
 };
 
+// biome-ignore lint/suspicious/noExplicitAny: this could be a list of anything
 type RateLimitedCallback<T> = (...args: any[]) => Promise<T>;
 
+// biome-ignore lint/suspicious/noExplicitAny: this could be a list of anything
 const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: any[]): Promise<T> => {
 	let retryCount = 0;
 	const maxRetries = 30;

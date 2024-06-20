@@ -15,7 +15,7 @@
 	},
 	"formatter": {
 		"indentStyle": "tab",
-		"ignore": [".next", "./public/getConfig.json"],
+		"ignore": [".next"],
 		"indentWidth": 4,
 		"lineWidth": 120
 	}

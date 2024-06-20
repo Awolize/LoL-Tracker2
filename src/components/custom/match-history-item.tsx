@@ -12,13 +12,16 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
 	// deaths
 	// assists
 
+	/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */
 	const isWin: boolean = (match.MatchInfo.participants as unknown as Array<any>)?.find(
 		(p) => p.puuid === user.puuid,
 	).win;
 
 	return (
 		<div className="flex flex-row gap-4">
+			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
 			<MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={200} />
+			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
 			<MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={100} />
 			<div className="flex flex-col">
 				<div>{match.MatchInfo.gameStartTimestamp.toLocaleString()}</div>
