@@ -1,6 +1,6 @@
 import type { ChampionMastery, Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
-import { RateLimitError } from "twisted/dist/errors";
+import type { RateLimitError } from "twisted/dist/errors";
 import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
 
 import { prisma } from "~/server/db";
