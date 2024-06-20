@@ -106,13 +106,14 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
             const summoner = (await lolApi.Summoner.getByPUUID(account.puuid, region)).response;
             return { account, summoner };
         } catch (error) {
-            if (error instanceof RateLimitError && error.status === 429) {
-                const retryAfter = (error.rateLimits.RetryAfter || 60) + 1;
+            const rateLimitError = error as RateLimitError;
+            // error instanceof RateLimitError - did not work for some reason
+            if (rateLimitError.status === 429) {
+                const retryAfter = (rateLimitError.rateLimits?.RetryAfter || 60) + 1;
                 console.log(`[Summoner] Rate limited. Retrying after ${retryAfter} seconds...`);
                 await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
                 retryCount++;
             } else {
-                // If it's not a rate limit error, rethrow the error
                 throw error;
             }
         }
@@ -275,7 +276,7 @@ const updateSummonerDb = async (
                         lastPlayTime: new Date(mastery.lastPlayTime),
                         championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
                         championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-                        chestGranted: mastery.chestGranted,
+                        chestGranted: mastery.chestGranted ?? false,
                         tokensEarned: mastery.tokensEarned,
                     },
                     create: {
@@ -286,7 +287,7 @@ const updateSummonerDb = async (
                         lastPlayTime: new Date(mastery.lastPlayTime),
                         championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
                         championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-                        chestGranted: mastery.chestGranted,
+                        chestGranted: mastery.chestGranted ?? false,
                         tokensEarned: mastery.tokensEarned,
                     },
                 }),

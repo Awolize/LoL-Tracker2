@@ -1,6 +1,6 @@
 import type { Match, MatchInfo, Summoner } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
-import { RateLimitError } from "twisted/dist/errors";
+import type { RateLimitError } from "twisted/dist/errors";
 import { summonersFromGames } from "./summoner";
 
 import { prisma } from "~/server/db";
@@ -74,7 +74,13 @@ const processMatches = async (
         return newGame;
     });
 
-    for (const [index, matchId] of newMatchIds.entries()) {
+    for (let index = 0; index < newMatchIds.length; index++) {
+        const matchId = newMatchIds[index];
+
+        if (!matchId) {
+            continue;
+        }
+
         if (index % 50 === 0) {
             console.log(`${user.gameName}#${user.tagLine} (${user.region}) progress: ${index} / ${newMatchIds.length}`);
         }
@@ -103,8 +109,10 @@ const processMatches = async (
                 `[Game error] ${user.gameName}#${user.tagLine} (${user.region}) progress: ${index} / ${newMatchIds.length}`,
             );
 
-            if (error instanceof RateLimitError && error.status === 429) {
-                const retryAfter = (error.rateLimits.RetryAfter || 60) + 1;
+            const rateLimitError = error as RateLimitError;
+            // error instanceof RateLimitError - did not work for some reason
+            if (rateLimitError.status === 429) {
+                const retryAfter = (rateLimitError.rateLimits?.RetryAfter || 60) + 1;
                 console.error(`[Game] Rate limited. Retrying after ${retryAfter} seconds...`);
                 await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
                 newMatchIds.push(matchId);
