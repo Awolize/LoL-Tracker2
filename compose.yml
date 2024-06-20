@@ -1,0 +1,19 @@
+# This is the local dev database
+# $ pnpm prisma migrate dev --name init
+
+services:
+  db:
+    image: postgres:16
+    container_name: lol-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: asdhjDHJsdchjnk12NKADHJNK23ASNK1
+      PGPORT: 5432
+    restart: unless-stopped
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/share:/pgshare
+      - ./db/scripts/:/pgscripts:ro
+    ports:
+      - "5432:5432"

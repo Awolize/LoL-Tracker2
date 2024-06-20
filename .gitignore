@@ -44,3 +44,5 @@ yarn-error.log*
 .vscode/settings.json
 
 docker-compose.yaml
+
+db
