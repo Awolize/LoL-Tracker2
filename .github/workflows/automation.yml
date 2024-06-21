@@ -79,7 +79,11 @@ jobs:
           images: ${{ secrets.DOCKER_USERNAME }}/lol-tracker2
 
       # run the migration in the test database
-      - run: pnpm prisma migrate dev --name pipeline         
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Prisma populate test-db
+        run: pnpm prisma migrate dev --name pipeline         
 
       - name: Build and push Docker image
         id: push
