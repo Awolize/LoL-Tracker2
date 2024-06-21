@@ -99,8 +99,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.4)
       twisted:
-        specifier: github:Awolize/twisted#build-dist
-        version: git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940
+        specifier: https://github.com/Awolize/twisted/tarball/build-dist
+        version: https://github.com/Awolize/twisted/tarball/build-dist
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -1966,8 +1966,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
-    resolution: {commit: d1b2765f04d712967536c638bc2be71720251940, repo: git@github.com:Awolize/twisted.git, type: git}
+  twisted@https://github.com/Awolize/twisted/tarball/build-dist:
+    resolution: {tarball: https://github.com/Awolize/twisted/tarball/build-dist}
     version: 1.56.1
     engines: {node: '>=8.6.0'}
 
@@ -3783,7 +3783,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
+  twisted@https://github.com/Awolize/twisted/tarball/build-dist:
     dependencies:
       axios: 1.7.2
       dotenv: 16.4.5
