@@ -15,7 +15,7 @@ on:
       - main
 
 env:
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  # DATABASE_URL: ${{ secrets.DATABASE_URL }}
   RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
   PROCESSING_URL: ${{ secrets.PROCESSING_URL }}
 
@@ -23,6 +23,26 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+     # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5432 on service container to the host
+          - 5433:5432
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5433/grading-app
     permissions:
       packages: write
       contents: read
@@ -43,6 +63,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/lol-tracker2
+
+      - run: npm ci
+      # run the migration in the test database
+      - run: npm run db:push          
 
       - name: Build and push Docker image
         id: push
