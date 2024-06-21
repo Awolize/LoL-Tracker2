@@ -64,9 +64,8 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/lol-tracker2
 
-      - run: npm ci
       # run the migration in the test database
-      - run: npm run db:push          
+      - run: npx prisma migrate dev --name pipeline         
 
       - name: Build and push Docker image
         id: push
