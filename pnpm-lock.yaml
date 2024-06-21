@@ -100,7 +100,7 @@ importers:
         version: 1.0.7(tailwindcss@3.4.4)
       twisted:
         specifier: github:Awolize/twisted#build-dist
-        version: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940
+        version: git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -118,8 +118,8 @@ importers:
         specifier: ^8.56.1
         version: 8.56.10
       '@types/node':
-        specifier: ^20.14.6
-        version: 20.14.6
+        specifier: ^20.14.7
+        version: 20.14.7
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -979,8 +979,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@20.14.6':
-    resolution: {integrity: sha512-JbA0XIJPL1IiNnU7PFxDXyfAwcwVVrOoqyzzyQTyMeVhBzkJVMSkC1LlVsRQ2lpqiY4n6Bb9oCS6lzDKVQxbZw==}
+  '@types/node@20.14.7':
+    resolution: {integrity: sha512-uTr2m2IbJJucF3KUxgnGOZvYbN0QgkGyWxG6973HCpMYFy2KfcgYuIwkJQMQkt1VbBMlvWRbpshFTLxnxCZjKQ==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -1959,8 +1959,8 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
-    resolution: {tarball: https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940}
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
+    resolution: {commit: d1b2765f04d712967536c638bc2be71720251940, repo: git@github.com:Awolize/twisted.git, type: git}
     version: 1.56.1
     engines: {node: '>=8.6.0'}
 
@@ -2803,7 +2803,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@20.14.6':
+  '@types/node@20.14.7':
     dependencies:
       undici-types: 5.26.5
 
@@ -3772,7 +3772,7 @@ snapshots:
 
   tslib@2.6.3: {}
 
-  twisted@https://codeload.github.com/Awolize/twisted/tar.gz/d1b2765f04d712967536c638bc2be71720251940:
+  twisted@git+https://git@github.com:Awolize/twisted.git#d1b2765f04d712967536c638bc2be71720251940:
     dependencies:
       axios: 1.7.2
       dotenv: 16.4.5
