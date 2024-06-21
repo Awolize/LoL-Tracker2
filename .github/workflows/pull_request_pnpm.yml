@@ -20,5 +20,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
+    # https://stackoverflow.com/questions/71318659/gitgithub-com-permission-denied-publickey-when-using-yarn-to-install-github
     - name: Install dependencies
-      run: pnpm install
+      run: |
+        git config --global url."https://github".insteadOf ssh://git@github
+        pnpm install
