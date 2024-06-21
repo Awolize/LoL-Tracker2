@@ -47,7 +47,7 @@ export const upsertSummoner = async (puuid: string, region: Regions) => {
 	return upsertedSummoner;
 };
 
-export const createSummoner = async (puuid: string, region: Regions) => {
+const createSummoner = async (puuid: string, region: Regions) => {
 	const existingSummoner = await prisma.summoner.findUnique({
 		where: {
 			puuid: puuid,
@@ -58,20 +58,18 @@ export const createSummoner = async (puuid: string, region: Regions) => {
 		return existingSummoner;
 	}
 
-	const { account, summoner } = await getSummonerRateLimit(puuid, region);
+	// const { account, summoner } = await getSummonerRateLimit(puuid, region);
 
 	const upsertedSummoner = await prisma.summoner.create({
 		data: {
-			puuid: summoner.puuid,
-			summonerId: summoner.id,
+			puuid: puuid,
 			region: region,
 			username: "deprecated",
-			profileIconId: summoner.profileIconId,
-			summonerLevel: summoner.summonerLevel,
-			revisionDate: new Date(summoner.revisionDate),
-			accountId: summoner.accountId,
-			gameName: account.gameName,
-			tagLine: account.tagLine,
+			accountId: "unknown",
+			profileIconId: 0,
+			revisionDate: new Date(0),
+			summonerId: "unknown",
+			summonerLevel: 0,
 		},
 	});
 	return upsertedSummoner;
@@ -226,7 +224,7 @@ export const updateMasteryBySummoner = async (user: Summoner, region: Regions) =
 		console.log("Updating summoner in db with mastery scores");
 		try {
 			const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
-			await updateSummonerDb(user, region, masteryData);
+			await updateSummonerMasteryDb(user, region, masteryData);
 			console.log("Done - Updating summoner in db with mastery scores");
 		} catch (error) {
 			console.error("Failed - Updating summoner in db with mastery scores");
@@ -264,7 +262,7 @@ export const updateMasteryBySummoner = async (user: Summoner, region: Regions) =
 	}
 };
 
-const updateSummonerDb = async (
+const updateSummonerMasteryDb = async (
 	user: Summoner,
 	region: Regions,
 	championMasteryData: ChampionMastery[] | ChampionMasteryDTO[],
@@ -339,6 +337,12 @@ const updateSummonerDb = async (
 };
 
 export async function getUserByNameAndRegion(username: string, region: Regions) {
+	function isWithinThreshold(date: Date) {
+		const oneDayInMillis = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
+		const now = new Date();
+		return now.getTime() - date.getTime() <= oneDayInMillis;
+	}
+
 	try {
 		const user = await prisma.summoner.findFirst({
 			where: {
@@ -354,8 +358,8 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 			},
 		});
 
-		if (user) {
-			return user; // is existing user;
+		if (user && isWithinThreshold(user.updatedAt)) {
+			return user; // return existing user;
 		}
 
 		console.log("Could not find summoner in DB", username, region);

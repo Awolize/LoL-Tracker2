@@ -75,14 +75,16 @@ export const processingApiRouter = createTRPCRouter({
 			const matches = await getArenaMatches(user);
 			if (!matches) return;
 
-			const participants = matches
+			const participations = matches
 				.flatMap((match) => match.MatchInfo.participants)
 				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
 				.filter(Boolean) as unknown as Participant[];
 
-			console.log(`${user.gameName}#${user.tagLine} (${user.region}) found ${participants?.length} games`);
+			console.log(
+				`[updateChampionOcean] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
+			);
 
-			const uniqueChampIds = new Set<number>(participants.map((p) => p.championId));
+			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
 			const challenges = (
 				await prisma.summoner.findFirst({
@@ -133,15 +135,17 @@ export const processingApiRouter = createTRPCRouter({
 			const matches = await getArenaMatches(user);
 			if (!matches) return;
 
-			const participants = matches
+			const participations = matches
 				.flatMap((match) => match.MatchInfo.participants)
 				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
 				.filter((p) => (p as unknown as { placement?: number })?.placement === 1)
 				.filter(Boolean) as unknown as Participant[];
 
-			console.log(`${user.gameName}#${user.tagLine} (${user.region}) found ${participants?.length} games`);
+			console.log(
+				`[AdaptToAllSituations] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
+			);
 
-			const uniqueChampIds = new Set<number>(participants.map((p) => p.championId));
+			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
 			const challenges = (
 				await prisma.summoner.findFirst({
@@ -192,7 +196,7 @@ export const processingApiRouter = createTRPCRouter({
 			const matches = await getMatches(user, 10000);
 			if (!matches) return;
 
-			const filteredInfoParticipants = matches
+			const participations = matches
 				.flatMap((match) =>
 					(match.MatchInfo?.participants as unknown as Participant[] | undefined)?.filter(
 						(par) => par.puuid === user.puuid /* && par.champ == "champ" ish */,
@@ -201,13 +205,13 @@ export const processingApiRouter = createTRPCRouter({
 				.filter(Boolean) as Participant[];
 
 			console.log(
-				`${user.gameName}#${user.tagLine} (${user.region}) found ${filteredInfoParticipants?.length} games`,
+				`[JackOfAllChamps] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
 			);
 
 			const loses: Participant[] = [];
 			const wins: Participant[] = [];
 
-			for (const participantInfo of filteredInfoParticipants) {
+			for (const participantInfo of participations) {
 				if (participantInfo.win) {
 					wins.push(participantInfo);
 				} else {
