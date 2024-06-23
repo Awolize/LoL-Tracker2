@@ -10,8 +10,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 export const metadata: Metadata = {
 	applicationName: "LoL Mastery Tracker",
 	title: "LoL Mastery Tracker, brought to you by me!",
-	description:
-		"Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/",
+	description: "Made using Riot API. Repo can be found using https://github.com/Awolize.",
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

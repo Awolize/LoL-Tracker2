@@ -59,7 +59,7 @@ export default function Client({
 	const completedChampsLength = selectedChallengeQuery?.data.length;
 
 	return (
-		<div className="flex h-screen w-screen justify-center">
+		<div className="flex w-screen justify-center">
 			<aside className="z-10">
 				<DifferentSideBar
 					region={region}
