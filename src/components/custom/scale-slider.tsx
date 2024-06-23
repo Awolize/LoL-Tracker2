@@ -16,7 +16,7 @@ export function ScaleSlider() {
 			step={5}
 			value={[championsScale]}
 			onValueChange={handleSliderChange}
-			className="w-40 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+			className="h-2 w-40 cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
 		/>
 	);
 }

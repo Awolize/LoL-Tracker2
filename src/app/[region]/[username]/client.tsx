@@ -14,7 +14,7 @@ export default async function Client({ region, username: rawUsername, profileIco
 			<div className="flex h-screen w-screen justify-center">
 				<ul className="flex flex-col text-xl">
 					<div className="h-5" />
-					<div className="flex flex-row items-center justify-center gap-6 relative">
+					<div className="relative flex flex-row items-center justify-center gap-6">
 						<div className="absolute left-0">
 							<Image
 								src={profileIconUrl}
@@ -25,11 +25,11 @@ export default async function Client({ region, username: rawUsername, profileIco
 								// placeholder="/placeholder.png"
 							/>
 						</div>
-						<div className="items-center flex-col bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-sky-600 to-purple-600">
+						<div className="flex-col items-center bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 bg-clip-text text-transparent">
 							<div className="text-6xl">{username}</div>
-							<div className="items-center flex flex-row justify-between ">
-								<div className="text-sm font-bold ">{region}</div>
-								<div className="text-sm font-bold ">{summonerLevel}</div>
+							<div className="flex flex-row items-center justify-between ">
+								<div className="font-bold text-sm ">{region}</div>
+								<div className="font-bold text-sm ">{summonerLevel}</div>
 							</div>
 						</div>
 					</div>
@@ -42,9 +42,9 @@ export default async function Client({ region, username: rawUsername, profileIco
 								</Link>
 								<div className="text-sm">
 									Tailored for the challenge{" "}
-									<span className="italic font-bold">Catch &apos;em all</span>, but also works with{" "}
-									<span className="italic font-bold">Master yourself</span> and{" "}
-									<span className="italic font-bold">Master your enemy</span>
+									<span className="font-bold italic">Catch &apos;em all</span>, but also works with{" "}
+									<span className="font-bold italic">Master yourself</span> and{" "}
+									<span className="font-bold italic">Master your enemy</span>
 								</div>
 							</div>
 							<div>
@@ -53,9 +53,9 @@ export default async function Client({ region, username: rawUsername, profileIco
 								</Link>
 								<div className="text-sm">
 									Manually keep track of specific heroes. For challenges such as{" "}
-									<span className="italic font-bold">All Random All Champions</span>, with{" "}
-									<span className="italic font-bold">Jack of All Champs</span>, and{" "}
-									<span className="italic font-bold">Protean Override</span>
+									<span className="font-bold italic">All Random All Champions</span>, with{" "}
+									<span className="font-bold italic">Jack of All Champs</span>, and{" "}
+									<span className="font-bold italic">Protean Override</span>
 									<br />
 									More trackers can be added. If you have a specific one in mind that you believe is
 									simple to add just create a new issue on Github

@@ -67,9 +67,9 @@ export default function Header() {
 	];
 
 	return (
-		<div className="flex flex-row gap-4 px-4 py-2 items-center justify-center">
+		<div className="flex flex-row items-center justify-center gap-4 px-4 py-2">
 			<FullSummonerUpdate user={user} />
-			<div className="h-8 bg-gray-500 w-[1px]" />
+			<div className="h-8 w-[1px] bg-gray-500" />
 			<SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
 			<Dropdown
 				callback={(choice) => setFilterPoints(choice)}
@@ -90,7 +90,7 @@ export default function Header() {
 				checked={!showSelectedChampions}
 				onChange={toggleShowSelectedChampions}
 			/>
-			<div className="h-8 bg-gray-500 w-[1px]" />
+			<div className="h-8 w-[1px] bg-gray-500" />
 			<SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
 			<SwitchWithLabel
 				label={"Available Chests"}
@@ -102,7 +102,7 @@ export default function Header() {
 				<Label>Image size</Label>
 				<ScaleSlider />
 			</div>
-			<div className="h-8 bg-gray-500 w-[1px]" />
+			<div className="h-8 w-[1px] bg-gray-500" />
 			<Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
 				Match history
 			</Button>

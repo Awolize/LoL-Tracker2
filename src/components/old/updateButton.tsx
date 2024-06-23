@@ -9,8 +9,8 @@ export const UpdateButton = ({ label, checked, onChange }) => {
 				className={`${
 					!checked
 						? "bg-gradient-to-r from-indigo-500 to-purple-500"
-						: "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
-				} relative inline-flex my-2 py-1 px-3 items-center justify-center rounded`}
+						: "w-16 bg-gradient-to-r from-purple-500 to-indigo-500"
+				} relative my-2 inline-flex items-center justify-center rounded px-3 py-1`}
 			>
 				<div className="flex flex-row gap-2 ">{checked ? <LoadingComponent /> : label}</div>
 			</button>

@@ -28,8 +28,8 @@ export const FullSummonerUpdate = ({ user }: { user: Summoner }) => {
 			className={`${
 				!updateChampions.isLoading
 					? "bg-gradient-to-r from-indigo-500 to-purple-500"
-					: "bg-gradient-to-r from-purple-500 to-indigo-500 w-16"
-			} relative inline-flex my-2 py-1 px-3 items-center justify-center rounded w-24`}
+					: "w-16 bg-gradient-to-r from-purple-500 to-indigo-500"
+			} relative my-2 inline-flex w-24 items-center justify-center rounded px-3 py-1`}
 			onClick={updateUser}
 		>
 			{updateChampions.isLoading ? <LoadingComponent /> : "Update"}

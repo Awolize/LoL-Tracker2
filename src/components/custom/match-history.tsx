@@ -11,7 +11,7 @@ const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
 	if (!matches.length)
 		return (
 			<Sheet open={showMatchHistory} onOpenChange={(open) => setShowMatchHistory(open)}>
-				<SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
+				<SheetContent className="flex w-[1100px] flex-col sm:max-w-none">
 					<SheetHeader>
 						<SheetTitle className="text-center">Match history</SheetTitle>
 						<SheetDescription className="text-center">
@@ -26,7 +26,7 @@ const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
 
 	return (
 		<Sheet open={showMatchHistory} onOpenChange={(open) => setShowMatchHistory(open)}>
-			<SheetContent className="w-[1100px] flex flex-col sm:max-w-none">
+			<SheetContent className="flex w-[1100px] flex-col sm:max-w-none">
 				<SheetHeader>
 					<SheetTitle className="text-center">Match history</SheetTitle>
 					<SheetDescription className="text-center">
@@ -34,7 +34,7 @@ const MatchHistory = ({ matches }: { matches: CompleteMatch[] }) => {
 					</SheetDescription>
 				</SheetHeader>
 				<ScrollArea className="rounded-md border">
-					<div className="flex flex-col p-4 gap-6">
+					<div className="flex flex-col gap-6 p-4">
 						{matches.map((match) => {
 							return <MatchItem key={match.gameId} match={match} />;
 						})}

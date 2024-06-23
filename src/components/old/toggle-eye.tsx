@@ -5,7 +5,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
 	return (
 		<div className="flex flex-row items-center gap-2">
 			<Switch id="toggle-eye" checked={checked} onCheckedChange={onChange}>
-				<span className={"justify-center items-center content-center w-full h-full transform transition"}>
+				<span className={"h-full w-full transform content-center items-center justify-center transition"}>
 					{checked ? (
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="w-6 h-6"
+							className="h-6 w-6"
 						>
 							<title>Eye Open</title>
 							<path
@@ -30,7 +30,7 @@ export const ToggleEye = ({ label, checked, onChange }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.5}
 							stroke="currentColor"
-							className="w-6 h-6"
+							className="h-6 w-6"
 						>
 							<title>Eye Closed</title>
 							<path

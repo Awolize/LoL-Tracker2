@@ -32,10 +32,10 @@ export function Dropdown({ choices, choice, callback, menuLabel }: Props) {
 				<Button
 					variant="secondary"
 					size={"sm"}
-					className="flex flex-row min-w-32 max-w-auto gap-2 justify-between"
+					className="flex min-w-32 max-w-auto flex-row justify-between gap-2"
 				>
 					{choice.text}
-					<ChevronUpDownIcon className="h-5 w-5 mt-[2px] text-gray-100" aria-hidden="true" />
+					<ChevronUpDownIcon className="mt-[2px] h-5 w-5 text-gray-100" aria-hidden="true" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-auto">

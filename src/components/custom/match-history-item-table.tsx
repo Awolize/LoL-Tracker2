@@ -20,8 +20,8 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
 
 	return (
 		<div className="relative overflow-x-auto">
-			<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-				<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+			<table className="w-full text-left text-gray-500 text-sm rtl:text-right dark:text-gray-400">
+				<thead className="bg-gray-50 text-gray-700 text-xs uppercase dark:bg-gray-700 dark:text-gray-400">
 					<tr>
 						<th scope="col" className="px-2 py-2">
 							Champion
@@ -41,12 +41,12 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
 							<tr
 								className={
 									user.puuid === player.puuid
-										? "bg-gray-50 border-b dark:bg-gray-700 dark:border-gray-700"
-										: "bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+										? "border-b bg-gray-50 dark:border-gray-700 dark:bg-gray-700"
+										: "border-b bg-white dark:border-gray-700 dark:bg-gray-800"
 								}
 								key={player.puuid}
 							>
-								<td className="px-2 py-2 gap-1 flex flex-col min-w-24 justify-center font-medium text-gray-900 whitespace-nowrap dark:text-foreground">
+								<td className="flex min-w-24 flex-col justify-center gap-1 whitespace-nowrap px-2 py-2 font-medium text-gray-900 dark:text-foreground">
 									<div className="flex justify-center">
 										<Image
 											src={getChampionImage(`${player.championName}.png`)}
@@ -61,7 +61,7 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
 									</div>
 									<div className="flex justify-center">{player.championName}</div>
 								</td>
-								<td className="px-2 py-2 font-medium min-w-48 text-gray-900 whitespace-nowrap dark:text-foreground">
+								<td className="min-w-48 whitespace-nowrap px-2 py-2 font-medium text-gray-900 dark:text-foreground">
 									<Link
 										href={`/${regionPath}/${player.riotIdGameName}-${player.riotIdTagline}`}
 										className="hover:underline"
@@ -69,7 +69,7 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
 										{player.riotIdGameName}
 									</Link>
 								</td>
-								<td className="px-4 py-2 font-medium min-w-24 text-gray-900 whitespace-nowrap dark:text-foreground">
+								<td className="min-w-24 whitespace-nowrap px-4 py-2 font-medium text-gray-900 dark:text-foreground">
 									{player.kills}/{player.deaths}/{player.assists}
 								</td>
 							</tr>

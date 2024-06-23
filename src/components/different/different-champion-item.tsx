@@ -15,7 +15,7 @@ export const DifferentChampionItem = ({ champ, hide }: { champ: ChampionDetails;
 					style={{
 						zIndex: -1,
 					}}
-					className={`${hide && "grayscale brightness-50"}`}
+					className={`${hide && "brightness-50 grayscale"}`}
 					alt={`${champ.name}`}
 					height={90}
 					width={90}

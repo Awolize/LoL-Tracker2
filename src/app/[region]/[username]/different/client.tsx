@@ -75,8 +75,8 @@ export default function Client({
 					<DifferentHeader finished={completedChampsLength} total={playerChampionInfo.length} patch={patch} />
 				</header>
 
-				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
-					<main className="flex-grow overflow-y-auto flex flex-row gap-2 ">
+				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
+					<main className="flex flex-grow flex-row gap-2 overflow-y-auto ">
 						{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
 							if (!playerChampionInfo[0]) return;
 

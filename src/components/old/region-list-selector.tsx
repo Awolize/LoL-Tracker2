@@ -23,14 +23,14 @@ export const RegionListSelector = ({ selectedRegion, setSelectedRegion }) => {
 				<p className="text-xs">v</p>
 			</Listbox.Button>
 			<div className="relative">
-				<Listbox.Options className="absolute top-0 left-0 flex-col inline w-[150px]">
+				<Listbox.Options className="absolute top-0 left-0 inline w-[150px] flex-col">
 					{regions
 						.filter((region) => selectedRegion?.id !== region.id)
 						.map((region) => (
 							<Listbox.Option key={region.id} value={region} disabled={region.disabled}>
 								<button
 									type="button"
-									className="hover:text-[hsl(280,100%,70%)] hover:bg-opacity-20 hover:bg-gray-500 w-full text-left"
+									className="w-full text-left hover:bg-gray-500 hover:bg-opacity-20 hover:text-[hsl(280,100%,70%)]"
 								>
 									{region.name}
 								</button>

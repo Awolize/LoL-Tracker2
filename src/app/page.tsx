@@ -37,7 +37,7 @@ export default function Page() {
             </Head> */}
 			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
 				<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-					<h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-[2rem] ">
+					<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
 						Search{" "}
 						<div className="inline-block">
 							<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
@@ -50,7 +50,7 @@ export default function Page() {
 								type="text"
 								ref={usernameRef}
 								placeholder="lol.awot#dev"
-								className="w-full h-12 rounded bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+								className="h-12 w-full rounded bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
 							/>
 							<div className="text-foreground/50 text-xs">
 								Remember to include the # and tagline like: Awot#dev

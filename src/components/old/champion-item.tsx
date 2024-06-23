@@ -41,7 +41,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
 		<li key={champ.key as React.Key} className="flex flex-col pb-2" onClick={() => handleChampionClick(champ.id)}>
 			<div className="relative z-10">
 				{showLevel && (
-					<div className="absolute flex top-1 left-1 h-5 w-5 font-bold items-center justify-center bg-opacity-50 bg-gray-900 text-xs rounded-full">
+					<div className="absolute top-1 left-1 flex h-5 w-5 items-center justify-center rounded-full bg-gray-900 bg-opacity-50 font-bold text-xs">
 						{champ.championLevel}
 					</div>
 				)}
@@ -51,7 +51,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
 							fill="currentColor"
-							className="w-6 h-6"
+							className="h-6 w-6"
 						>
 							<title>chestGranted</title>
 							<path
