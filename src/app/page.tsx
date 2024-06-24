@@ -23,6 +23,9 @@ export default function Page() {
 		setLoading(true);
 	}
 
+	const bard = false;
+	const background = bard ? "background.jpg" : "background-1.webp";
+
 	return (
 		<>
 			{/* <Head>
@@ -35,8 +38,10 @@ export default function Page() {
                 <meta property="og:image" content="https://lol.awot.dev/favicon.ico" />
                 <link rel="icon" href="/favicon.ico" />
             </Head> */}
-			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-				<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+			<main
+				className={`flex min-h-screen flex-col items-center justify-center bg-[url('/${background}')] bg-cover bg-center`}
+			>
+				<div className="container flex flex-col items-center justify-center gap-12 bg-black bg-opacity-80 px-4 py-16">
 					<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
 						Search{" "}
 						<div className="inline-block">
