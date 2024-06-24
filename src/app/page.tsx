@@ -23,9 +23,6 @@ export default function Page() {
 		setLoading(true);
 	}
 
-	const bard = false;
-	const background = bard ? "background.jpg" : "background-1.webp";
-
 	return (
 		<>
 			{/* <Head>
@@ -39,7 +36,7 @@ export default function Page() {
                 <link rel="icon" href="/favicon.ico" />
             </Head> */}
 			<main
-				className={`flex min-h-screen flex-col items-center justify-center bg-[url('/${background}')] bg-cover bg-center`}
+				className={`flex min-h-screen flex-col items-center justify-center bg-[url('/background-1.webp')] bg-center bg-cover`}
 			>
 				<div className="container flex flex-col items-center justify-center gap-12 bg-black bg-opacity-80 px-4 py-16">
 					<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
