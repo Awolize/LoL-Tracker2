@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import LoadingComponent from "~/components/old/loading-spinner";
 import RegionListSelector, { regions } from "~/components/old/region-list-selector";
 
-export default function Page() {
+export default function Search() {
 	const router = useRouter();
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function Page() {
 	}
 
 	return (
-		<div className="flex flex-row items-center gap-4 px-4 py-2">
+		<div className="flex h-full w-full flex-row items-center justify-center gap-4 px-4 py-2">
 			<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
 				<div className="inline-block">
 					<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />

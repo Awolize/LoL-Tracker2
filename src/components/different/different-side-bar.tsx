@@ -131,9 +131,9 @@ export const DifferentSideBar = ({
 
 	return (
 		<nav
-			className={`h-full bg-primary-foreground py-4 ${
+			className={`absolute top-0 left-0 h-[calc(100vh-84px)] bg-primary-foreground py-4 ${
 				drawerOpen ? "w-72 pr-2 pl-2" : "w-0 px-2"
-			} relative rounded-r-lg duration-300`}
+			} relative border-t-2 duration-300`}
 		>
 			{drawerOpen ? (
 				<ArrowLeftIcon
@@ -149,25 +149,26 @@ export const DifferentSideBar = ({
 
 			{drawerOpen && (
 				<div className="flex h-full flex-col gap-1">
-					<p className="border-gray-600 border-b text-center">Challenges</p>
-					<div className="inline-flex justify-evenly">
+					<p className="text-center">Challenges</p>
+					<div className="flex max-h-[1px] min-h-[1px] w-full bg-gray-600" />
+					<div className="inline-flex justify-evenly gap-1 py-1">
 						<input
 							type="text"
-							placeholder="Search..."
+							placeholder="Search title..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="my-1 rounded bg-background px-2 py-1 text-foreground"
+							className="rounded bg-background px-2 text-foreground"
 						/>
 						{showAll ? (
 							<OutlineFunnelIcon
 								onClick={() => setShowAll(!showAll)}
-								className="my-1 h-8 rounded bg-background px-2 py-1 text-foreground"
+								className="h-8 rounded bg-background px-2 py-1 text-foreground"
 								aria-checked={showAll}
 							/>
 						) : (
 							<SolidFunnelIcon
 								onClick={() => setShowAll(!showAll)}
-								className="my-1 h-8 rounded bg-background px-2 py-1 text-foreground"
+								className="h-8 rounded bg-background px-2 py-1 text-foreground"
 								aria-checked={showAll}
 							/>
 						)}

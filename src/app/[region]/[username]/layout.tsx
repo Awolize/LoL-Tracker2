@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import SearchBar from "./header/search";
+import SearchBar from "./header/Search";
+import Profile from "./header/Profile";
+import MainIcon from "./header/MainIcon";
 
 export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
 	return {
@@ -18,8 +20,16 @@ export default function RootLayout({
 }) {
 	return (
 		<div className="flex flex-col">
-			<header className="sticky top-0 z-30 flex w-screen flex-col items-end border-b-4 bg-background">
-				<SearchBar />
+			<header className="sticky top-0 z-30 flex w-screen flex-row justify-between bg-primary-foreground">
+				<div className="w-1/3">
+					<MainIcon />
+				</div>
+				<div className="w-1/3">
+					<Profile />
+				</div>
+				<div className="w-1/3">
+					<SearchBar />
+				</div>
 			</header>
 
 			{children}
