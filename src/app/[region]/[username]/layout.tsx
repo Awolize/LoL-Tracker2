@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import SearchBar from "./header/Search";
 import Profile from "./header/Profile";
 import MainIcon from "./header/MainIcon";
+import Search from "./header/Search";
 
 export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
 	return {
@@ -28,7 +28,7 @@ export default function RootLayout({
 					<Profile />
 				</div>
 				<div className="w-1/3">
-					<SearchBar />
+					<Search />
 				</div>
 			</header>
 
