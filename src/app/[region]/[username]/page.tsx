@@ -16,12 +16,8 @@ export default async function Page({ params }) {
 	const username = rawUsername.replace("-", "#").toLowerCase();
 
 	const region = regionToConstant(rawRegion.toUpperCase());
-
 	const user = await getUserByNameAndRegion(username, region);
-
 	const patch = (await prisma.championDetails.findMany())[0]?.version;
-
-	// const apiChampsData = await getChampionsAndMastery(username);
 
 	const props = {
 		username: rawUsername,

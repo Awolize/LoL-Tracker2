@@ -8,7 +8,7 @@ import Image from "next/image";
 
 export default function FooterLinks() {
 	return (
-		<div className=" flex flex-row gap-4">
+		<div className="flex flex-row gap-4">
 			<a href="https://github.com/Awolize/LoL-Tracker2">
 				<Image alt="riotIconColor" src={githubColor} />
 			</a>

@@ -110,7 +110,7 @@ const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: an
 			const rateLimitError = error as RateLimitError;
 			if (rateLimitError.status === 429) {
 				const retryAfter = (rateLimitError.rateLimits?.RetryAfter ?? 60) + 1;
-				console.log(`Rate limited. Retrying after ${retryAfter} seconds...`);
+				console.log(`Rate limited. Retrying in ${retryAfter} seconds...`);
 				await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
 				retryCount++;
 			} else {

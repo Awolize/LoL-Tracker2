@@ -112,7 +112,7 @@ const processMatches = async (
 			// error instanceof RateLimitError - did not work for some reason
 			if (rateLimitError.status === 429) {
 				const retryAfter = (rateLimitError.rateLimits?.RetryAfter || 60) + 1;
-				console.error(`[Game] Rate limited. Retrying after ${retryAfter} seconds...`);
+				console.error(`[Game] Rate limited. Retrying in ${retryAfter} seconds...`);
 				await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
 				newMatchIds.push(matchId);
 			} else {

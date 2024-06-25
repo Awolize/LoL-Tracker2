@@ -6,6 +6,8 @@ import { ArrowRightEndOnRectangleIcon as SubmitIcon } from "@heroicons/react/24/
 
 import LoadingComponent from "../components/old/loading-spinner";
 import RegionListSelector, { regions } from "../components/old/region-list-selector";
+import { MainText } from "~/components/header/MainText";
+import { SubText } from "~/components/header/SubText";
 
 export default function Page() {
 	const router = useRouter();
@@ -42,10 +44,8 @@ export default function Page() {
 				{/* <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-4 py-2"> */}
 				<div className="flex w-full animate-pulse2 flex-col items-center justify-center gap-4 bg-black py-16">
 					<div>
-						<h1 className="text-center font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
-							Awot's Challenges Tracker
-						</h1>
-						<h6 className="text-center text-foreground text-xl tracking-tight">League of Legends</h6>
+						<MainText />
+						<SubText />
 					</div>
 					<div>
 						<div className="flex h-full w-full flex-row items-center justify-center gap-4 px-4 py-2">
