@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Profile from "./header/Profile";
 import MainIcon from "./header/MainIcon";
 import Search from "./header/Search";
+import FooterLinks from "./footer/FooterLinks";
+import RiotGamesDisclaimer from "./footer/RiotGamesDisclaimer";
 
 export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
 	return {
@@ -34,10 +36,9 @@ export default function RootLayout({
 
 			{children}
 
-			<footer className="flex flex-col items-center p-2 text-sm opacity-50">
-				'lol.awot.dev' isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or
-				anyone officially involved in producing or managing Riot Games properties. Riot Games, and all
-				associated properties are trademarks or registered trademarks of Riot Games, Inc.
+			<footer className="flex flex-col items-center p-2 gap-4 text-sm opacity-50">
+				<FooterLinks />
+				<RiotGamesDisclaimer />
 			</footer>
 		</div>
 	);
