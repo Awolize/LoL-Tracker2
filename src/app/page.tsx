@@ -1,13 +1,13 @@
 "use client";
 
+import { ArrowRightEndOnRectangleIcon as SubmitIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { ArrowRightEndOnRectangleIcon as SubmitIcon } from "@heroicons/react/24/outline";
 
-import LoadingComponent from "../components/old/loading-spinner";
-import RegionListSelector, { regions } from "../components/old/region-list-selector";
 import { MainText } from "~/components/header/MainText";
 import { SubText } from "~/components/header/SubText";
+import LoadingComponent from "../components/old/loading-spinner";
+import RegionListSelector, { regions } from "../components/old/region-list-selector";
 
 export default function Page() {
 	const router = useRouter();

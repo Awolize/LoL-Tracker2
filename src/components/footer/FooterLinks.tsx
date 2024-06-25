@@ -1,10 +1,10 @@
-import github from "./github.svg";
-import githubColor from "./github-color.svg";
-import riot from "./riotgames.svg";
-import riotColor from "./riotgames-color.svg";
-import league from "./leagueoflegends.svg";
-import leagueColor from "./leagueoflegends-color.svg";
 import Image from "next/image";
+import githubColor from "./github-color.svg";
+import github from "./github.svg";
+import leagueColor from "./leagueoflegends-color.svg";
+import league from "./leagueoflegends.svg";
+import riotColor from "./riotgames-color.svg";
+import riot from "./riotgames.svg";
 
 export default function FooterLinks() {
 	return (
