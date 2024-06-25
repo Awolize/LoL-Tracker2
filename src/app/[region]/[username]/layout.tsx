@@ -36,7 +36,7 @@ export default function RootLayout({
 
 			{children}
 
-			<footer className="flex flex-col items-center p-2 gap-4 text-sm opacity-50">
+			<footer className="flex flex-col items-center gap-4 p-2 text-sm opacity-50">
 				<FooterLinks />
 				<RiotGamesDisclaimer />
 			</footer>
