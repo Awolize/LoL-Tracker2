@@ -38,7 +38,7 @@ export default function Page() {
 			<main
 				className={`flex min-h-screen flex-col items-center justify-center bg-[url('/background-1.webp')] bg-center bg-cover`}
 			>
-				<div className="container flex animate-pulse2 flex-col items-center justify-center gap-12 bg-black transition-colors bg-opacity-80 px-4 py-16">
+				<div className="flex w-full animate-pulse2 flex-col items-center justify-center gap-12 bg-black py-16">
 					<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
 						Search{" "}
 						<div className="inline-block">
