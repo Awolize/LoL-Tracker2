@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
 	return (
 		<div className="flex flex-col">
-			<header className="sticky top-0 z-30 flex w-screen flex-row justify-between bg-primary-foreground md:px-8 sm:px-1">
+			<header className="sticky top-0 z-30 flex w-screen flex-col justify-between bg-primary-foreground px-1 md:flex-row md:px-8">
 				<div className="flex flex-1">
 					<MainTitleLink />
 				</div>

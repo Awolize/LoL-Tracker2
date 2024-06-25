@@ -24,12 +24,14 @@ export default function Search() {
 	}
 
 	return (
-		<div className="flex h-full w-full flex-col items-center justify-center gap-1 px-4 py-2 md:flex-row md:gap-4">
-			<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem]">
-				<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
-			</h1>
-			<form id="search-summoner" className="flex flex-1 flex-row gap-[0.125rem]" onSubmit={onSubmit}>
-				<div>
+		<div className="flex h-full w-full items-center justify-center md:py-2">
+			<div className="flex flex-col gap-1 md:flex-row md:gap-4">
+				<div className="flex items-center justify-center">
+					<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem]">
+						<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
+					</h1>
+				</div>
+				<form id="search-summoner" className="flex flex-row justify-center gap-[0.125rem]" onSubmit={onSubmit}>
 					<div className="flex flex-col gap-1">
 						<input
 							type="text"
@@ -41,15 +43,15 @@ export default function Search() {
 							Remember to include the # and tagline like: Awot#dev
 						</div>
 					</div>
-				</div>
-				<button
-					form="search-summoner"
-					type="submit"
-					className="h-12 w-8 rounded-r bg-gray-700 p-1 align-middle hover:bg-gray-600"
-				>
-					{loading ? <LoadingComponent /> : <SubmitIcon />}
-				</button>
-			</form>
+					<button
+						form="search-summoner"
+						type="submit"
+						className="h-12 w-8 rounded-r bg-gray-700 p-1 align-middle hover:bg-gray-600"
+					>
+						{loading ? <LoadingComponent /> : <SubmitIcon />}
+					</button>
+				</form>
+			</div>
 		</div>
 	);
 }
