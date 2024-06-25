@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
 import { prisma } from "~/server/db";
-import { regionToConstant } from "../../../utils/champsUtils";
+import { regionToConstant } from "~/utils/champsUtils";
 import Client from "./client";
 
 const paramsSchema = z.object({
