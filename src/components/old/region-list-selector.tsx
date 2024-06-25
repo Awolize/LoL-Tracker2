@@ -1,4 +1,4 @@
-import { Listbox } from "@headlessui/react";
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 
 export const regions = [
 	{ id: 3, name: "EUW", disabled: false },
@@ -18,25 +18,25 @@ export const regions = [
 export const RegionListSelector = ({ selectedRegion, setSelectedRegion }) => {
 	return (
 		<Listbox value={selectedRegion} onChange={setSelectedRegion}>
-			<Listbox.Button className={"flex items-end"}>
+			<ListboxButton className={"flex items-end"}>
 				<span className="text-[hsl(280,100%,70%)]">{selectedRegion?.name}</span>
 				<p className="text-xs">v</p>
-			</Listbox.Button>
+			</ListboxButton>
 			<div className="relative">
-				<Listbox.Options className="absolute top-0 left-0 inline w-[150px] flex-col">
+				<ListboxOptions className="absolute top-0 left-0 inline w-[150px] flex-col">
 					{regions
 						.filter((region) => selectedRegion?.id !== region.id)
 						.map((region) => (
-							<Listbox.Option key={region.id} value={region} disabled={region.disabled}>
+							<ListboxOption key={region.id} value={region} disabled={region.disabled}>
 								<button
 									type="button"
 									className="w-full text-left hover:bg-gray-500 hover:bg-opacity-20 hover:text-[hsl(280,100%,70%)]"
 								>
 									{region.name}
 								</button>
-							</Listbox.Option>
+							</ListboxOption>
 						))}
-				</Listbox.Options>
+				</ListboxOptions>
 			</div>
 		</Listbox>
 	);

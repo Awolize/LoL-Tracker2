@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import FooterLinks from "~/components/footer/FooterLinks";
 import RiotGamesDisclaimer from "~/components/footer/RiotGamesDisclaimer";
-import MainIcon from "~/components/header/MainIcon";
+import { MainTitleLink } from "~/components/header/MainTitleLink";
 import Profile from "~/components/header/Profile";
 import Search from "~/components/header/Search";
 
@@ -22,14 +22,14 @@ export default function RootLayout({
 }) {
 	return (
 		<div className="flex flex-col">
-			<header className="sticky top-0 z-30 flex w-screen flex-row justify-between bg-primary-foreground">
-				<div className="w-1/3">
-					<MainIcon />
+			<header className="sticky top-0 z-30 flex w-screen flex-row justify-between bg-primary-foreground md:px-8 sm:px-1">
+				<div className="flex flex-1">
+					<MainTitleLink />
 				</div>
-				<div className="w-1/3">
+				<div>
 					<Profile />
 				</div>
-				<div className="w-1/3">
+				<div className="flex flex-1">
 					<Search />
 				</div>
 			</header>

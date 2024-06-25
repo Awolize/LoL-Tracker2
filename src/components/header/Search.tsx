@@ -24,13 +24,11 @@ export default function Search() {
 	}
 
 	return (
-		<div className="flex h-full w-full flex-row items-center justify-center gap-4 px-4 py-2">
-			<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem] ">
-				<div className="inline-block">
-					<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
-				</div>
+		<div className="flex h-full w-full flex-col items-center justify-center gap-1 px-4 py-2 md:flex-row md:gap-4">
+			<h1 className="font-extrabold text-2xl text-foreground tracking-tight sm:text-[2rem]">
+				<RegionListSelector selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
 			</h1>
-			<form id="search-summoner" className="flex flex-row gap-[0.125rem]" onSubmit={onSubmit}>
+			<form id="search-summoner" className="flex flex-1 flex-row gap-[0.125rem]" onSubmit={onSubmit}>
 				<div>
 					<div className="flex flex-col gap-1">
 						<input
