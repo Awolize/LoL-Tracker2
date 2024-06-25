@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Profile from "./header/Profile";
-import MainIcon from "./header/MainIcon";
-import Search from "./header/Search";
-import FooterLinks from "./footer/FooterLinks";
-import RiotGamesDisclaimer from "./footer/RiotGamesDisclaimer";
+import Profile from "~/components/header/Profile";
+import MainIcon from "~/components/header/MainIcon";
+import Search from "~/components/header/Search";
+import FooterLinks from "~/components/footer/FooterLinks";
+import RiotGamesDisclaimer from "~/components/footer/RiotGamesDisclaimer";
 
 export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
 	return {

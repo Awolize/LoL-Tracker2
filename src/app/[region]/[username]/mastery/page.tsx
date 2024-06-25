@@ -9,7 +9,7 @@ import { getChallengesThresholds2, getPlayerChallengesData2 } from "~/server/api
 import { getCompleteChampionData } from "~/server/api/routers/processing/champions";
 import { getMatches } from "~/server/api/routers/processing/match";
 import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
-import { type ChallengeIds, regionToConstant } from "../../../../utils/champsUtils";
+import { type ChallengeIds, regionToConstant } from "~/utils/champsUtils";
 import { Client } from "./client";
 
 const paramsSchema = z.object({
