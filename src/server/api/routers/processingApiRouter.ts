@@ -86,27 +86,16 @@ export const processingApiRouter = createTRPCRouter({
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			const challenges = (
-				await prisma.summoner.findFirst({
-					where: { puuid: user.puuid },
-					include: { challenges: true },
-				})
-			)?.challenges;
-
-			if (!challenges) {
-				await prisma.challenges.create({
-					data: {
-						summoner: { connect: { puuid: user.puuid } },
-					},
-				});
-			}
-
 			try {
-				await prisma.challenges.update({
-					where: {
-						puuid: user.puuid,
+				await prisma.challenges.upsert({
+					where: { puuid: user.puuid },
+					update: {
+						championOcean: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
 					},
-					data: {
+					create: {
+						summoner: { connect: { puuid: user.puuid } },
 						championOcean: {
 							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
 						},
@@ -147,27 +136,16 @@ export const processingApiRouter = createTRPCRouter({
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			const challenges = (
-				await prisma.summoner.findFirst({
-					where: { puuid: user.puuid },
-					include: { challenges: true },
-				})
-			)?.challenges;
-
-			if (!challenges) {
-				await prisma.challenges.create({
-					data: {
-						summoner: { connect: { puuid: user.puuid } },
-					},
-				});
-			}
-
 			try {
-				await prisma.challenges.update({
-					where: {
-						puuid: user.puuid,
+				await prisma.challenges.upsert({
+					where: { puuid: user.puuid },
+					update: {
+						adaptToAllSituations: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
 					},
-					data: {
+					create: {
+						summoner: { connect: { puuid: user.puuid } },
 						adaptToAllSituations: {
 							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
 						},
@@ -219,32 +197,21 @@ export const processingApiRouter = createTRPCRouter({
 				}
 			}
 
-			const challenges = (
-				await prisma.summoner.findFirst({
-					where: { puuid: user.puuid },
-					include: { challenges: true },
-				})
-			)?.challenges;
-
-			if (!challenges) {
-				await prisma.challenges.create({
-					data: {
-						summoner: { connect: { puuid: user.puuid } },
-					},
-				});
-			}
-
 			const uniqueWins = new Set<number>(wins.map((win) => win.championId));
 			const uniqueLoses = new Set<number>(loses.map((lose) => lose.championId));
 
 			try {
-				await prisma.challenges.update({
-					where: {
-						puuid: user.puuid,
-					},
-					data: {
+				await prisma.challenges.upsert({
+					where: { puuid: user.puuid },
+					update: {
 						jackOfAllChamps: {
-							connect: [...uniqueWins].map((win) => ({ id: win })),
+							connect: [...uniqueWins].map((champId) => ({ id: champId })),
+						},
+					},
+					create: {
+						summoner: { connect: { puuid: user.puuid } },
+						jackOfAllChamps: {
+							connect: [...uniqueWins].map((champId) => ({ id: champId })),
 						},
 					},
 				});
