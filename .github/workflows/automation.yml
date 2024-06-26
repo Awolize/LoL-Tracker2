@@ -15,7 +15,7 @@ on:
       - main
 
 env:
-  # DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
   PROCESSING_URL: ${{ secrets.PROCESSING_URL }}
 
@@ -26,26 +26,6 @@ jobs:
     strategy:
       matrix:
         node-version: [22]
-     # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps TCP port 5432 on service container to the host
-          - 5433:5432
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5433/grading-app
     permissions:
       packages: write
       contents: read
@@ -78,16 +58,9 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/lol-tracker2
 
-      # run the migration in the test database
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Prisma populate test-db
-        run: pnpm prisma migrate dev --name pipeline         
-
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6.2.0
         with:
           context: .
           push: true
