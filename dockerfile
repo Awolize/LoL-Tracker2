@@ -13,6 +13,8 @@ RUN apk add --no-cache git
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+COPY prisma ./prisma
+
 # Omit --production flag for TypeScript devDependencies
 RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -26,7 +28,6 @@ COPY src ./src
 COPY public ./public
 COPY next.config.mjs .
 COPY tsconfig.json .
-COPY prisma ./prisma
 COPY postcss.config.cjs tailwind.config.ts ./
 
 # Environment variables must be present at build time
