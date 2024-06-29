@@ -16,13 +16,13 @@ import type { CompleteChampionInfo } from "../mastery/page";
 export default function Client({
 	user,
 	region,
-	patch,
+	version,
 	playerChampionInfo,
 }: {
 	user: Summoner;
 	region: Regions;
 	playerChampionInfo: CompleteChampionInfo[];
-	patch: string;
+	version: string;
 }) {
 	const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
@@ -72,7 +72,11 @@ export default function Client({
 
 			<div className="flex flex-1 flex-col">
 				<header className="h-24">
-					<DifferentHeader finished={completedChampsLength} total={playerChampionInfo.length} patch={patch} />
+					<DifferentHeader
+						finished={completedChampsLength}
+						total={playerChampionInfo.length}
+						version={version}
+					/>
 				</header>
 
 				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
@@ -93,7 +97,14 @@ export default function Client({
 											const jacks = selectedChallengeQuery?.data.map((el) => el.key) ?? [];
 											const hide = jacks.includes(champ.key);
 
-											return <DifferentChampionItem key={champ.key} hide={hide} champ={champ} />;
+											return (
+												<DifferentChampionItem
+													key={champ.key}
+													hide={hide}
+													champ={champ}
+													version={version}
+												/>
+											);
 										})}
 									</ul>
 								</div>

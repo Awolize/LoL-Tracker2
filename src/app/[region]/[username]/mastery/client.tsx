@@ -20,7 +20,7 @@ export function Client({
 }: {
 	user: Summoner;
 	playerChampionInfo: CompleteChampionInfo[];
-	patch: string;
+	version: string;
 	challengeIds: string;
 	playerChallengesData: string;
 	challengesThresholds: string;
@@ -48,7 +48,7 @@ function Main({
 }: {
 	user: Summoner;
 	playerChampionInfo: CompleteChampionInfo[];
-	patch: string;
+	version: string;
 	challengeIds: string;
 	playerChallengesData: string;
 	challengesThresholds: string;

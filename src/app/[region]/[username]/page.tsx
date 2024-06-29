@@ -17,8 +17,8 @@ export default async function Page({ params }) {
 	const username = rawUsername.replace("-", "#");
 	const region = regionToConstant(rawRegion.toUpperCase());
 	const { profileIconId, summonerLevel } = await getUserByNameAndRegion(username.toLowerCase(), region);
-	const patch = (await prisma.championDetails.findFirst())?.version;
-	const profileIconUrl = `https://ddragon.leagueoflegends.com/cdn/${patch}/img/profileicon/${profileIconId}.png`;
+	const version = (await prisma.championDetails.findFirst())?.version;
+	const profileIconUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${profileIconId}.png`;
 
 	return (
 		<div>
@@ -27,15 +27,7 @@ export default async function Page({ params }) {
 					<div className="h-5" />
 					<div className="relative flex flex-row items-center justify-center gap-6">
 						<div className="absolute left-0">
-							<Image
-								priority
-								src={profileIconUrl}
-								alt={`${profileIconId}`}
-								height={90}
-								width={90}
-								// hidden={hideAll}
-								// placeholder="/placeholder.png"
-							/>
+							<Image priority src={profileIconUrl} alt={`${profileIconId}`} height={90} width={90} />
 						</div>
 						<div className="flex-col items-center bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 bg-clip-text text-transparent">
 							<div className="text-6xl">{username}</div>

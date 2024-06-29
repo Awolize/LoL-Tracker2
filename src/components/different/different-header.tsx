@@ -1,4 +1,4 @@
-export const DifferentHeader = ({ finished, total, patch }) => {
+export const DifferentHeader = ({ finished, total, version }) => {
 	return (
 		<header className="relative mt-2 flex w-full justify-center">
 			<div className="w-52 min-w-fit">
@@ -13,7 +13,7 @@ export const DifferentHeader = ({ finished, total, patch }) => {
 			</div>
 
 			<div className="fixed top-1 right-3">
-				<span className="text-gray-400">V{patch}</span>
+				<span className="text-gray-400">V{version}</span>
 			</div>
 		</header>
 	);

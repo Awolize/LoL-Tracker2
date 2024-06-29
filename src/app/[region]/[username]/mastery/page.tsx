@@ -46,7 +46,7 @@ export default async function Page({ params }) {
 		<Client
 			user={user}
 			playerChampionInfo={completeChampionsData.completeChampionsData}
-			patch={completeChampionsData.patch}
+			version={completeChampionsData.version}
 			challengeIds={stringify(challengeIds)}
 			playerChallengesData={stringify(playerChallenges)}
 			challengesThresholds={stringify(challengesThresholds)}

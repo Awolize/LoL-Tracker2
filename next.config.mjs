@@ -14,7 +14,6 @@ const config = {
 		defaultLocale: "en",
 	},
 	images: {
-		unoptimized: true,
 		domains: ["ddragon.leagueoflegends.com"],
 		remotePatterns: [
 			{

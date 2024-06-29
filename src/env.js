@@ -13,6 +13,10 @@ export const env = createEnv({
 			.url()
 			.refine((str) => !str.includes("YOUR_MYSQL_URL_HERE"), "You forgot to change the default URL"),
 		NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+		MINIO_ENDPOINT: z.string(),
+		MINIO_PORT: z.string(),
+		MINIO_ACCESS_KEY: z.string(),
+		MINIO_SECRET_KEY: z.string(),
 	},
 
 	/**
@@ -32,6 +36,10 @@ export const env = createEnv({
 		PROCESSING_URL: process.env.PROCESSING_URL,
 		DATABASE_URL: process.env.DATABASE_URL,
 		NODE_ENV: process.env.NODE_ENV,
+		MINIO_ENDPOINT: process.env.MINIO_ENDPOINT,
+		MINIO_PORT: process.env.MINIO_PORT,
+		MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+		MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
 	/**

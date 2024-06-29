@@ -50,9 +50,9 @@ export async function getCompleteChampionData(region: Regions, user: Summoner) {
 		} as CompleteChampionInfo;
 	});
 
-	const patch = champions.at(0)?.version ?? "";
+	const version = champions.at(0)?.version ?? "";
 
-	return { completeChampionsData, patch };
+	return { completeChampionsData, version };
 }
 
 export type CompleteMatch = Match & {

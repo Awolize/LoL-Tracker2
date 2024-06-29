@@ -23,7 +23,7 @@ export const upsertMastery = async (user: Summoner, region: Regions) => {
 						lastPlayTime: new Date(mastery.lastPlayTime),
 						championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
 						championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-						chestGranted: mastery.chestGranted,
+						chestGranted: mastery.chestGranted ?? false,
 						tokensEarned: mastery.tokensEarned,
 					},
 					create: {
@@ -34,7 +34,7 @@ export const upsertMastery = async (user: Summoner, region: Regions) => {
 						lastPlayTime: new Date(mastery.lastPlayTime),
 						championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
 						championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-						chestGranted: mastery.chestGranted,
+						chestGranted: mastery.chestGranted ?? false,
 						tokensEarned: mastery.tokensEarned,
 					},
 				}),

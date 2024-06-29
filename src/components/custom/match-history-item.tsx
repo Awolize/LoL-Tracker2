@@ -20,9 +20,17 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
 	return (
 		<div className="flex flex-row gap-4">
 			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
-			<MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={200} />
+			<MatchTable
+				players={match.MatchInfo.participants as unknown as Array<any>}
+				teamId={200}
+				version={`${match.MatchInfo.gameVersion.split(".").slice(0, 2).join(".")}.1`}
+			/>
 			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
-			<MatchTable players={match.MatchInfo.participants as unknown as Array<any>} teamId={100} />
+			<MatchTable
+				players={match.MatchInfo.participants as unknown as Array<any>}
+				teamId={100}
+				version={`${match.MatchInfo.gameVersion.split(".").slice(0, 2).join(".")}.1`}
+			/>
 			<div className="flex flex-col">
 				<div>{match.MatchInfo.gameStartTimestamp.toLocaleString()}</div>
 				<div>Mode: {match.MatchInfo.gameMode}</div>

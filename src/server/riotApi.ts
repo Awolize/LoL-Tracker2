@@ -7,4 +7,6 @@ const globalForRiotApi = globalThis as unknown as {
 
 export const riotApi = globalForRiotApi.riotApi ?? new RiotApi();
 
-if (env.NODE_ENV !== "production") globalForRiotApi.riotApi = riotApi;
+if (env.NODE_ENV !== "production") {
+	globalForRiotApi.riotApi = riotApi;
+}

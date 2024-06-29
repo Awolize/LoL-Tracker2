@@ -9,10 +9,11 @@ import type { MatchPlayerData } from "./MatchPlayerData";
 interface MatchTableProps {
 	players: Array<MatchPlayerData>;
 	teamId: number;
+	version: string;
 }
 
-const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
-	const { getChampionImage } = useDataDragonPath();
+const MatchTable: React.FC<MatchTableProps> = ({ players, teamId, version }) => {
+	const { getChampionImage } = useDataDragonPath(version);
 	const user = useUserContext((s) => s.user);
 
 	const pathname = usePathname(); // "/EUW/awot-dev/mastery"
@@ -54,7 +55,6 @@ const MatchTable: React.FC<MatchTableProps> = ({ players, teamId }) => {
 											alt={`${player.championName}`}
 											height={40}
 											width={40}
-											unoptimized={false}
 											placeholder="blur"
 											blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 										/>
