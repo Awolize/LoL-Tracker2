@@ -18,7 +18,7 @@
 		"postinstall": "prisma generate"
 	},
 	"dependencies": {
-		"@headlessui/react": "^2.1.1",
+		"@headlessui/react": "^2.1.2",
 		"@heroicons/react": "^2.1.4",
 		"@prisma/client": "5.16.1",
 		"@radix-ui/react-dialog": "^1.1.1",
