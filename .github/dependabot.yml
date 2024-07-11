@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     # Always increase the version requirement
     # to match the new version.
     versioning-strategy: increase
