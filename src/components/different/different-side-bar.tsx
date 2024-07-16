@@ -131,7 +131,7 @@ export const DifferentSideBar = ({
 
 	return (
 		<nav
-			className={`absolute top-0 left-0 h-[calc(100vh-84px)] bg-primary-foreground py-4 ${
+			className={`sticky top-[84px] left-0 max-h-[calc(100vh-168px)] bg-primary-foreground py-4 ${
 				drawerOpen ? "w-72 pr-2 pl-2" : "w-0 px-2"
 			} relative border-t-2 duration-300`}
 		>

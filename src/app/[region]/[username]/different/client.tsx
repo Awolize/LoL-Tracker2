@@ -60,15 +60,13 @@ export default function Client({
 
 	return (
 		<div className="flex w-screen justify-center">
-			<aside className="z-10">
-				<DifferentSideBar
-					region={region}
-					user={user}
-					selectedItem={selectedItem}
-					setSelectedItem={setSelectedItem}
-					mappedCases={selectedChallengeQuery.cases}
-				/>
-			</aside>
+			<DifferentSideBar
+				region={region}
+				user={user}
+				selectedItem={selectedItem}
+				setSelectedItem={setSelectedItem}
+				mappedCases={selectedChallengeQuery.cases}
+			/>
 
 			<div className="flex flex-1 flex-col">
 				<header className="h-24">
