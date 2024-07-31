@@ -10,11 +10,12 @@
 	"Aphelios": "Bottom",
 	"Ashe": "Bottom",
 	"AurelionSol": "Mid",
+	"Aurora": "Mid",
 	"Azir": "Mid",
 	"Bard": "Support",
 	"Belveth": "Jungle",
 	"Blitzcrank": "Support",
-	"Brand": "Support",
+	"Brand": "Jungle",
 	"Braum": "Support",
 	"Briar": "Jungle",
 	"Caitlyn": "Bottom",
@@ -134,7 +135,7 @@
 	"Teemo": "Top",
 	"Thresh": "Support",
 	"Tristana": "Bottom",
-	"Trundle": "Jungle",
+	"Trundle": "Top",
 	"Tryndamere": "Top",
 	"TwistedFate": "Mid",
 	"Twitch": "Bottom",
@@ -164,5 +165,5 @@
 	"Ziggs": "Mid",
 	"Zilean": "Support",
 	"Zoe": "Mid",
-	"Zyra": "Support"
+	"Zyra": "Jungle"
 }

@@ -10,8 +10,6 @@ export async function GET(req: NextRequest, { params }: { params: { slugs: strin
 
 	try {
 		const objectStream = await minio.getObject(bucketName, imageName);
-		console.log(`found ${imageName} in bucket`);
-
 		const imageBuffer = await streamToBuffer(objectStream);
 		const ext = path.extname(imageName).slice(1);
 		const contentType = `image/${ext === "jpg" ? "jpeg" : ext}`;
@@ -23,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { slugs: strin
 			},
 		});
 	} catch (error) {
-		if (error.code !== "NoSuchKey") {
+		if ((error as { code?: string }).code !== "NoSuchKey") {
 			return new NextResponse("Error accessing the image", { status: 500 });
 		}
 
@@ -42,7 +40,6 @@ export async function GET(req: NextRequest, { params }: { params: { slugs: strin
 				.toBuffer();
 
 			await minio.putObject(bucketName, imageName, optimizedImageBuffer, optimizedImageBuffer.length);
-			console.log(`Uploaded ${imageName} to bucket`);
 			return new NextResponse(optimizedImageBuffer, {
 				headers: {
 					"Content-Type": "image/webp",
