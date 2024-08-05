@@ -11,8 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Biome
-        uses: biomejs/setup-biome@v2
-        with:
-          version: latest
+        uses: biomejs/setup-biome@v2.2.1
       - name: Run Biome
         run: biome ci .

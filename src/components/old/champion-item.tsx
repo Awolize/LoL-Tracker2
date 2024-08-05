@@ -4,6 +4,7 @@ import type React from "react";
 
 import Image from "next/image";
 
+import clsx from "clsx";
 import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 import { filteredOut } from "~/utils/champsUtils";
 import { useDataDragonPath } from "./use-data-dragon-path";
@@ -82,15 +83,17 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
 						opacity: disabled ? "40%" : "100%",
 						boxSizing: "border-box",
 					}}
-					className={`
-                        ${hiddenChamp && "grayscale brightness-50"} 
-                        ${disabled && "grayscale"} 
-                        rounded
-                        ${showLevel && champ.championLevel === 7 && "border-4 border-sky-500 border-opacity-70"}
-                        ${showLevel && champ.championLevel === 6 && "border-4 border-purple-600 border-opacity-60"}
-                        ${showLevel && champ.championLevel === 5 && "border-4 border-red-600 border-opacity-50"}
-                        ${showLevel && champ.championLevel < 5 && "border-4 border-yellow-700 border-opacity-25"}
-                    `}
+					className={clsx(
+						{
+							"brightness-50 grayscale": hiddenChamp,
+							grayscale: disabled,
+							"border-4 border-sky-500 border-opacity-70": showLevel && champ.championLevel === 7,
+							"border-4 border-purple-600 border-opacity-60": showLevel && champ.championLevel === 6,
+							"border-4 border-red-600 border-opacity-50": showLevel && champ.championLevel === 5,
+							"border-4 border-yellow-700 border-opacity-25": showLevel && champ.championLevel < 5,
+						},
+						"rounded",
+					)}
 					alt={`${champ.name}`}
 					height={90}
 					width={90}

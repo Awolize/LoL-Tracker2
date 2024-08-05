@@ -14,11 +14,11 @@
 				"useSortedClasses": "info"
 			}
 		},
-		"ignore": [".next"]
+		"ignore": [".next", "pnpm-lock.yaml", "node_modules", "minio"]
 	},
 	"formatter": {
 		"indentStyle": "tab",
-		"ignore": [".next"],
+		"ignore": [".next", "pnpm-lock.yaml", "node_modules", "minio"],
 		"indentWidth": 4,
 		"lineWidth": 120
 	}
