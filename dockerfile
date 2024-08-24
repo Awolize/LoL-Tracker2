@@ -38,26 +38,15 @@ ENV MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
 ARG MINIO_SECRET_KEY
 ENV MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
 
-# Omit --production flag for TypeScript devDependencies
-RUN \
-    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then pnpm i; \
-    # Allow install without lockfile, so example works even without Node.js installed locally
-    else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
-    fi
-
 # Next.js collects completely anonymous telemetry data about general usage. Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line to disable telemetry at build time
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Build Next.js based on the preferred package manager
-RUN \
-    if [ -f yarn.lock ]; then yarn prisma generate && yarn build; \
-    elif [ -f package-lock.json ]; then npm prisma generate && npm run build; \
-    elif [ -f pnpm-lock.yaml ]; then pnpm prisma generate && pnpm build; \
-    else yarn prisma generate && yarn build; \
-    fi
+# Omit --production flag for TypeScript devDependencies
+RUN pnpm i
+
+RUN pnpm prisma generate;
+RUN pnpm build;
 
 # Note: It is not necessary to add an intermediate step that does a full copy of `node_modules` here
 
