@@ -8,7 +8,7 @@ import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
 import { updateChampionDetails } from "./processing/champions";
 import { upsertMastery } from "./processing/mastery";
-import { getArenaMatches, getMatches, updateGames } from "./processing/match";
+import { getArenaMatches, getMatches, getSRMatches, updateGames } from "./processing/match";
 import { getUserByNameAndRegion, upsertSummoner } from "./processing/summoner";
 
 import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
@@ -147,6 +147,56 @@ export const processingApiRouter = createTRPCRouter({
 					create: {
 						summoner: { connect: { puuid: user.puuid } },
 						adaptToAllSituations: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
+					},
+				});
+			} catch (error) {
+				await updateChampionDetails();
+				console.error("Missing champ??");
+			}
+
+			console.log(`${user.gameName}#${user.tagLine} (${user.region})`, matches.length, uniqueChampIds.size);
+
+			return { numberOfGames: matches.length, uniqueChampIds };
+		}),
+
+	updateInvincible: publicProcedure
+		.input(z.object({ username: z.string(), region: z.string() }))
+		.mutation(async ({ input }) => {
+			console.log(`updateInvincible for user ${input.username} (${input.region.toUpperCase()})`);
+
+			const region = input.region as Regions;
+
+			const user = await getUserByNameAndRegion(input.username, region);
+			if (!user) return;
+
+			const matches = await getSRMatches(user);
+			if (!matches) return;
+
+			const participations = matches
+				.flatMap((match) => match.MatchInfo.participants)
+				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
+				.filter((p) => (p as unknown as { deaths?: number })?.deaths === 0)
+				.filter(Boolean) as unknown as Participant[];
+
+			console.log(
+				`[Invincible] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
+			);
+
+			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
+
+			try {
+				await prisma.challenges.upsert({
+					where: { puuid: user.puuid },
+					update: {
+						invincible: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
+					},
+					create: {
+						summoner: { connect: { puuid: user.puuid } },
+						invincible: {
 							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
 						},
 					},

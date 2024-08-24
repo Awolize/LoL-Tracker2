@@ -42,6 +42,7 @@ export const DifferentSideBar = ({
 			refreshQueryUpdateJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
 			refreshQueryUpdateChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
 			refreshQueryUpdateAdaptToAllSituations.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+			refreshQueryUpdateInvincible.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
 		},
 	});
 	const refreshQueryUpdateJackOfAllChamps = api.processingApi.updateJackOfAllChamps.useMutation({
@@ -59,7 +60,13 @@ export const DifferentSideBar = ({
 	const refreshQueryUpdateAdaptToAllSituations = api.processingApi.updateAdaptToAllSituations.useMutation({
 		onSuccess: async () => {
 			await utils.differentApi.getChallengesConfig.invalidate();
-			await utils.differentApi.getChampionOcean.invalidate();
+			await utils.differentApi.getAdaptToAllSituations.invalidate();
+		},
+	});
+	const refreshQueryUpdateInvincible = api.processingApi.updateInvincible.useMutation({
+		onSuccess: async () => {
+			await utils.differentApi.getChallengesConfig.invalidate();
+			await utils.differentApi.getInvincible.invalidate();
 		},
 	});
 
@@ -113,6 +120,7 @@ export const DifferentSideBar = ({
 			refreshQueryUpdateGames.isLoading ||
 			refreshQueryUpdateJackOfAllChamps.isLoading ||
 			refreshQueryUpdateAdaptToAllSituations.isLoading ||
+			refreshQueryUpdateInvincible.isLoading ||
 			refreshQueryUpdateChampionOcean.isLoading;
 
 		return (

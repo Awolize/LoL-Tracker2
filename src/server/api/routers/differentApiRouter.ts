@@ -73,6 +73,27 @@ export const differentApiRouter = createTRPCRouter({
 
 			return (await getAdaptToAllSituations(user.puuid)) ?? [];
 		}),
+	getInvincible: publicProcedure
+		.input(z.object({ username: z.string(), region: z.string() }))
+		.query(async ({ input }) => {
+			const region = input.region as Regions;
+			const user = await getUserByNameAndRegion(input.username.toLowerCase(), region);
+
+			const getInvincible = async (puuid) => {
+				return (
+					await prisma.challenges.findFirst({
+						where: {
+							puuid: puuid,
+						},
+						include: {
+							invincible: true,
+						},
+					})
+				)?.invincible;
+			};
+
+			return (await getInvincible(user.puuid)) ?? [];
+		}),
 	getJackOfAllChamps: publicProcedure
 		.input(z.object({ username: z.string(), region: z.string() }))
 		.query(async ({ input }) => {

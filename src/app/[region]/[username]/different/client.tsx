@@ -35,11 +35,13 @@ export default function Client({
 	const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
 	const getChampionOcean = api.differentApi.getChampionOcean.useQuery(queryParams);
 	const getAdaptToAllSituations = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
+	const getInvincible = api.differentApi.getInvincible.useQuery(queryParams);
 
 	const selectedChallengeQuery = useMemo(() => {
 		console.log("selected challenge", selectedItem);
 
 		const challengeDataMap = {
+			202303: getInvincible?.data ?? [],
 			401106: selectedChallenge?.data ?? [],
 			602001: getChampionOcean?.data ?? [],
 			602002: getAdaptToAllSituations?.data ?? [],
@@ -54,7 +56,7 @@ export default function Client({
 			data: mappedData,
 			cases: mappedCases,
 		};
-	}, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations]);
+	}, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations, getInvincible]);
 
 	const completedChampsLength = selectedChallengeQuery?.data.length;
 

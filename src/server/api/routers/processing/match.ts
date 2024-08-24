@@ -237,3 +237,39 @@ export async function getArenaMatches(user: Summoner) {
 
 	return filteredMatches;
 }
+
+// Summoner's rift Map, https://static.developer.riotgames.com/docs/lol/maps.json
+export async function getSRMatches(user: Summoner) {
+	const matches: (Match & {
+		MatchInfo: MatchInfo | null;
+		participants: Summoner[];
+	})[] = await prisma.match.findMany({
+		where: {
+			participants: {
+				some: user,
+			},
+			MatchInfo: {
+				mapId: 11, // Filter by mapId 11 (Summoner's Rift)
+				gameStartTimestamp: {
+					gte: new Date("2024-01-01T00:00:00Z"), // Unix timestamp of January 1, 2024
+				},
+				gameMode: "CLASSIC",
+				gameType: "MATCHED_GAME",
+			},
+		},
+		include: {
+			MatchInfo: true,
+			participants: true,
+		},
+		orderBy: {
+			MatchInfo: {
+				gameStartTimestamp: "desc",
+			},
+		},
+	});
+
+	// Filter out null values and ensure MatchInfo is not null
+	const filteredMatches = matches.filter((match): match is CompleteMatch => match?.MatchInfo !== null);
+
+	return filteredMatches;
+}
