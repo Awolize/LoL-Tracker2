@@ -71,8 +71,5 @@
 	},
 	"ct3aMetadata": {
 		"initVersion": "7.24.2"
-	},
-	"resolutions": {
-		"terser": "3.14.1"
 	}
 }

@@ -72,7 +72,6 @@ jobs:
             "DATABASE_URL=${{ secrets.DATABASE_URL }}"
             "RIOT_API_KEY=${{ secrets.RIOT_API_KEY }}"
             "PROCESSING_URL=${{ secrets.PROCESSING_URL }}"
-            "PROCESSING_URL=${{ secrets.PROCESSING_URL }}"
             "MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }}"
             "MINIO_PORT=${{ secrets.MINIO_PORT }}"
             "MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}"
