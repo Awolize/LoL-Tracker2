@@ -54,7 +54,11 @@ const processMatches = async (
 	user: Summoner,
 	region: Regions,
 	matchIds: string[],
-): Promise<{ addedGames: string[]; skippedGames: string[]; failedGames: string[] }> => {
+): Promise<{
+	addedGames: string[];
+	skippedGames: string[];
+	failedGames: string[];
+}> => {
 	const addedGames: string[] = [];
 	const skippedGames: string[] = [];
 	const failedGames: string[] = [];
@@ -239,6 +243,7 @@ export async function getArenaMatches(user: Summoner) {
 }
 
 // Summoner's rift Map, https://static.developer.riotgames.com/docs/lol/maps.json
+// these might be stable picks for now: queueID: 2,4,6,14,420,430,440,490,700
 export async function getSRMatches(user: Summoner) {
 	const matches: (Match & {
 		MatchInfo: MatchInfo | null;
@@ -249,9 +254,55 @@ export async function getSRMatches(user: Summoner) {
 				some: user,
 			},
 			MatchInfo: {
-				mapId: 11, // Filter by mapId 11 (Summoner's Rift)
+				mapId: {
+					in: [1, 2, 11], // Replace with the array of mapIds you want to include
+				},
+				queueId: {
+					notIn: [800, 810, 820, 830, 840, 850, 860, 870, 880, 890], // co-op vs ai queueIds
+				},
 				gameStartTimestamp: {
-					gte: new Date("2024-01-01T00:00:00Z"), // Unix timestamp of January 1, 2024
+					gte: new Date("2023-01-01T00:00:00Z"), // Unix timestamp of January 1, 2023
+				},
+				gameMode: "CLASSIC",
+				gameType: "MATCHED_GAME",
+			},
+		},
+		include: {
+			MatchInfo: true,
+			participants: true,
+		},
+		orderBy: {
+			MatchInfo: {
+				gameStartTimestamp: "desc",
+			},
+		},
+	});
+
+	// Filter out null values and ensure MatchInfo is not null
+	const filteredMatches = matches.filter((match): match is CompleteMatch => match?.MatchInfo !== null);
+
+	return filteredMatches;
+}
+
+// Bot games, https://static.developer.riotgames.com/docs/lol/maps.json
+export async function getBotMatches(user: Summoner) {
+	const matches: (Match & {
+		MatchInfo: MatchInfo | null;
+		participants: Summoner[];
+	})[] = await prisma.match.findMany({
+		where: {
+			participants: {
+				some: user,
+			},
+			MatchInfo: {
+				mapId: {
+					in: [1, 2, 11], // Replace with the array of mapIds you want to include
+				},
+				queueId: {
+					in: [800, 810, 820, 830, 840, 850, 860, 870, 880, 890], // co-op vs ai queueIds
+				},
+				gameStartTimestamp: {
+					gte: new Date("2023-01-01T00:00:00Z"), // Unix timestamp of January 1, 2023
 				},
 				gameMode: "CLASSIC",
 				gameType: "MATCHED_GAME",

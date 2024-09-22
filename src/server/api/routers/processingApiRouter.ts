@@ -11,10 +11,30 @@ import { upsertMastery } from "./processing/mastery";
 import { getArenaMatches, getMatches, getSRMatches, updateGames } from "./processing/match";
 import { getUserByNameAndRegion, upsertSummoner } from "./processing/summoner";
 
+import type { Prisma } from "@prisma/client";
 import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
+
+type SavedUserType = Prisma.PromiseReturnType<typeof prisma.summoner.upsert>;
+
+async function clearChallenge(user: SavedUserType, challenge: string) {
+	const allChampions = await prisma.championDetails.findMany({
+		select: { id: true },
+	});
+
+	await prisma.challenges.update({
+		where: { puuid: user.puuid },
+		data: {
+			[challenge]: {
+				disconnect: allChampions.map((champion) => ({
+					id: champion.id,
+				})),
+			},
+		},
+	});
+}
 
 export const processingApiRouter = createTRPCRouter({
 	updateChallengeConfig: publicProcedure
@@ -76,15 +96,20 @@ export const processingApiRouter = createTRPCRouter({
 			if (!matches) return;
 
 			const participations = matches
-				.flatMap((match) => match.MatchInfo.participants)
-				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
-				.filter(Boolean) as unknown as Participant[];
+				.flatMap((match) => match.MatchInfo.participants as unknown as Participant)
+				.filter((p) => p.puuid === user.puuid)
+				.filter(Boolean);
 
 			console.log(
 				`[updateChampionOcean] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
 			);
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
+
+			try {
+				const challenge = "championOcean";
+				await clearChallenge(user, challenge);
+			} catch (error) {}
 
 			try {
 				await prisma.challenges.upsert({
@@ -124,17 +149,24 @@ export const processingApiRouter = createTRPCRouter({
 			const matches = await getArenaMatches(user);
 			if (!matches) return;
 
+			// Arena games are special and got another field for placements.
+			type ParticipantWithPlacement = Participant & { placement?: number };
 			const participations = matches
-				.flatMap((match) => match.MatchInfo.participants)
-				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
-				.filter((p) => (p as unknown as { placement?: number })?.placement === 1)
-				.filter(Boolean) as unknown as Participant[];
+				.flatMap((match) => match.MatchInfo.participants as unknown as ParticipantWithPlacement)
+				.filter((p) => p.puuid === user.puuid)
+				.filter((p) => p?.placement === 1)
+				.filter(Boolean);
 
 			console.log(
 				`[AdaptToAllSituations] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
 			);
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
+
+			try {
+				const challenge = "adaptToAllSituations";
+				await clearChallenge(user, challenge);
+			} catch (error) {}
 
 			try {
 				await prisma.challenges.upsert({
@@ -175,16 +207,21 @@ export const processingApiRouter = createTRPCRouter({
 			if (!matches) return;
 
 			const participations = matches
-				.flatMap((match) => match.MatchInfo.participants)
-				.filter((p) => (p as unknown as Participant)?.puuid === user.puuid)
-				.filter((p) => (p as unknown as { deaths?: number })?.deaths === 0)
-				.filter(Boolean) as unknown as Participant[];
+				.flatMap((match) => match.MatchInfo.participants as unknown as Participant)
+				.filter((p) => p.puuid === user.puuid)
+				.filter((p) => p.deaths === 0)
+				.filter(Boolean);
 
 			console.log(
 				`[Invincible] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
 			);
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
+
+			try {
+				const challenge = "invincible";
+				await clearChallenge(user, challenge);
+			} catch (error) {}
 
 			try {
 				await prisma.challenges.upsert({
@@ -221,16 +258,14 @@ export const processingApiRouter = createTRPCRouter({
 			const user = await getUserByNameAndRegion(input.username, region);
 			if (!user) return;
 
-			const matches = await getMatches(user, 10000);
+			const matches = await getSRMatches(user);
 			if (!matches) return;
 
 			const participations = matches
-				.flatMap((match) =>
-					(match.MatchInfo?.participants as unknown as Participant[] | undefined)?.filter(
-						(par) => par.puuid === user.puuid /* && par.champ == "champ" ish */,
-					),
-				)
-				.filter(Boolean) as Participant[];
+				.flatMap((match) => match.MatchInfo?.participants as unknown as Participant[])
+				.filter((p) => p.puuid === user.puuid)
+				.filter((p) => p.win)
+				.filter(Boolean);
 
 			console.log(
 				`[JackOfAllChamps] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
@@ -246,9 +281,15 @@ export const processingApiRouter = createTRPCRouter({
 					loses.push(participantInfo);
 				}
 			}
+			console.log(participations.map((e) => e.win).length);
 
 			const uniqueWins = new Set<number>(wins.map((win) => win.championId));
 			const uniqueLoses = new Set<number>(loses.map((lose) => lose.championId));
+
+			try {
+				const challenge = "jackOfAllChamps";
+				await clearChallenge(user, challenge);
+			} catch (error) {}
 
 			try {
 				await prisma.challenges.upsert({
@@ -275,10 +316,21 @@ export const processingApiRouter = createTRPCRouter({
 				loses: uniqueLoses.size,
 			});
 
-			return { numberOfGames: matches.length, uniqueWins: uniqueWins.size, uniqueLoses: uniqueLoses.size };
+			return {
+				numberOfGames: matches.length,
+				uniqueWins: uniqueWins.size,
+				uniqueLoses: uniqueLoses.size,
+			};
 		}),
+
 	updateGames: publicProcedure
-		.input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
+		.input(
+			z.object({
+				gameName: z.string(),
+				tagLine: z.string(),
+				region: z.string(),
+			}),
+		)
 		.mutation(async ({ input }) => {
 			console.time("updateSummoner");
 
@@ -328,7 +380,13 @@ export const processingApiRouter = createTRPCRouter({
 	}),
 
 	fullUpdateSummoner: publicProcedure
-		.input(z.object({ gameName: z.string(), tagLine: z.string(), region: z.string() }))
+		.input(
+			z.object({
+				gameName: z.string(),
+				tagLine: z.string(),
+				region: z.string(),
+			}),
+		)
 		.mutation(async ({ input }) => {
 			async function fullUpdateSummoner() {
 				const region = input.region as Regions;
