@@ -366,20 +366,45 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 
 		const { summoner, account } = await getSummonerByUsernameRateLimit(username, region);
 
+		// Check for existing users with the same gameName and tagLine
+		const existingUsers = await prisma.summoner.findMany({
+			where: {
+				gameName: account.gameName,
+				tagLine: account.tagLine,
+				NOT: {
+					puuid: summoner.puuid, // Exclude the current summoner
+				},
+				region: region,
+			},
+		});
+
+		// Update existing users to null their gameName and tagLine
+		if (existingUsers.length > 0) {
+			await prisma.summoner.updateMany({
+				where: {
+					puuid: {
+						in: existingUsers.map(user => user.puuid),
+					},
+				},
+				data: {
+					gameName: null, // or "deprecated"
+					tagLine: null, // or "deprecated"
+				},
+			});
+		}
+
 		// Use upsert to save the new user or update an existing one
 		const savedUser = await prisma.summoner.upsert({
 			where: {
 				puuid: summoner.puuid,
 			},
 			update: {
-				puuid: summoner.puuid,
 				summonerId: summoner.id,
-				createdAt: new Date(),
 				updatedAt: new Date(),
 				region,
 				username: "deprecated",
-				gameName: account.gameName ?? null,
-				tagLine: account.tagLine ?? null,
+				gameName: account.gameName,
+				tagLine: account.tagLine,
 				profileIconId: summoner.profileIconId,
 				summonerLevel: summoner.summonerLevel,
 				revisionDate: new Date(summoner.revisionDate),
@@ -392,8 +417,8 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				updatedAt: new Date(),
 				region,
 				username: "deprecated",
-				gameName: account.gameName ?? null,
-				tagLine: account.tagLine ?? null,
+				gameName: account.gameName,
+				tagLine: account.tagLine,
 				profileIconId: summoner.profileIconId,
 				summonerLevel: summoner.summonerLevel,
 				revisionDate: new Date(summoner.revisionDate),
