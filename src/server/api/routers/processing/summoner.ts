@@ -383,7 +383,7 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 			await prisma.summoner.updateMany({
 				where: {
 					puuid: {
-						in: existingUsers.map(user => user.puuid),
+						in: existingUsers.map((user) => user.puuid),
 					},
 				},
 				data: {
