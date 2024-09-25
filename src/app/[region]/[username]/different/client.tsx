@@ -1,11 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-
 import type { ChampionDetails, Summoner } from "@prisma/client";
-import "react-lazy-load-image-component/src/effects/opacity.css";
-
+import { useMemo, useState } from "react";
 import type { Regions } from "twisted/dist/constants";
+
 import { DifferentChampionItem } from "~/components/different/different-champion-item";
 import { DifferentHeader } from "~/components/different/different-header";
 import { DifferentRoleHeader } from "~/components/different/different-role-header";
@@ -26,39 +24,44 @@ export default function Client({
 }) {
 	const [selectedItem, setSelectedItem] = useState<number | null>(null);
 
-	console.log(`${user.gameName}#${user.tagLine}`);
+	const queryParams = useMemo(
+		() => ({ username: `${user.gameName}#${user.tagLine}`, region }),
+		[user.gameName, user.tagLine, region],
+	);
 
-	const queryParams = {
-		username: `${user.gameName}#${user.tagLine}`,
-		region,
-	};
-	const selectedChallenge = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
-	const getChampionOcean = api.differentApi.getChampionOcean.useQuery(queryParams);
-	const getAdaptToAllSituations = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
-	const getInvincible = api.differentApi.getInvincible.useQuery(queryParams);
+	const { data: selectedChallengeData } = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
+	const { data: championOceanData } = api.differentApi.getChampionOcean.useQuery(queryParams);
+	const { data: championOceanData2024Split3 } = api.differentApi.getChampionOcean2024Split3.useQuery(queryParams);
+	const { data: adaptToAllSituationsData } = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
+	const { data: invincibleData } = api.differentApi.getInvincible.useQuery(queryParams);
+
+	const challengeDataMap = useMemo(
+		() => ({
+			202303: invincibleData ?? [],
+			401106: selectedChallengeData ?? [],
+			602001: championOceanData ?? [],
+			2024308: championOceanData2024Split3 ?? [],
+			602002: adaptToAllSituationsData ?? [],
+		}),
+		[
+			selectedChallengeData,
+			championOceanData,
+			championOceanData2024Split3,
+			adaptToAllSituationsData,
+			invincibleData,
+		],
+	);
 
 	const selectedChallengeQuery = useMemo(() => {
-		console.log("selected challenge", selectedItem);
-
-		const challengeDataMap = {
-			202303: getInvincible?.data ?? [],
-			401106: selectedChallenge?.data ?? [],
-			602001: getChampionOcean?.data ?? [],
-			602002: getAdaptToAllSituations?.data ?? [],
-		};
-
 		const mappedData: ChampionDetails[] = selectedItem ? challengeDataMap[selectedItem] : [];
 		const mappedCases = Object.keys(challengeDataMap)
 			.map(Number)
-			.filter((key) => challengeDataMap[key] !== null);
+			.filter((key) => challengeDataMap[key]?.length > 0);
 
-		return {
-			data: mappedData,
-			cases: mappedCases,
-		};
-	}, [selectedItem, selectedChallenge, getChampionOcean, getAdaptToAllSituations, getInvincible]);
+		return { data: mappedData, cases: mappedCases };
+	}, [selectedItem, challengeDataMap]);
 
-	const completedChampsLength = selectedChallengeQuery?.data.length;
+	const completedChampsLength = selectedChallengeQuery.data?.length ?? 0;
 
 	return (
 		<div className="flex w-screen justify-center">
@@ -79,11 +82,9 @@ export default function Client({
 					/>
 				</header>
 
-				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
-					<main className="flex flex-grow flex-row gap-2 overflow-y-auto ">
+				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
+					<main className="flex flex-grow flex-row gap-2 overflow-y-auto">
 						{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
-							if (!playerChampionInfo[0]) return;
-
 							const champsWithRole = playerChampionInfo.filter((champ) => champ?.role === role);
 
 							return (
@@ -93,8 +94,8 @@ export default function Client({
 										className="grid justify-between"
 										style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}
 									>
-										{champsWithRole?.map((champ) => {
-											const jacks = selectedChallengeQuery?.data.map((el) => el.key) ?? [];
+										{champsWithRole.map((champ) => {
+											const jacks = selectedChallengeQuery.data?.map((el) => el.key) ?? [];
 											const hide = jacks.includes(champ.key);
 
 											return (

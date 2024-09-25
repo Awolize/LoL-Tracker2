@@ -136,6 +136,62 @@ export const processingApiRouter = createTRPCRouter({
 			return { numberOfGames: matches.length, uniqueChampIds };
 		}),
 
+	updateChampionOcean2024Split3: publicProcedure
+		.input(z.object({ username: z.string(), region: z.string() }))
+		.mutation(async ({ input }) => {
+			console.log(`updateChampionOcean for user ${input.username} (${input.region.toUpperCase()})`);
+
+			const region = input.region as Regions;
+
+			const user = await getUserByNameAndRegion(input.username, region);
+			if (!user) return;
+
+			const matches = await getMatches(user);
+			if (!matches) return;
+
+			const participations = matches
+				.filter((m) => m.MatchInfo.gameStartTimestamp > new Date("2024-09-18"))
+				.flatMap((match) => match.MatchInfo.participants as unknown as Participant)
+				.filter((p) => p.puuid === user.puuid)
+				.filter((p) => p.win)
+				.filter(Boolean);
+
+			console.log(
+				`[updateChampionOcean] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
+			);
+
+			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
+
+			try {
+				const challenge = "championOcean";
+				await clearChallenge(user, challenge);
+			} catch (error) {}
+
+			try {
+				await prisma.challenges.upsert({
+					where: { puuid: user.puuid },
+					update: {
+						championOcean2024Split3: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
+					},
+					create: {
+						summoner: { connect: { puuid: user.puuid } },
+						championOcean2024Split3: {
+							connect: [...uniqueChampIds].map((champId) => ({ id: champId })),
+						},
+					},
+				});
+			} catch (error) {
+				await updateChampionDetails();
+				console.error("Missing champ??");
+			}
+
+			console.log(`${user.gameName}#${user.tagLine} (${user.region})`, matches.length, uniqueChampIds.size);
+
+			return { numberOfGames: matches.length, uniqueChampIds };
+		}),
+
 	updateAdaptToAllSituations: publicProcedure
 		.input(z.object({ username: z.string(), region: z.string() }))
 		.mutation(async ({ input }) => {

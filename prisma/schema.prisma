@@ -36,12 +36,13 @@ model MatchInfo {
 }
 
 model Challenges {
-  puuid                String            @id @unique
-  summoner             Summoner          @relation(fields: [puuid], references: [puuid])
-  jackOfAllChamps      ChampionDetails[] @relation("ChallengeHeroes")
-  championOcean        ChampionDetails[] @relation("ChallengesChampionOcean")
-  adaptToAllSituations ChampionDetails[] @relation("ChallengesAdaptToAllSituations")
-  invincible           ChampionDetails[] @relation("ChallengesInvincible")
+  puuid                   String            @id @unique
+  summoner                Summoner          @relation(fields: [puuid], references: [puuid])
+  jackOfAllChamps         ChampionDetails[] @relation("ChallengeHeroes")
+  championOcean           ChampionDetails[] @relation("ChallengesChampionOcean")
+  championOcean2024Split3 ChampionDetails[] @relation("ChallengesChampionOcean2024Split3")
+  adaptToAllSituations    ChampionDetails[] @relation("ChallengesAdaptToAllSituations")
+  invincible              ChampionDetails[] @relation("ChallengesInvincible")
 }
 
 model Summoner {
@@ -64,49 +65,50 @@ model Summoner {
 }
 
 model ChampionDetails {
-  id                             Int          @id @unique
-  version                        String?
-  key                            String
-  name                           String
-  title                          String
-  blurb                          String
-  attack                         Int
-  defense                        Int
-  magic                          Int
-  difficulty                     Int
-  full                           String
-  sprite                         String
-  group                          String
-  x                              Int
-  y                              Int
-  w                              Int
-  h                              Int
-  tags                           String[]
-  partype                        String
-  hp                             Float
-  hpperlevel                     Float
-  mp                             Float
-  mpperlevel                     Float
-  movespeed                      Float
-  armor                          Float
-  armorperlevel                  Float
-  spellblock                     Float
-  spellblockperlevel             Float
-  attackrange                    Float
-  hpregen                        Float
-  hpregenperlevel                Float
-  mpregen                        Float
-  mpregenperlevel                Float
-  crit                           Float
-  critperlevel                   Float
-  attackdamage                   Float
-  attackdamageperlevel           Float
-  attackspeedperlevel            Float
-  attackspeed                    Float
-  Challenges                     Challenges[] @relation("ChallengeHeroes")
-  ChallengesChampionOcean        Challenges[] @relation("ChallengesChampionOcean")
-  ChallengesAdaptToAllSituations Challenges[] @relation("ChallengesAdaptToAllSituations")
-  ChallengesInvincible           Challenges[] @relation("ChallengesInvincible")
+  id                                Int          @id @unique
+  version                           String?
+  key                               String
+  name                              String
+  title                             String
+  blurb                             String
+  attack                            Int
+  defense                           Int
+  magic                             Int
+  difficulty                        Int
+  full                              String
+  sprite                            String
+  group                             String
+  x                                 Int
+  y                                 Int
+  w                                 Int
+  h                                 Int
+  tags                              String[]
+  partype                           String
+  hp                                Float
+  hpperlevel                        Float
+  mp                                Float
+  mpperlevel                        Float
+  movespeed                         Float
+  armor                             Float
+  armorperlevel                     Float
+  spellblock                        Float
+  spellblockperlevel                Float
+  attackrange                       Float
+  hpregen                           Float
+  hpregenperlevel                   Float
+  mpregen                           Float
+  mpregenperlevel                   Float
+  crit                              Float
+  critperlevel                      Float
+  attackdamage                      Float
+  attackdamageperlevel              Float
+  attackspeedperlevel               Float
+  attackspeed                       Float
+  Challenges                        Challenges[] @relation("ChallengeHeroes")
+  ChallengesChampionOcean           Challenges[] @relation("ChallengesChampionOcean")
+  ChallengesChampionOcean2024Split3 Challenges[] @relation("ChallengesChampionOcean2024Split3")
+  ChallengesAdaptToAllSituations    Challenges[] @relation("ChallengesAdaptToAllSituations")
+  ChallengesInvincible              Challenges[] @relation("ChallengesInvincible")
 }
 
 model ChampionMastery {
