@@ -119,7 +119,7 @@ export default function Client({
 					</div>
 					<div className="flex flex-1 items-center justify-center">
 						<div className="flex flex-col items-center justify-center text-gray-400">
-							<div>Challenge config is coming here.</div>
+							<div>Challenge config is coming.</div>
 							<div>(Work in progress, last update: 2024-09-26)</div>
 						</div>
 					</div>
