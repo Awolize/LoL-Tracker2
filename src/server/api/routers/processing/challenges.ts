@@ -152,7 +152,7 @@ export const getChallengesThresholds2 = async () => {
 	return thresholdsMap;
 };
 
-export const getPlayerChallengesData2 = async (user: Summoner) => {
+export const getPlayerChallengesDataAll = async (user: Summoner) => {
 	const challengesDetails = await prisma.challengesDetails.findFirst({
 		where: { puuid: user.puuid },
 		include: { challenges: true },
@@ -160,14 +160,14 @@ export const getPlayerChallengesData2 = async (user: Summoner) => {
 
 	if (!challengesDetails) {
 		console.error(`Could not find summoner challenge data, puuid: ${user.puuid}`);
-		return new Map<ChallengeIds, Challenge>();
+		return new Map<number, Challenge>();
 	}
 
-	const filteredChallenges = challengesDetails.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
+	const filteredChallenges = challengesDetails.challenges;
 	const challengesMap = filteredChallenges.reduce((map, challenge) => {
-		map.set(challenge.challengeId as ChallengeIds, challenge);
+		map.set(challenge.challengeId as number, challenge);
 		return map;
-	}, new Map<ChallengeIds, Challenge>());
+	}, new Map<number, Challenge>());
 
 	return challengesMap;
 };

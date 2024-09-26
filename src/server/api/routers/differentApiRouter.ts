@@ -4,6 +4,7 @@ import type { Regions } from "twisted/dist/constants";
 import { prisma } from "~/server/db";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { getUserByNameAndRegion } from "./processing/summoner";
+import { getPlayerChallengesDataAll } from "./processing/challenges";
 
 export const differentApiRouter = createTRPCRouter({
 	getChallengesConfig: publicProcedure
@@ -29,6 +30,15 @@ export const differentApiRouter = createTRPCRouter({
 				},
 			});
 			return { data, keystones };
+		}),
+
+	getPlayerChallengesData: publicProcedure
+		.input(z.object({ username: z.string(), region: z.string() }))
+		.query(async ({ input }) => {
+			const region = input.region as Regions;
+			const user = await getUserByNameAndRegion(input.username.toLowerCase(), region);
+
+			return getPlayerChallengesDataAll(user);
 		}),
 
 	getChampionOcean: publicProcedure

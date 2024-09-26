@@ -2,10 +2,8 @@
 
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import type { ChampionDetails } from "@prisma/client";
-import { stringify } from "superjson";
 import type { ChampionMasteryDTO } from "twisted/dist/models-dto";
 import { z } from "zod";
-import { getChallengesThresholds2, getPlayerChallengesData2 } from "~/server/api/routers/processing/challenges";
 import { getCompleteChampionData } from "~/server/api/routers/processing/champions";
 import { getMatches } from "~/server/api/routers/processing/match";
 import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
@@ -33,10 +31,8 @@ export default async function Page({ params }) {
 
 	const user = await getUserByNameAndRegion(username, region);
 
-	const [completeChampionsData, playerChallenges, challengesThresholds, matches] = await Promise.all([
+	const [completeChampionsData, matches] = await Promise.all([
 		getCompleteChampionData(region, user),
-		getPlayerChallengesData2(user),
-		getChallengesThresholds2(),
 		getMatches(user, 25),
 	]);
 
@@ -47,9 +43,6 @@ export default async function Page({ params }) {
 			user={user}
 			playerChampionInfo={completeChampionsData.completeChampionsData}
 			version={completeChampionsData.version}
-			challengeIds={stringify(challengeIds)}
-			playerChallengesData={stringify(playerChallenges)}
-			challengesThresholds={stringify(challengesThresholds)}
 			matches={matches}
 		/>
 	);

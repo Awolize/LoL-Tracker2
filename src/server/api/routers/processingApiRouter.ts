@@ -414,9 +414,10 @@ export const processingApiRouter = createTRPCRouter({
 			}
 
 			// update games
-			console.time("updateGames");
-			await updateGames(updatedUser, region);
-			console.timeEnd("updateGames");
+			await timeIt("upsertChallenges", user, updateGames, updatedUser, region);
+
+			// update challenges
+			await timeIt("upsertChallenges", user, upsertChallenges, region, updatedUser);
 		}),
 
 	updateGlobals: publicProcedure.mutation(async () => {

@@ -21,9 +21,6 @@ export function Client({
 	user: Summoner;
 	playerChampionInfo: CompleteChampionInfo[];
 	version: string;
-	challengeIds: string;
-	playerChallengesData: string;
-	challengesThresholds: string;
 	matches: CompleteMatch[];
 }) {
 	// const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
@@ -49,9 +46,6 @@ function Main({
 	user: Summoner;
 	playerChampionInfo: CompleteChampionInfo[];
 	version: string;
-	challengeIds: string;
-	playerChallengesData: string;
-	challengesThresholds: string;
 	matches: CompleteMatch[];
 }) {
 	const byRole = useOptionsPersistentContext((state) => state.byRole);

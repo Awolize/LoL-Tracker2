@@ -29,11 +29,17 @@ export default function Client({
 		[user.gameName, user.tagLine, region],
 	);
 
+	const { data: challengeConfigData } = api.differentApi.getPlayerChallengesData.useQuery(queryParams);
 	const { data: selectedChallengeData } = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
 	const { data: championOceanData } = api.differentApi.getChampionOcean.useQuery(queryParams);
 	const { data: championOceanData2024Split3 } = api.differentApi.getChampionOcean2024Split3.useQuery(queryParams);
 	const { data: adaptToAllSituationsData } = api.differentApi.getAdaptToAllSituations.useQuery(queryParams);
 	const { data: invincibleData } = api.differentApi.getInvincible.useQuery(queryParams);
+
+	const current =
+		challengeConfigData && selectedItem && challengeConfigData.has(selectedItem)
+			? challengeConfigData.get(selectedItem)
+			: null;
 
 	const challengeDataMap = useMemo(
 		() => ({
@@ -81,7 +87,14 @@ export default function Client({
 						version={version}
 					/>
 				</header>
-
+				{current?.value != null && (
+					<>
+						Riot: {current?.value} <br />
+						{(current?.value ?? 0) - completedChampsLength > 0 && (
+							<>(lol.awot.dev is missing {(current?.value ?? 0) - completedChampsLength})</>
+						)}
+					</>
+				)}
 				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
 					<main className="flex flex-grow flex-row gap-2 overflow-y-auto">
 						{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
