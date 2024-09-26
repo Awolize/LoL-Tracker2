@@ -79,22 +79,51 @@ export default function Client({
 				mappedCases={selectedChallengeQuery.cases}
 			/>
 
-			<div className="flex flex-1 flex-col">
-				<header className="h-24">
-					<DifferentHeader
-						finished={completedChampsLength}
-						total={playerChampionInfo.length}
-						version={version}
-					/>
-				</header>
-				{current?.value != null && (
-					<>
-						Riot: {current?.value} <br />
-						{(current?.value ?? 0) - completedChampsLength > 0 && (
-							<>(lol.awot.dev is missing {(current?.value ?? 0) - completedChampsLength})</>
+			<div className="flex flex-1 flex-col text-sm">
+				<header className="h-24 w-full flex justify-evenly">
+					<div className="flex flex-1 items-center justify-center">
+						{current?.value != null && (
+							<div className="flex flex-col">
+								<div className="flex gap-1">
+									<div className="text-gray-400">According to Riot you have finished</div>
+									<b>{current?.value}</b>
+
+									{(current?.value ?? 0) - completedChampsLength > 0 ? (
+										<>
+											<div className="text-gray-400">which means lol.awot.dev is missing </div>
+											<div className="flex flex-row">
+												<b>{(current?.value ?? 0) - completedChampsLength}</b>
+												<div className="text-gray-400">.</div>
+											</div>
+										</>
+									) : (
+										<div className="text-gray-400">which means everything is tracked!</div>
+									)}
+								</div>
+								{(current?.value ?? 0) - completedChampsLength > 0 && (
+									<>
+										<div className="text-gray-400">
+											Please make sure to double check the missing ones.
+										</div>
+									</>
+								)}
+							</div>
 						)}
-					</>
-				)}
+					</div>
+					<div className="flex flex-1 justify-center max-w-52 ">
+						<DifferentHeader
+							finished={completedChampsLength}
+							total={playerChampionInfo.length}
+							version={version}
+						/>
+					</div>
+					<div className="flex flex-1 items-center justify-center">
+						<div className="flex flex-col items-center justify-center text-gray-400">
+							<div>Challenge config is coming here.</div>
+							<div>(Work in progress, last update: 2024-09-26)</div>
+						</div>
+					</div>
+				</header>
 				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
 					<main className="flex flex-grow flex-row gap-2 overflow-y-auto">
 						{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
