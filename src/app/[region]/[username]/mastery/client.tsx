@@ -1,9 +1,7 @@
 "use client";
 
-import type { ChallengeV1DTO } from "twisted/dist/models-dto/challenges/challenges.dto";
-
 import type { Summoner } from "@prisma/client";
-import { parse } from "superjson";
+
 import ChampionList from "~/components/custom/champions-list";
 import Header from "~/components/custom/header";
 import MatchHistory from "~/components/custom/match-history";
@@ -23,10 +21,6 @@ export function Client({
 	version: string;
 	matches: CompleteMatch[];
 }) {
-	// const challengeIds = parse<ChallengeIds[]>(props.challengeIds);
-	// const playerChallengesData = parse<Map<ChallengeIds, ChallengeV1DTO>>(props.playerChallengesData);
-	// const challengesThresholds = parse<Map<ChallengeIds, Record<string, number>>>(props.challengesThresholds);
-
 	playerChampionInfo.sort((a, b) => a.name.localeCompare(b.name));
 
 	return (

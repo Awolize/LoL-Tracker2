@@ -1,8 +1,12 @@
+import type { Prisma } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
+import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
 import { z } from "zod";
 
+import { prisma } from "~/server/db";
+import { lolApi } from "~/server/lolApi";
+import { riotApi } from "~/server/riotApi";
 import type { Participant } from "~/trpc/different_types";
-import { regionToConstant } from "~/utils/champsUtils";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
@@ -11,29 +15,27 @@ import { upsertMastery } from "./processing/mastery";
 import { getArenaMatches, getMatches, getSRMatches, updateGames } from "./processing/match";
 import { getUserByNameAndRegion, upsertSummoner } from "./processing/summoner";
 
-import type { Prisma } from "@prisma/client";
-import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
-import { prisma } from "~/server/db";
-import { lolApi } from "~/server/lolApi";
-import { riotApi } from "~/server/riotApi";
-
 type SavedUserType = Prisma.PromiseReturnType<typeof prisma.summoner.upsert>;
 
 async function clearChallenge(user: SavedUserType, challenge: string) {
-	const allChampions = await prisma.championDetails.findMany({
-		select: { id: true },
-	});
+	try {
+		const allChampions = await prisma.championDetails.findMany({
+			select: { id: true },
+		});
 
-	await prisma.challenges.update({
-		where: { puuid: user.puuid },
-		data: {
-			[challenge]: {
-				disconnect: allChampions.map((champion) => ({
-					id: champion.id,
-				})),
+		await prisma.challenges.update({
+			where: { puuid: user.puuid },
+			data: {
+				[challenge]: {
+					disconnect: allChampions.map((champion) => ({
+						id: champion.id,
+					})),
+				},
 			},
-		},
-	});
+		});
+	} catch (error) {
+		console.warn(user.gameName, user.tagLine, user.region, "could not disconnect challenge", challenge);
+	}
 }
 
 export const processingApiRouter = createTRPCRouter({
@@ -106,10 +108,7 @@ export const processingApiRouter = createTRPCRouter({
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			try {
-				const challenge = "championOcean";
-				await clearChallenge(user, challenge);
-			} catch (error) {}
+			await clearChallenge(user, "championOcean");
 
 			try {
 				await prisma.challenges.upsert({
@@ -157,15 +156,12 @@ export const processingApiRouter = createTRPCRouter({
 				.filter(Boolean);
 
 			console.log(
-				`[updateChampionOcean] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
+				`[updateChampionOcean2024Split3] ${user.gameName}#${user.tagLine} (${user.region}) found ${participations?.length} games`,
 			);
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			try {
-				const challenge = "championOcean";
-				await clearChallenge(user, challenge);
-			} catch (error) {}
+			await clearChallenge(user, "championOcean2024Split3");
 
 			try {
 				await prisma.challenges.upsert({
@@ -219,10 +215,7 @@ export const processingApiRouter = createTRPCRouter({
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			try {
-				const challenge = "adaptToAllSituations";
-				await clearChallenge(user, challenge);
-			} catch (error) {}
+			await clearChallenge(user, "adaptToAllSituations");
 
 			try {
 				await prisma.challenges.upsert({
@@ -274,10 +267,7 @@ export const processingApiRouter = createTRPCRouter({
 
 			const uniqueChampIds = new Set<number>(participations.map((p) => p.championId));
 
-			try {
-				const challenge = "invincible";
-				await clearChallenge(user, challenge);
-			} catch (error) {}
+			await clearChallenge(user, "invincible");
 
 			try {
 				await prisma.challenges.upsert({
@@ -342,10 +332,7 @@ export const processingApiRouter = createTRPCRouter({
 			const uniqueWins = new Set<number>(wins.map((win) => win.championId));
 			const uniqueLoses = new Set<number>(loses.map((lose) => lose.championId));
 
-			try {
-				const challenge = "jackOfAllChamps";
-				await clearChallenge(user, challenge);
-			} catch (error) {}
+			await clearChallenge(user, "jackOfAllChamps");
 
 			try {
 				await prisma.challenges.upsert({

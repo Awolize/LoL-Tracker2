@@ -1,12 +1,12 @@
 "use client";
 
-import React, { type Dispatch, type SetStateAction, useState, useCallback } from "react";
-
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { FunnelIcon as OutlineFunnelIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon as SolidFunnelIcon } from "@heroicons/react/24/solid";
 import type { ChallengeLocalization, Summoner } from "@prisma/client";
+import React, { type Dispatch, type SetStateAction, useState, useCallback } from "react";
 import type { Regions } from "twisted/dist/constants";
+
 import { api } from "~/trpc/react";
 import LoadingComponent from "../old/loading-spinner";
 
@@ -39,7 +39,7 @@ export const DifferentSideBar = ({
 	const refreshJackOfAllChamps = api.processingApi.updateJackOfAllChamps.useMutation({
 		onSuccess: async () => {
 			await Promise.all([
-				utils.differentApi.getChallengesConfig.invalidate(),
+				utils.differentApi.getChallengesConfigDescriptions.invalidate(),
 				utils.differentApi.getJackOfAllChamps.invalidate(),
 			]);
 		},
@@ -48,7 +48,7 @@ export const DifferentSideBar = ({
 	const refreshChampionOcean = api.processingApi.updateChampionOcean.useMutation({
 		onSuccess: async () => {
 			await Promise.all([
-				utils.differentApi.getChallengesConfig.invalidate(),
+				utils.differentApi.getChallengesConfigDescriptions.invalidate(),
 				utils.differentApi.getChampionOcean.invalidate(),
 			]);
 		},
@@ -57,7 +57,7 @@ export const DifferentSideBar = ({
 	const refreshChampionOcean2024Split3 = api.processingApi.updateChampionOcean2024Split3.useMutation({
 		onSuccess: async () => {
 			await Promise.all([
-				utils.differentApi.getChallengesConfig.invalidate(),
+				utils.differentApi.getChallengesConfigDescriptions.invalidate(),
 				utils.differentApi.getChampionOcean2024Split3.invalidate(),
 			]);
 		},
@@ -66,7 +66,7 @@ export const DifferentSideBar = ({
 	const refreshAdaptToAllSituations = api.processingApi.updateAdaptToAllSituations.useMutation({
 		onSuccess: async () => {
 			await Promise.all([
-				utils.differentApi.getChallengesConfig.invalidate(),
+				utils.differentApi.getChallengesConfigDescriptions.invalidate(),
 				utils.differentApi.getAdaptToAllSituations.invalidate(),
 			]);
 		},
@@ -75,7 +75,7 @@ export const DifferentSideBar = ({
 	const refreshInvincible = api.processingApi.updateInvincible.useMutation({
 		onSuccess: async () => {
 			await Promise.all([
-				utils.differentApi.getChallengesConfig.invalidate(),
+				utils.differentApi.getChallengesConfigDescriptions.invalidate(),
 				utils.differentApi.getInvincible.invalidate(),
 			]);
 		},
@@ -83,7 +83,7 @@ export const DifferentSideBar = ({
 
 	const refreshQueryUpdateChallengeConfig = api.processingApi.updateChallengeConfig.useMutation({
 		onSuccess: async () => {
-			await utils.differentApi.getChallengesConfig.invalidate();
+			await utils.differentApi.getChallengesConfigDescriptions.invalidate();
 		},
 	});
 
@@ -101,7 +101,7 @@ export const DifferentSideBar = ({
 		refreshInvincible.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
 	};
 
-	const { data: challenges } = api.differentApi.getChallengesConfig.useQuery({
+	const { data: challenges } = api.differentApi.getChallengesConfigDescriptions.useQuery({
 		username: `${user.gameName}#${user.tagLine}`,
 		region,
 	});

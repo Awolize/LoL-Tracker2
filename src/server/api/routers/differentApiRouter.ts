@@ -1,22 +1,19 @@
+import type { Regions } from "twisted/dist/constants";
 import { z } from "zod";
 
-import type { Regions } from "twisted/dist/constants";
 import { prisma } from "~/server/db";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { getUserByNameAndRegion } from "./processing/summoner";
 import { getPlayerChallengesDataAll } from "./processing/challenges";
+import { getUserByNameAndRegion } from "./processing/summoner";
 
 export const differentApiRouter = createTRPCRouter({
-	getChallengesConfig: publicProcedure
+	getChallengesConfigDescriptions: publicProcedure
 		.input(z.object({ username: z.string(), region: z.string() }))
 		.query(async () => {
 			const data = await prisma.challengesConfig.findMany({
 				select: {
 					id: true,
 					localizedNames: true,
-				},
-				where: {
-					id: { gte: 10 },
 				},
 			});
 
@@ -30,6 +27,20 @@ export const differentApiRouter = createTRPCRouter({
 				},
 			});
 			return { data, keystones };
+		}),
+
+	getChallengesConfig: publicProcedure
+		.input(z.object({ username: z.string(), region: z.string() }))
+		.query(async () => {
+			const data = await prisma.challengesConfig.findMany();
+
+			// Ensure thresholds field is cast to Record<string, number>
+			const challengeConfigs = data.map((config) => ({
+				...config,
+				thresholds: config.thresholds as Record<string, number>, // Explicit cast
+			}));
+
+			return { data: challengeConfigs };
 		}),
 
 	getPlayerChallengesData: publicProcedure

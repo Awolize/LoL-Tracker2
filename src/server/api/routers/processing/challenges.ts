@@ -135,23 +135,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 	return upsertedChallenges;
 };
 
-export const getChallengesThresholds2 = async () => {
-	const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
-	const promises = challengeIds.map(async (challengeId) => {
-		const thresholds = (await prisma.challengesConfig.findFirst({ where: { id: challengeId } }))?.thresholds;
-		return { challengeId, thresholds: thresholds };
-	});
-
-	const results = await Promise.all(promises);
-
-	const thresholdsMap = new Map<ChallengeIds, Record<string, number>>();
-	for (const { challengeId, thresholds } of results) {
-		thresholdsMap.set(challengeId, thresholds as Record<string, number>);
-	}
-
-	return thresholdsMap;
-};
-
 export const getPlayerChallengesDataAll = async (user: Summoner) => {
 	const challengesDetails = await prisma.challengesDetails.findFirst({
 		where: { puuid: user.puuid },
@@ -181,21 +164,4 @@ export const getPlayerChallengesData = async (region: Regions, user: Summoner) =
 	}, new Map<ChallengeIds, ChallengeV1DTO>());
 
 	return challengesMap;
-};
-
-export const getChallengesThresholds = async (region: Regions) => {
-	const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
-	const promises = challengeIds.map(async (challengeId) => {
-		const thresholds = (await lolApi.Challenges.getChallengeConfig(challengeId, region)).response;
-		return { challengeId, thresholds: thresholds.thresholds };
-	});
-
-	const results = await Promise.all(promises);
-
-	const thresholdsMap = new Map<ChallengeIds, Record<string, number>>();
-	for (const { challengeId, thresholds } of results) {
-		thresholdsMap.set(challengeId, thresholds);
-	}
-
-	return thresholdsMap;
 };
