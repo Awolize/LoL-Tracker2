@@ -22,12 +22,12 @@ export default async function Page({ params }) {
 	const completeChampsData = await getCompleteChampionData(region, user);
 	const version = (await prisma.championDetails.findFirst())?.version ?? "14.12.1";
 
-	const props = {
-		user,
-		region,
-		playerChampionInfo: completeChampsData.completeChampionsData.sort((a, b) => a.name.localeCompare(b.name)),
-		version,
-	};
-
-	return <Client {...props} />;
+	return (
+		<Client
+			user={user}
+			region={region}
+			champions={completeChampsData.completeChampionsData.sort((a, b) => a.name.localeCompare(b.name))}
+			version={version}
+		/>
+	);
 }

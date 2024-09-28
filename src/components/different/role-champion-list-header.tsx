@@ -1,55 +1,67 @@
 import type { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
+import { useMemo } from "react";
 
 import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 import { DifferentHeaderCounter } from "./different-header-counter";
 import { DifferentHeaderProgress } from "./different-header-progress";
 import { DifferentHeaderThresholds } from "./different-header-thresholds";
+import type { ChampionDetails } from "@prisma/client";
+import { useChampionStore } from "./use-challenge-champion-store";
 
 interface ChampionListHeaderProps {
 	queryParams: {
 		username: string;
 		region: Regions;
 	};
+	challengeChampions?: ChampionDetails[];
 	selectedChallenge: number | null;
-	completedChampionsSize: number;
-	playerChampionInfo: CompleteChampionInfo[];
+	champions: CompleteChampionInfo[];
 	version: string;
+	profileId: string;
 }
 
 export function ChampionListHeader({
 	queryParams,
-	selectedChallenge: selectedItem,
-	completedChampionsSize,
-	playerChampionInfo,
+	selectedChallenge,
+	challengeChampions = [],
+	champions,
 	version,
+	profileId,
 }: ChampionListHeaderProps) {
+	const { manuallyMarked } = useChampionStore();
+
+	const totalSize = useMemo(() => {
+		if (!selectedChallenge) return 0;
+
+		const manualList = manuallyMarked?.[profileId]?.[selectedChallenge] ?? new Set<number>();
+		const awotList = challengeChampions.map((e) => e.id);
+
+		return new Set([...awotList, ...manualList]).size;
+	}, [selectedChallenge, manuallyMarked, profileId, challengeChampions]);
+
 	const { data: challengeConfigs } = api.differentApi.getChallengesConfig.useQuery(queryParams);
 	const { data: playerChallenges } = api.differentApi.getPlayerChallengesData.useQuery(queryParams);
 
-	const selectedChallenge = selectedItem ? (playerChallenges?.get(selectedItem) ?? null) : null;
-	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedItem);
+	const selectedChallengeData = selectedChallenge ? (playerChallenges?.get(selectedChallenge) ?? null) : null;
+	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedChallenge);
 
 	return (
 		<header className="flex h-24 w-full justify-evenly">
 			<div className="flex flex-1 items-center justify-center">
 				<DifferentHeaderProgress
-					selectedChallenge={selectedChallenge}
-					completedChampionsSize={completedChampionsSize}
+					selectedChallenge={selectedChallengeData}
+					completedChampionsSize={totalSize}
+					profileId={profileId}
 				/>
 			</div>
-			<div className="flex max-w-52 flex-1 justify-center ">
-				<DifferentHeaderCounter
-					finished={completedChampionsSize}
-					total={playerChampionInfo.length}
-					version={version}
-				/>
+			<div className="flex max-w-52 flex-1 justify-center">
+				<DifferentHeaderCounter finished={totalSize} total={champions.length} version={version} />
 			</div>
-
 			<div className="flex flex-1 items-center justify-center">
 				<DifferentHeaderThresholds
 					thresholds={selectedChallengeConfig?.thresholds ?? null}
-					selectedChallenge={selectedChallenge}
+					selectedChallenge={selectedChallengeData}
 				/>
 			</div>
 		</header>

@@ -13,8 +13,8 @@ import LoadingComponent from "../old/loading-spinner";
 export const DifferentSideBar = ({
 	region,
 	user,
-	selectedChallenge: selectedItem,
-	setSelectedChallenge: setSelectedItem,
+	selectedChallenge,
+	setSelectedChallenge,
 	mappedCases,
 }: {
 	region: Regions;
@@ -29,9 +29,9 @@ export const DifferentSideBar = ({
 
 	const handleItemClick = useCallback(
 		(itemId) => {
-			setSelectedItem((prev) => (prev !== itemId ? itemId : 0));
+			setSelectedChallenge((prev) => (prev !== itemId ? itemId : 0));
 		},
-		[setSelectedItem],
+		[setSelectedChallenge],
 	);
 
 	const utils = api.useUtils();
@@ -231,7 +231,7 @@ export const DifferentSideBar = ({
 								<Item
 									key={item.id}
 									item={item}
-									selected={selectedItem === item.id}
+									selected={selectedChallenge === item.id}
 									onItemClick={handleItemClick}
 									implemented={implemented}
 								/>

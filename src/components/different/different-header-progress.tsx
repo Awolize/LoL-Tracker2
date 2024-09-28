@@ -1,11 +1,17 @@
 import type { Challenge } from "@prisma/client";
+import { useChampionStore } from "./use-challenge-champion-store";
 
 interface ChallengeProgressProps {
 	selectedChallenge: Challenge | null;
 	completedChampionsSize: number;
+	profileId: string;
 }
 
-export function DifferentHeaderProgress({ selectedChallenge, completedChampionsSize }: ChallengeProgressProps) {
+export function DifferentHeaderProgress({
+	selectedChallenge,
+	completedChampionsSize,
+	profileId,
+}: ChallengeProgressProps) {
 	if (!selectedChallenge?.value) return null;
 
 	const finishedValue = selectedChallenge.value;

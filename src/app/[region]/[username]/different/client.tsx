@@ -14,20 +14,18 @@ export default function Client({
 	user,
 	region,
 	version,
-	playerChampionInfo,
+	champions,
 }: {
 	user: Summoner;
 	region: Regions;
-	playerChampionInfo: CompleteChampionInfo[];
+	champions: CompleteChampionInfo[];
 	version: string;
 }) {
 	const [selectedChallenge, setSelectedChallenge] = useState<number | null>(null);
-
 	const queryParams = useMemo(
 		() => ({ username: `${user.gameName}#${user.tagLine}`, region }),
 		[user.gameName, user.tagLine, region],
 	);
-
 	const { data: jackOfAllChampions } = api.differentApi.getJackOfAllChamps.useQuery(queryParams);
 	const { data: championOcean } = api.differentApi.getChampionOcean.useQuery(queryParams);
 	const { data: championOcean2024Split3 } = api.differentApi.getChampionOcean2024Split3.useQuery(queryParams);
@@ -45,7 +43,7 @@ export default function Client({
 		[jackOfAllChampions, championOcean, championOcean2024Split3, adaptToAllSituations, invincible],
 	);
 
-	const challengeCompletedChampions = useMemo(() => {
+	const challengeChampions = useMemo(() => {
 		const mappedData: ChampionDetails[] = selectedChallenge ? challengeDataMap[selectedChallenge] : [];
 		const mappedCases = Object.keys(challengeDataMap).map(Number);
 
@@ -59,21 +57,23 @@ export default function Client({
 				user={user}
 				selectedChallenge={selectedChallenge}
 				setSelectedChallenge={setSelectedChallenge}
-				mappedCases={challengeCompletedChampions.cases}
+				mappedCases={challengeChampions.cases}
 			/>
 
 			<div className="flex flex-1 flex-col text-sm">
 				<ChampionListHeader
-					playerChampionInfo={playerChampionInfo}
+					champions={champions}
+					challengeChampions={challengeChampions.data}
 					queryParams={queryParams}
 					selectedChallenge={selectedChallenge}
-					completedChampionsSize={challengeCompletedChampions.data?.length ?? 0}
+					challengeChampionsSize={challengeChampions.data?.length ?? 0}
 					version={version}
+					profileId={user.puuid}
 				/>
 				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
 					<RoleChampionList
-						playerChampions={playerChampionInfo}
-						challengeCompletedChampions={challengeCompletedChampions.data}
+						challengeChampions={challengeChampions.data}
+						champions={champions}
 						selectedChallenge={selectedChallenge}
 						version={version}
 						profileId={user.puuid}
