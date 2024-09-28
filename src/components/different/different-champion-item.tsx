@@ -9,12 +9,14 @@ export const DifferentChampionItem = ({
 	champ,
 	hide,
 	version,
-}: { champ: ChampionDetails; hide: boolean; version: string }) => {
+	onClick,
+}: { champ: ChampionDetails; hide: boolean; version: string; onClick: () => void }) => {
 	const { getChampionImage } = useDataDragonPath(version);
 	return (
 		<li className="flex flex-col pb-2" key={champ.key as React.Key}>
 			<div className="relative z-10">
 				<Image
+					onClick={onClick}
 					src={getChampionImage(champ.full)}
 					style={{
 						zIndex: -1,

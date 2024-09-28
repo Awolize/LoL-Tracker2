@@ -78,7 +78,7 @@ export default function Client({
 				/>
 				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
 					<RoleChampionList
-						playerChampionInfo={playerChampionInfo}
+						playerChampions={playerChampionInfo}
 						selectedChallengeData={selectedChallengeQuery.data}
 						version={version}
 					/>
