@@ -6,7 +6,7 @@ import { z } from "zod";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
-import type { Participant } from "~/trpc/different_types";
+import type { Participant } from "~/trpc/different-types";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { upsertChallenges } from "./processing/challenges";
 import { updateChallengesConfig } from "./processing/challengesConfig";
