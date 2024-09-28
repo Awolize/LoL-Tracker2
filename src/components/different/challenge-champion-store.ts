@@ -84,10 +84,12 @@ export const useChampionStore = create<ChampionStore>()(
 							Object.entries(stateFromStorage.state.manuallyMarked).map(([profileId, challenges]) => [
 								profileId,
 								Object.fromEntries(
-									Object.entries(challenges).map(([challengeId, champions]) => [
-										challengeId,
-										new Set(champions), // Convert Array back to Set for deserialization
-									]),
+									Object.entries(challenges as Record<number, number[]>).map(
+										([challengeId, champions]) => [
+											challengeId,
+											new Set(champions), // Convert Array back to Set for deserialization
+										],
+									),
 								),
 							]),
 						),
