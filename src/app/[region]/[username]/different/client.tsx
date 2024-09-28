@@ -66,7 +66,6 @@ export default function Client({
 					challengeChampions={challengeChampions.data}
 					queryParams={queryParams}
 					selectedChallenge={selectedChallenge}
-					challengeChampionsSize={challengeChampions.data?.length ?? 0}
 					version={version}
 					profileId={user.puuid}
 				/>

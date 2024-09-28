@@ -1,12 +1,12 @@
+import { useMemo } from "react";
 import type { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
-import { useMemo } from "react";
 
+import type { ChampionDetails } from "@prisma/client";
 import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 import { DifferentHeaderCounter } from "./different-header-counter";
 import { DifferentHeaderProgress } from "./different-header-progress";
 import { DifferentHeaderThresholds } from "./different-header-thresholds";
-import type { ChampionDetails } from "@prisma/client";
 import { useChampionStore } from "./use-challenge-champion-store";
 
 interface ChampionListHeaderProps {
@@ -43,7 +43,7 @@ export function ChampionListHeader({
 	const { data: challengeConfigs } = api.differentApi.getChallengesConfig.useQuery(queryParams);
 	const { data: playerChallenges } = api.differentApi.getPlayerChallengesData.useQuery(queryParams);
 
-	const selectedChallengeData = selectedChallenge ? (playerChallenges?.get(selectedChallenge) ?? null) : null;
+	const selectedChallengeData = selectedChallenge ? playerChallenges?.get(selectedChallenge) ?? null : null;
 	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedChallenge);
 
 	return (
