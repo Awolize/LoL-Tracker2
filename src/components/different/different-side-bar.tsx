@@ -8,7 +8,7 @@ import React, { type Dispatch, type SetStateAction, useState, useCallback } from
 import type { Regions } from "twisted/dist/constants";
 
 import { api } from "~/trpc/react";
-import LoadingComponent from "../old/loading-spinner";
+import { LoadingComponent } from "../old/loading-spinner";
 
 export const DifferentSideBar = ({
 	region,

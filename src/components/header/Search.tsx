@@ -3,8 +3,8 @@
 import { ArrowRightEndOnRectangleIcon as SubmitIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import LoadingComponent from "~/components/old/loading-spinner";
-import RegionListSelector, { regions } from "~/components/old/region-list-selector";
+import { LoadingComponent } from "~/components/old/loading-spinner";
+import { RegionListSelector, regions } from "~/components/old/region-list-selector";
 
 export default function Search() {
 	const router = useRouter();

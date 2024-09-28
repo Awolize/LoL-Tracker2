@@ -6,8 +6,8 @@ import { useRef, useState } from "react";
 
 import { MainText } from "~/components/header/MainText";
 import { SubText } from "~/components/header/SubText";
-import LoadingComponent from "../components/old/loading-spinner";
-import RegionListSelector, { regions } from "../components/old/region-list-selector";
+import { LoadingComponent } from "../components/old/loading-spinner";
+import { RegionListSelector, regions } from "../components/old/region-list-selector";
 
 export default function Page() {
 	const router = useRouter();

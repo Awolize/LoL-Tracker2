@@ -1,6 +1,6 @@
 import type { Summoner } from "@prisma/client";
 import { api } from "~/trpc/react";
-import LoadingComponent from "../old/loading-spinner";
+import { LoadingComponent } from "../old/loading-spinner";
 import { Button } from "../ui/button";
 
 export const FullSummonerUpdate = ({ user }: { user: Summoner }) => {

@@ -13,7 +13,8 @@
 		"lint": "biome lint ./src",
 		"format": "biome format --write ./src",
 		"check": "biome check --write ./src",
-		"postinstall": "prisma generate"
+		"postinstall": "prisma generate",
+		"knip": "knip"
 	},
 	"dependencies": {
 		"@headlessui/react": "^2.1.6",
@@ -57,6 +58,7 @@
 		"@types/react": "^18.3.10",
 		"@types/react-dom": "^18.3.0",
 		"autoprefixer": "^10.4.20",
+		"knip": "^5.30.6",
 		"postcss": "^8.4.47",
 		"prisma": "5.19.1",
 		"tailwindcss": "^3.4.13",

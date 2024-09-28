@@ -6,7 +6,7 @@ export const filteredOut = (champ: CompleteChampionInfo, filterPoints) => {
 	return disabled;
 };
 
-export enum SortOrder {
+enum SortOrder {
 	Points = 0,
 	AZ = 1,
 	Level = 2,
@@ -31,10 +31,6 @@ export const sortAlgorithm = (sortOrder: SortOrder, a: CompleteChampionInfo, b: 
 	}
 };
 
-interface Roles {
-	role: string;
-}
-
 export const regionToConstant = (region: string) => {
 	const regionMap = {
 		BR: Regions.BRAZIL,
@@ -56,13 +52,6 @@ export const regionToConstant = (region: string) => {
 	}
 
 	return regionMap[region] as Regions;
-};
-
-//Partition function, there are other ways but this seems easiest to understand in the future
-export const partition = <T>(array: T[], filter): { pass: T[]; fail: T[] } => {
-	const pass = array.filter((e, idx, arr) => filter(e, idx, arr));
-	const fail = array.filter((e, idx, arr) => !filter(e, idx, arr));
-	return { pass, fail };
 };
 
 export type ChallengeIds = 202303 | 210001 | 401106;

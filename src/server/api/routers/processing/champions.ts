@@ -60,7 +60,7 @@ export type CompleteMatch = Match & {
 	participants: Summoner[];
 };
 
-export const flattenChamp = (obj: ChampionsDataDragonDetails) => {
+const flattenChamp = (obj: ChampionsDataDragonDetails) => {
 	const flattenedObj = {
 		id: Number(obj.key),
 		version: obj.version,

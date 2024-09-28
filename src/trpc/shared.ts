@@ -16,5 +16,5 @@ export function getUrl() {
 	return `${getBaseUrl()}/api/trpc`;
 }
 
-export type RouterInputs = inferRouterInputs<AppRouter>;
-export type RouterOutputs = inferRouterOutputs<AppRouter>;
+type RouterInputs = inferRouterInputs<AppRouter>;
+type RouterOutputs = inferRouterOutputs<AppRouter>;

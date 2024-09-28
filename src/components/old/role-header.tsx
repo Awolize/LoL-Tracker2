@@ -24,5 +24,3 @@ export function RoleHeader({ role, finishedSize, size, hasHidden, percentage }: 
 		</div>
 	);
 }
-
-export default RoleHeader;

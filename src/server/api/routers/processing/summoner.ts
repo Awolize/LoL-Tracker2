@@ -211,7 +211,7 @@ export const updateSummoner = async (username: string, region: Regions) => {
 	await updateMasteryBySummoner(user, region);
 };
 
-export const updateMasteryBySummoner = async (user: Summoner, region: Regions) => {
+const updateMasteryBySummoner = async (user: Summoner, region: Regions) => {
 	try {
 		// Check if the summoner exists in the database
 		let dbUser = await prisma.summoner.findUnique({

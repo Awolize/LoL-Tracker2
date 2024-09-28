@@ -154,14 +154,3 @@ export const getPlayerChallengesDataAll = async (user: Summoner) => {
 
 	return challengesMap;
 };
-
-export const getPlayerChallengesData = async (region: Regions, user: Summoner) => {
-	const response = await lolApi.Challenges.getPlayerData(user.puuid, region);
-	const filteredChallenges = response.response.challenges.filter((challenge) => isChallengeId(challenge.challengeId));
-	const challengesMap = filteredChallenges.reduce((map, challenge: ChallengeV1DTO) => {
-		map.set(challenge.challengeId as ChallengeIds, challenge);
-		return map;
-	}, new Map<ChallengeIds, ChallengeV1DTO>());
-
-	return challengesMap;
-};

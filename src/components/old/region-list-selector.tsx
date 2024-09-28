@@ -41,5 +41,3 @@ export const RegionListSelector = ({ selectedRegion, setSelectedRegion }) => {
 		</Listbox>
 	);
 };
-
-export default RegionListSelector;
