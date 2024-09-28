@@ -8,7 +8,7 @@ interface RoleChampionListProps {
 	playerChampions: CompleteChampionInfo[];
 	challengeCompletedChampions?: ChampionDetails[];
 	version: string;
-	selectedChallenge?: number;
+	selectedChallenge: number | null;
 	profileId: string;
 }
 
