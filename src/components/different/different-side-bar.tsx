@@ -94,11 +94,26 @@ export const DifferentSideBar = ({
 	});
 
 	const refreshAllChallenges = () => {
-		refreshJackOfAllChamps.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-		refreshChampionOcean.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-		refreshChampionOcean2024Split3.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-		refreshAdaptToAllSituations.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
-		refreshInvincible.mutate({ region, username: `${user.gameName}#${user.tagLine}` });
+		refreshJackOfAllChamps.mutate({
+			region,
+			username: `${user.gameName}#${user.tagLine}`,
+		});
+		refreshChampionOcean.mutate({
+			region,
+			username: `${user.gameName}#${user.tagLine}`,
+		});
+		refreshChampionOcean2024Split3.mutate({
+			region,
+			username: `${user.gameName}#${user.tagLine}`,
+		});
+		refreshAdaptToAllSituations.mutate({
+			region,
+			username: `${user.gameName}#${user.tagLine}`,
+		});
+		refreshInvincible.mutate({
+			region,
+			username: `${user.gameName}#${user.tagLine}`,
+		});
 	};
 
 	const { data: challenges } = api.differentApi.getChallengesConfigDescriptions.useQuery({
@@ -273,6 +288,7 @@ const Item = React.memo(
 		const description = localized.description;
 
 		return (
+			// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 			<li
 				className={`relative cursor-pointer rounded-sm border py-2 duration-300 ${selected ? "bg-background" : ""}`}
 				onClick={handleClick}
