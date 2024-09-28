@@ -5,7 +5,7 @@ interface ChallengeThresholdsProps {
 	selectedChallenge: Challenge | null;
 }
 
-export function ChallengeThresholds({ thresholds, selectedChallenge }: ChallengeThresholdsProps) {
+export function DifferentHeaderThresholds({ thresholds, selectedChallenge }: ChallengeThresholdsProps) {
 	const currentValue = selectedChallenge?.value;
 
 	if (!thresholds || currentValue == null) return null;

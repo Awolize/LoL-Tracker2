@@ -5,10 +5,10 @@ import { useMemo, useState } from "react";
 import type { Regions } from "twisted/dist/constants";
 
 import { DifferentSideBar } from "~/components/different/different-side-bar";
+import { RoleChampionList } from "~/components/different/role-champion-list";
+import { ChampionListHeader } from "~/components/different/role-champion-list-header";
 import { api } from "~/trpc/react";
 import type { CompleteChampionInfo } from "../mastery/page";
-import { ChampionListHeader } from "./components/ClientHeader";
-import { RoleChampionList } from "./components/RoleChampionList";
 
 export default function Client({
 	user,
@@ -76,7 +76,7 @@ export default function Client({
 					completedChampionsSize={selectedChallengeQuery.data?.length ?? 0}
 					version={version}
 				/>
-				<div className="flex-1 overflow-y-auto border-t-2 border-gray-800">
+				<div className="flex-1 overflow-y-auto border-gray-800 border-t-2">
 					<RoleChampionList
 						playerChampionInfo={playerChampionInfo}
 						selectedChallengeData={selectedChallengeQuery.data}

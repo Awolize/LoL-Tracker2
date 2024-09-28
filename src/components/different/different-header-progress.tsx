@@ -5,7 +5,7 @@ interface ChallengeProgressProps {
 	completedChampionsSize: number;
 }
 
-export function ChallengeProgress({ selectedChallenge, completedChampionsSize }: ChallengeProgressProps) {
+export function DifferentHeaderProgress({ selectedChallenge, completedChampionsSize }: ChallengeProgressProps) {
 	if (!selectedChallenge?.value) return null;
 
 	const finishedValue = selectedChallenge.value;

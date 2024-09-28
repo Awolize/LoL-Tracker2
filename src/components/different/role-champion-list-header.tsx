@@ -1,10 +1,10 @@
 import type { Regions } from "twisted/dist/constants";
 import { api } from "~/trpc/react";
 
-import { DifferentHeader } from "~/components/different/different-header";
-import type { CompleteChampionInfo } from "../../mastery/page";
-import { ChallengeProgress } from "./ChallengeProgress";
-import { ChallengeThresholds } from "./ChallengeThresholds";
+import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
+import { DifferentHeaderCounter } from "./different-header-counter";
+import { DifferentHeaderProgress } from "./different-header-progress";
+import { DifferentHeaderThresholds } from "./different-header-thresholds";
 
 interface ChampionListHeaderProps {
 	queryParams: {
@@ -31,15 +31,15 @@ export function ChampionListHeader({
 	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedItem);
 
 	return (
-		<header className="h-24 w-full flex justify-evenly">
+		<header className="flex h-24 w-full justify-evenly">
 			<div className="flex flex-1 items-center justify-center">
-				<ChallengeProgress
+				<DifferentHeaderProgress
 					selectedChallenge={selectedChallenge}
 					completedChampionsSize={completedChampionsSize}
 				/>
 			</div>
-			<div className="flex flex-1 justify-center max-w-52 ">
-				<DifferentHeader
+			<div className="flex max-w-52 flex-1 justify-center ">
+				<DifferentHeaderCounter
 					finished={completedChampionsSize}
 					total={playerChampionInfo.length}
 					version={version}
@@ -47,7 +47,7 @@ export function ChampionListHeader({
 			</div>
 
 			<div className="flex flex-1 items-center justify-center">
-				<ChallengeThresholds
+				<DifferentHeaderThresholds
 					thresholds={selectedChallengeConfig?.thresholds ?? null}
 					selectedChallenge={selectedChallenge}
 				/>

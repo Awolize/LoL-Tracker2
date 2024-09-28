@@ -19,14 +19,14 @@ const MatchItem = ({ match }: { match: CompleteMatch }) => {
 
 	return (
 		<div className="flex flex-row gap-4">
-			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
 			<MatchTable
+				/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */
 				players={match.MatchInfo.participants as unknown as Array<any>}
 				teamId={200}
 				version={`${match.MatchInfo.gameVersion.split(".").slice(0, 2).join(".")}.1`}
 			/>
-			{/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */}
 			<MatchTable
+				/* biome-ignore lint/suspicious/noExplicitAny: this object is way too big */
 				players={match.MatchInfo.participants as unknown as Array<any>}
 				teamId={100}
 				version={`${match.MatchInfo.gameVersion.split(".").slice(0, 2).join(".")}.1`}
