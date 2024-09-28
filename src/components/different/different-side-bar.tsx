@@ -13,14 +13,14 @@ import LoadingComponent from "../old/loading-spinner";
 export const DifferentSideBar = ({
 	region,
 	user,
-	selectedItem,
-	setSelectedItem,
+	selectedChallenge: selectedItem,
+	setSelectedChallenge: setSelectedItem,
 	mappedCases,
 }: {
 	region: Regions;
 	user: Summoner;
-	selectedItem: number | null;
-	setSelectedItem: Dispatch<SetStateAction<number | null>>;
+	selectedChallenge: number | null;
+	setSelectedChallenge: Dispatch<SetStateAction<number | null>>;
 	mappedCases: number[];
 }) => {
 	const [drawerOpen, setDrawerOpen] = useState(true);

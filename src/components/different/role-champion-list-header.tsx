@@ -11,7 +11,7 @@ interface ChampionListHeaderProps {
 		username: string;
 		region: Regions;
 	};
-	selectedItem: number | null;
+	selectedChallenge: number | null;
 	completedChampionsSize: number;
 	playerChampionInfo: CompleteChampionInfo[];
 	version: string;
@@ -19,7 +19,7 @@ interface ChampionListHeaderProps {
 
 export function ChampionListHeader({
 	queryParams,
-	selectedItem,
+	selectedChallenge: selectedItem,
 	completedChampionsSize,
 	playerChampionInfo,
 	version,
@@ -27,7 +27,7 @@ export function ChampionListHeader({
 	const { data: challengeConfigs } = api.differentApi.getChallengesConfig.useQuery(queryParams);
 	const { data: playerChallenges } = api.differentApi.getPlayerChallengesData.useQuery(queryParams);
 
-	const selectedChallenge = selectedItem ? playerChallenges?.get(selectedItem) ?? null : null;
+	const selectedChallenge = selectedItem ? (playerChallenges?.get(selectedItem) ?? null) : null;
 	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedItem);
 
 	return (

@@ -1,22 +1,25 @@
 import type { ChampionDetails } from "@prisma/client";
-import { useState } from "react";
-
 import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
 import { DifferentChampionItem } from "~/components/different/different-champion-item";
 import { DifferentRoleHeader } from "~/components/different/different-role-header";
+import { useChampionStore } from "./challenge-champion-store";
 
 interface RoleChampionListProps {
 	playerChampions: CompleteChampionInfo[];
-	selectedChallengeData?: ChampionDetails[];
+	challengeCompletedChampions?: ChampionDetails[];
 	version: string;
+	selectedChallenge?: number;
+	profileId: string;
 }
 
 export function RoleChampionList({
 	playerChampions: playerChampionInfo,
-	selectedChallengeData,
+	challengeCompletedChampions: selectedChallengeData,
 	version,
+	selectedChallenge,
+	profileId,
 }: RoleChampionListProps) {
-	const [manuallyMarked, setManuallyMarked] = useState(new Set());
+	const { manuallyMarked, markChampion, unmarkChampion } = useChampionStore();
 
 	return (
 		<main className="flex flex-grow flex-row gap-2 overflow-y-auto">
@@ -29,7 +32,12 @@ export function RoleChampionList({
 						<ul className="grid justify-between" style={{ gridTemplateColumns: "repeat(auto-fill, 90px)" }}>
 							{champsWithRole.map((champ) => {
 								const jacks = selectedChallengeData?.map((el) => el.key) ?? [];
-								const hide = jacks.includes(champ.key) || manuallyMarked.has(champ.id);
+								const markedChampionsSet = selectedChallenge
+									? manuallyMarked[profileId]?.[selectedChallenge] || new Set()
+									: new Set();
+
+								const isMarked = selectedChallenge ? markedChampionsSet.has(champ.id) : false;
+								const hide = selectedChallenge ? jacks.includes(champ.key) || isMarked : false;
 
 								return (
 									<DifferentChampionItem
@@ -38,16 +46,15 @@ export function RoleChampionList({
 										champ={champ}
 										version={version}
 										onClick={() => {
-											console.log(`${champ.key} pressed`);
-											setManuallyMarked((prev) => {
-												const newSet = new Set(prev);
-												if (newSet.has(champ.id)) {
-													newSet.delete(champ.id);
+											if (selectedChallenge) {
+												if (isMarked) {
+													unmarkChampion(profileId, selectedChallenge, champ.id);
 												} else {
-													newSet.add(champ.id);
+													markChampion(profileId, selectedChallenge, champ.id);
 												}
-												return newSet;
-											});
+											} else {
+												console.log("No challenge selected, no action taken.");
+											}
 										}}
 									/>
 								);
