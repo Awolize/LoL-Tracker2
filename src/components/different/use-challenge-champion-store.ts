@@ -1,5 +1,6 @@
-import create from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import superjson from "superjson";
 
 interface ChampionStore {
 	manuallyMarked: Record<string, Record<number, Set<number>>>; // Record<profileId, Record<challengeId, Set<championId>>>
@@ -52,50 +53,10 @@ export const useChampionStore = create<ChampionStore>()(
 		}),
 		{
 			name: "different-challenge-manually-marked-champion-storage",
-			// Custom serialization for persisting Set and profileId
-			serialize: (state) => {
-				const stateToSave = {
-					...state,
-					state: {
-						...state.state,
-						manuallyMarked: Object.fromEntries(
-							Object.entries(state.state.manuallyMarked).map(([profileId, challenges]) => [
-								profileId,
-								Object.fromEntries(
-									Object.entries(challenges).map(([challengeId, champions]) => [
-										challengeId,
-										Array.from(champions), // Convert Set to Array for serialization
-									]),
-								),
-							]),
-						),
-					},
-				};
-				return JSON.stringify(stateToSave);
-			},
-			// Custom deserialization to restore Set from Array
-			deserialize: (str) => {
-				const stateFromStorage = JSON.parse(str);
-				return {
-					...stateFromStorage,
-					state: {
-						...stateFromStorage.state,
-						manuallyMarked: Object.fromEntries(
-							Object.entries(stateFromStorage.state.manuallyMarked).map(([profileId, challenges]) => [
-								profileId,
-								Object.fromEntries(
-									Object.entries(challenges as Record<number, number[]>).map(
-										([challengeId, champions]) => [
-											challengeId,
-											new Set(champions), // Convert Array back to Set for deserialization
-										],
-									),
-								),
-							]),
-						),
-					},
-				};
-			},
+			storage: createJSONStorage(() => localStorage, {
+				replacer: (key, value) => superjson.stringify(value),
+				reviver: (key, value) => superjson.parse(value as any),
+			}),
 		},
 	),
 );
