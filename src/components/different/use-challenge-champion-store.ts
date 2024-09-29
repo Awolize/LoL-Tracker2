@@ -1,6 +1,6 @@
+import superjson from "superjson";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import superjson from "superjson";
 
 interface ChampionStore {
 	manuallyMarked: Record<string, Record<number, Set<number>>>; // Record<profileId, Record<challengeId, Set<championId>>>
