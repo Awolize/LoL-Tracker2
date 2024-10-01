@@ -259,6 +259,7 @@ export const processingApiRouter = createTRPCRouter({
 				.flatMap((match) => match.MatchInfo.participants as unknown as Participant)
 				.filter((p) => p.puuid === user.puuid)
 				.filter((p) => p.deaths === 0)
+				.filter((p) => p.win)
 				.filter(Boolean);
 
 			console.log(
