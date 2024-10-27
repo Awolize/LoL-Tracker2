@@ -43,7 +43,7 @@ export function ChampionListHeader({
 	const { data: challengeConfigs } = api.differentApi.getChallengesConfig.useQuery(queryParams);
 	const { data: playerChallenges } = api.differentApi.getPlayerChallengesData.useQuery(queryParams);
 
-	const selectedChallengeData = selectedChallenge ? (playerChallenges?.get(selectedChallenge) ?? null) : null;
+	const selectedChallengeData = selectedChallenge ? playerChallenges?.get(selectedChallenge) ?? null : null;
 	const selectedChallengeConfig = challengeConfigs?.data.find((config) => config.id === selectedChallenge);
 
 	return (

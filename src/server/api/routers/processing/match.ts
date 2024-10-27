@@ -178,7 +178,7 @@ const processSingleMatch = async (region: Regions, matchId: string) => {
 	});
 };
 
-export async function getMatches(user: Summoner, take = 25) {
+export async function getMatches(user: Summoner, take = Number.POSITIVE_INFINITY) {
 	const matches: (Match & {
 		MatchInfo: MatchInfo | null;
 		participants: Summoner[];
