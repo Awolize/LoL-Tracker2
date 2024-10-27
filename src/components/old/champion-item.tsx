@@ -87,7 +87,7 @@ const ChampionItem: React.FC<ChampionItemProps> = ({
 						{
 							"brightness-50 grayscale": hiddenChamp,
 							grayscale: disabled,
-							"border-4 border-sky-500 border-opacity-70": showLevel && champ.championLevel === 10,
+							"border-4 border-sky-500 border-opacity-70": showLevel && champ.championLevel >= 10,
 							"border-4 border-purple-600 border-opacity-60": showLevel && champ.championLevel === 9,
 							"border-4 border-red-600 border-opacity-50": showLevel && champ.championLevel === 8,
 							"border-4 border-yellow-700 border-opacity-25": showLevel && champ.championLevel < 8,
