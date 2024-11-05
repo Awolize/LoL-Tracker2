@@ -115,8 +115,8 @@ importers:
         specifier: ^1.9.2
         version: 1.9.2
       '@types/node':
-        specifier: ^22.7.4
-        version: 22.7.4
+        specifier: ^22.8.7
+        version: 22.8.7
       '@types/react':
         specifier: ^18.3.11
         version: 18.3.11
@@ -128,7 +128,7 @@ importers:
         version: 10.4.20(postcss@8.4.47)
       knip:
         specifier: ^5.32.0
-        version: 5.32.0(@types/node@22.7.4)(typescript@5.6.2)
+        version: 5.32.0(@types/node@22.8.7)(typescript@5.6.2)
       postcss:
         specifier: ^8.4.47
         version: 8.4.47
@@ -982,8 +982,8 @@ packages:
   '@trpc/server@10.45.2':
     resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
 
-  '@types/node@22.7.4':
-    resolution: {integrity: sha512-y+NPi1rFzDs1NdQHHToqeiX2TIS79SWEAw9GYhkkx8bD0ChpfqC+n2j5OXOCpzfojBEBt6DnEnnG9MY0zk1XLg==}
+  '@types/node@22.8.7':
+    resolution: {integrity: sha512-LidcG+2UeYIWcMuMUpBKOnryBWG/rnmOHQR5apjn8myTQcx3rinFRn7DcIFhMnS0PPFSC6OafdIKEad0lj6U0Q==}
 
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
@@ -2758,7 +2758,7 @@ snapshots:
 
   '@trpc/server@10.45.2': {}
 
-  '@types/node@22.7.4':
+  '@types/node@22.8.7':
     dependencies:
       undici-types: 6.19.8
 
@@ -3163,11 +3163,11 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  knip@5.32.0(@types/node@22.7.4)(typescript@5.6.2):
+  knip@5.32.0(@types/node@22.8.7)(typescript@5.6.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@snyk/github-codeowners': 1.1.0
-      '@types/node': 22.7.4
+      '@types/node': 22.8.7
       easy-table: 1.2.0
       enhanced-resolve: 5.17.1
       fast-glob: 3.3.2
