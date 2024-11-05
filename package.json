@@ -17,7 +17,7 @@
 		"knip": "knip"
 	},
 	"dependencies": {
-		"@headlessui/react": "^2.1.8",
+		"@headlessui/react": "^2.2.0",
 		"@heroicons/react": "^2.1.5",
 		"@prisma/client": "5.20.0",
 		"@radix-ui/react-dialog": "^1.1.2",
