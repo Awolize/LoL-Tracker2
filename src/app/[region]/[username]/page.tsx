@@ -12,7 +12,8 @@ const paramsSchema = z.object({
 	username: z.string(),
 });
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+	const params = await props.params;
 	const { region: rawRegion, username: rawUsername } = paramsSchema.parse(params);
 	const username = rawUsername.replace("-", "#");
 	const region = regionToConstant(rawRegion.toUpperCase());

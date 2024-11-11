@@ -3,7 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { minio } from "~/server/minio";
 
-export async function GET(req: NextRequest, { params }: { params: { slugs: string[] } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ slugs: string[] }> }) {
+	const params = await props.params;
 	const { slugs } = params;
 	const imageName = slugs.join("/");
 	const bucketName = "images";

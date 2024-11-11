@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
@@ -22,7 +22,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				<TRPCReactProvider cookies={cookies().toString()}>
+				<TRPCReactProvider cookies={(await cookies()).toString()}>
 					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
 						{children}
 					</ThemeProvider>

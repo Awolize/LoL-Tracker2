@@ -24,7 +24,8 @@ export type CompleteChampionInfo = Partial<Omit<ChampionMasteryDTO, "championPoi
 	ChampionDetails &
 	Roles;
 
-export default async function Page({ params }) {
+export default async function Page(props) {
+	const params = await props.params;
 	const { region: rawRegion, username: rawUsername } = paramsSchema.parse(params);
 	const username = rawUsername.replace("-", "#").toLowerCase();
 	const region = regionToConstant(rawRegion.toUpperCase());

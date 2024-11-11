@@ -5,7 +5,11 @@ import { MainTitleLink } from "~/components/header/MainTitleLink";
 import Profile from "~/components/header/Profile";
 import Search from "~/components/header/Search";
 
-export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
+export async function generateMetadata(props): Promise<Metadata> {
+	const params = await props.params;
+
+	const { region, username } = params;
+
 	return {
 		applicationName: "LoL Mastery Tracker",
 		title: `LoL Mastery Tracker. ${username} Profile`,

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 
-export async function generateMetadata({ params: { region, username } }): Promise<Metadata> {
+export async function generateMetadata(props): Promise<Metadata> {
+	const params = await props.params;
+
+	const { region, username } = params;
+
 	return {
 		applicationName: "LoL Mastery Tracker",
 		title: `LoL Mastery Tracker. ${username} Profile`,
