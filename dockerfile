@@ -57,11 +57,6 @@ FROM base AS runner
 
 WORKDIR /app
 
-# Set up non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
-
 # Copy only the necessary files for production
 COPY --from=builder /app/postcss.config.cjs /app/tailwind.config.ts  ./
 COPY --from=builder /app/next.config.mjs ./
@@ -71,6 +66,12 @@ COPY --from=builder /app/public ./public
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Set up non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+RUN chown -R nextjs:nodejs /app
+USER nextjs
 
 # Set up environment variables for runtime
 ARG DATABASE_URL
@@ -89,9 +90,7 @@ ENV MINIO_PORT=${MINIO_PORT}
 ENV MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
 ENV MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
 
-# Uncomment the following line to disable telemetry at run time
 ENV NEXT_TELEMETRY_DISABLED 1
-
-# Note: Don't expose ports here, Compose will handle that for us
+EXPOSE 3000
 
 CMD ["node", "server.js"]
