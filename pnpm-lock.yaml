@@ -84,8 +84,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       react-lazy-load-image-component:
-        specifier: ^1.6.2
-        version: 1.6.2(react@18.3.1)
+        specifier: ^1.6.3
+        version: 1.6.3(react@18.3.1)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -1691,10 +1691,10 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-lazy-load-image-component@1.6.2:
-    resolution: {integrity: sha512-dAdH5PsRgvDMlHC7QpZRA9oRzEZl1kPFwowmR9Mt0IUUhxk2wwq43PB6Ffwv84HFYuPmsxDUCka0E9KVXi8roQ==}
+  react-lazy-load-image-component@1.6.3:
+    resolution: {integrity: sha512-kdQYUDbuISF3T9El0sBLNoWrmPohqlytcG4ognLtHYjY8bZAsJ0/Ez+VaV+0QlVyUY3K6dDXkuQAz3GpvdjBkw==}
     peerDependencies:
-      react: ^15.x.x || ^16.x.x || ^17.x.x || ^18.x.x
+      react: ^15.x.x || ^16.x.x || ^17.x.x || ^18.x.x || ^19.x.x
 
   react-remove-scroll-bar@2.3.6:
     resolution: {integrity: sha512-DtSYaao4mBmX+HDo5YWYdBWQwYIQQshUV/dVxFxK+KM26Wjwp1gZ6rv6OC3oujI6Bfu6Xyg3TwK533AQutsn/g==}
@@ -3478,7 +3478,7 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-lazy-load-image-component@1.6.2(react@18.3.1):
+  react-lazy-load-image-component@1.6.3(react@18.3.1):
     dependencies:
       lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
