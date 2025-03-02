@@ -3,6 +3,9 @@
 This project is a League of Legends mastery/challenges tracker. The project is bootstrapped with `create-t3-app`.
 
 
+## State
+Not currently under development. The current version works well enough for production use. I'll keep an eye on dependabot PR's but dont expect any major releases.
+
 ## Getting Started :rocket:
 1. **Clone the Repository and install the dependencies** 
 
