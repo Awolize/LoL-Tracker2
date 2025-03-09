@@ -7,7 +7,6 @@ export const env = createEnv({
 	 * isn't built with invalid env vars.
 	 */
 	server: {
-		PROCESSING_URL: z.string(),
 		DATABASE_URL: z
 			.string()
 			.url()
@@ -33,7 +32,6 @@ export const env = createEnv({
 	 * middlewares) or client-side so we need to destruct manually.
 	 */
 	runtimeEnv: {
-		PROCESSING_URL: process.env.PROCESSING_URL,
 		DATABASE_URL: process.env.DATABASE_URL,
 		NODE_ENV: process.env.NODE_ENV,
 		MINIO_ENDPOINT: process.env.MINIO_ENDPOINT,
