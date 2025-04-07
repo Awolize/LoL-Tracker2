@@ -64,7 +64,7 @@ export default function Page() {
 											type="text"
 											ref={usernameRef}
 											placeholder="lol.awot#dev"
-											className="h-12 w-full rounded-l bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+											className="h-12 w-full rounded-l bg-gray-700 text-center text-xl placeholder-gray-400 focus:border-sky-500 focus:outline-hidden focus:ring-1 focus:ring-gray-500"
 										/>
 										<div className="text-foreground/50 text-xs">
 											Remember to include the # and tagline like: Awot#dev

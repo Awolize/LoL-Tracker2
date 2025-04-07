@@ -22,7 +22,7 @@ export function RoleChampionList({
 	const { manuallyMarked, markChampion, unmarkChampion } = useChampionStore();
 
 	return (
-		<main className="flex flex-grow flex-row gap-2 overflow-y-auto">
+		<main className="flex grow flex-row gap-2 overflow-y-auto">
 			{["Top", "Jungle", "Mid", "Bottom", "Support"].map((role) => {
 				const champsWithRole = champions.filter((champ) => champ?.role === role);
 

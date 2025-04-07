@@ -30,7 +30,7 @@ export default async function Page(props) {
 						<div className="absolute left-0">
 							<Image priority src={profileIconUrl} alt={`${profileIconId}`} height={90} width={90} />
 						</div>
-						<div className="flex-col items-center bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 bg-clip-text text-transparent">
+						<div className="flex-col items-center bg-linear-to-r from-green-600 via-sky-600 to-purple-600 bg-clip-text text-transparent">
 							<div className="text-6xl">{username}</div>
 							<div className="flex flex-row items-center justify-between ">
 								<div className="font-bold text-sm ">{region}</div>

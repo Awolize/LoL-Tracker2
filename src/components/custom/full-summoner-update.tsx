@@ -27,8 +27,8 @@ export const FullSummonerUpdate = ({ user }: { user: Summoner }) => {
 			size={"sm"}
 			className={`${
 				!updateChampions.isLoading
-					? "bg-gradient-to-r from-indigo-500 to-purple-500"
-					: "w-16 bg-gradient-to-r from-purple-500 to-indigo-500"
+					? "bg-linear-to-r from-indigo-500 to-purple-500"
+					: "w-16 bg-linear-to-r from-purple-500 to-indigo-500"
 			} relative my-2 inline-flex w-24 items-center justify-center rounded px-3 py-1`}
 			onClick={updateUser}
 		>

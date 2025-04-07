@@ -15,7 +15,7 @@ export function RoleHeader({ role, finishedSize, size, hasHidden, percentage }: 
 				{finishedSize} / {size}
 				{hasHidden ? "*" : ""}
 			</h4>
-			<div className="mb-2 bg-gradient-to-r from-green-600 via-sky-600 to-purple-600 pb-[3px]">
+			<div className="mb-2 bg-linear-to-r from-green-600 via-sky-600 to-purple-600 pb-[3px]">
 				<div className="flex h-full flex-col justify-between bg-background text-foreground">
 					<h4 className="font-bold text-xl">{role}</h4>
 				</div>
