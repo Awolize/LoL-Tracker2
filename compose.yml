@@ -3,11 +3,11 @@
 
 services:
   web:
+    container_name: lol-web
     build:
-      context: .
       dockerfile: Dockerfile
       args:
-        DATABASE_URL: ${DATABASE_URL}
+        DATABASE_URL: ${DATABASE_URL_BUILD}
         RIOT_API_KEY: ${RIOT_API_KEY}
         MINIO_ENDPOINT: ${MINIO_ENDPOINT}
         MINIO_PORT: ${MINIO_PORT}
@@ -22,8 +22,10 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       NEXT_TELEMETRY_DISABLED: '1'
     ports:
-      - "3000:3000"
+      - "9003:3000"
     restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: false
     depends_on:
       - db
       - minio
@@ -32,9 +34,9 @@ services:
     image: postgres:latest
     container_name: lol-db
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: asdhjDHJsdchjnk12NKADHJNK23ASNK1
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGPORT: 5432
     restart: unless-stopped
     volumes:
@@ -42,18 +44,17 @@ services:
       - ./db/share:/pgshare
       - ./db/scripts/:/pgscripts:ro
     ports:
-      - "5432:5432"
+      - "9004:5432"
 
   minio:
-    image: minio/minio@latest
-    container_name: minio
+    image: minio/minio:latest
+    container_name: lol-minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      # - "9000:9000"
+      - "9005:9005"
     volumes:
       - ./minio:/data
-    command: server /data --console-address ":9001"
-
+    command: server /data --console-address ":9005"

@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { minio } from "~/server/minio";
 
-export async function GET(req: NextRequest, props: { params: Promise<{ slugs: string[] }> }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ slugs: string[] }> }) {	
 	const params = await props.params;
 	const { slugs } = params;
 	const imageName = slugs.join("/");
@@ -22,10 +22,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slugs: st
 			},
 		});
 	} catch (error) {
-		if ((error as { code?: string }).code !== "NoSuchKey") {
-			return new NextResponse("Error accessing the image", { status: 500 });
-		}
-
 		const thirdPartyImageUrl = `https://ddragon.leagueoflegends.com/${imageName}`;
 		try {
 			const response = await fetch(thirdPartyImageUrl);
