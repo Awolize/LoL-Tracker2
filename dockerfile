@@ -22,7 +22,7 @@ COPY src ./src
 COPY public ./public
 COPY next.config.mjs .
 COPY tsconfig.json .
-COPY postcss.config.cjs tailwind.config.ts ./
+COPY postcss.config.cjs ./
 
 # Environment variables must be present at build time
 # https://github.com/vercel/next.js/discussions/14030
@@ -56,7 +56,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Copy only the necessary files for production
-COPY --from=builder /app/postcss.config.cjs /app/tailwind.config.ts  ./
+COPY --from=builder /app/postcss.config.cjs ./
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 
