@@ -22,8 +22,8 @@ export async function GET(req: NextRequest, props: { params: Promise<{ slugs: st
 			},
 		});
 	} catch (error) {
-		const thirdPartyImageUrl = `https://ddragon.leagueoflegends.com/${imageName}`;
 		try {
+			const thirdPartyImageUrl = `https://ddragon.leagueoflegends.com/${imageName}`;
 			const response = await fetch(thirdPartyImageUrl);
 			if (!response.ok) {
 				throw new Error("Network response was not ok");
