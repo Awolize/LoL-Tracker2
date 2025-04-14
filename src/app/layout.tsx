@@ -1,8 +1,6 @@
 // import "public/build.css";
 import "~/styles/globals.css";
 
-import { cookies } from "next/headers";
-
 import type { Metadata } from "next";
 import { ThemeProvider } from "~/components/theme-provider";
 import { TRPCReactProvider } from "~/trpc/react";
@@ -22,7 +20,7 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				<TRPCReactProvider cookies={(await cookies()).toString()}>
+				<TRPCReactProvider>
 					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
 						{children}
 					</ThemeProvider>

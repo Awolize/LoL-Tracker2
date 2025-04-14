@@ -91,7 +91,7 @@ const OptionsContext = createContext<OptionsStore | null>(null);
 type OptionsProviderProps = React.PropsWithChildren<{ persistName: string }>;
 
 export function OptionsProvider({ children, persistName }: OptionsProviderProps) {
-	const storeRef = useRef<OptionsStore>();
+	const storeRef = useRef<OptionsStore>(null);
 	if (!storeRef.current) {
 		storeRef.current = useOptionsPersistentStore(persistName);
 	}

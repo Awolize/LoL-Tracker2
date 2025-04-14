@@ -24,7 +24,7 @@ const UserContext = createContext<UserStore | null>(null);
 type UserProviderProps = React.PropsWithChildren<Store>;
 
 export function UserProvider({ children, ...props }: UserProviderProps) {
-	const storeRef = useRef<UserStore>();
+	const storeRef = useRef<UserStore>(null);
 	if (!storeRef.current) {
 		storeRef.current = createUserStore(props);
 	}

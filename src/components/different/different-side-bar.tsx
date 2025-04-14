@@ -143,7 +143,7 @@ export const DifferentSideBar = ({
 			});
 		};
 
-		const isLoading = refreshQueryUpdateChallengeConfig.isLoading;
+		const isLoading = refreshQueryUpdateChallengeConfig.isPending;
 
 		return (
 			<button
@@ -169,12 +169,12 @@ export const DifferentSideBar = ({
 		};
 
 		const isLoading =
-			refreshQueryUpdateGames.isLoading ||
-			refreshJackOfAllChamps.isLoading ||
-			refreshChampionOcean.isLoading ||
-			refreshChampionOcean2024Split3.isLoading ||
-			refreshAdaptToAllSituations.isLoading ||
-			refreshInvincible.isLoading;
+			refreshQueryUpdateGames.isPending ||
+			refreshJackOfAllChamps.isPending ||
+			refreshChampionOcean.isPending ||
+			refreshChampionOcean2024Split3.isPending ||
+			refreshAdaptToAllSituations.isPending ||
+			refreshInvincible.isPending;
 
 		return (
 			<button
