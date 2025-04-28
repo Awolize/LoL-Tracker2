@@ -7,7 +7,7 @@ import { z } from "zod";
 import { getCompleteChampionData } from "~/server/api/routers/processing/champions";
 import { getMatches } from "~/server/api/routers/processing/match";
 import { getUserByNameAndRegion } from "~/server/api/routers/processing/summoner";
-import { type ChallengeIds, regionToConstant } from "~/utils/champsUtils";
+import { regionToConstant } from "~/utils/champsUtils";
 import { Client } from "./client";
 
 const paramsSchema = z.object({
@@ -36,8 +36,6 @@ export default async function Page(props) {
 		getCompleteChampionData(region, user),
 		getMatches(user, 25),
 	]);
-
-	const challengeIds: ChallengeIds[] = [202303, 210001, 401106];
 
 	return (
 		<Client

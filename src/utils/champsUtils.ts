@@ -53,7 +53,3 @@ export const regionToConstant = (region: string) => {
 
 	return regionMap[region] as Regions;
 };
-
-export type ChallengeIds = 202303 | 210001 | 401106;
-
-export const isChallengeId = (id: number): id is ChallengeIds => [202303, 210001, 401106].includes(id);

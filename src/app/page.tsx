@@ -28,20 +28,9 @@ export default function Page() {
 
 	return (
 		<>
-			{/* <Head>
-                <title>LoL Mastery Tracker</title>
-                <meta property="og:title" content="LoL Mastery Tracker, brought to you by me!" key="title" />
-                <meta
-                    property="og:description"
-                    content="Made using Riot API. Repo can be found using https://github.com/Awolize. Boilerplate was generated using https://create.t3.gg/"
-                />
-                <meta property="og:image" content="https://lol.awot.dev/favicon.ico" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head> */}
 			<main
 				className={`flex min-h-screen flex-col items-center justify-center bg-[url('/background-1.webp')] bg-center bg-cover`}
 			>
-				{/* <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-4 py-2"> */}
 				<div className="flex w-full animate-pulse2 flex-col items-center justify-center gap-4 bg-black py-16">
 					<div>
 						<MainText />

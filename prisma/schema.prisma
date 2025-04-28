@@ -50,7 +50,6 @@ model Summoner {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   region            String
-  username          String
   profileIconId     Int
   puuid             String             @id @unique
   summonerLevel     Int
@@ -129,7 +128,7 @@ model ChampionMastery {
 
 model ChallengesConfig {
   id             Int                     @id
-  state          String
+  state          String?
   leaderboard    Boolean
   endTimestamp   DateTime?
   thresholds     Json
@@ -155,19 +154,16 @@ model TotalPoints {
   level               String
   current             Int
   max                 Int
-  percentile          Float
   challengesDetails   ChallengesDetails @relation("TotalPoints_ChallengesDetails", fields: [challengesDetailsId], references: [puuid])
   challengesDetailsId String            @unique
 }
 
 model Preferences {
-  bannerAccent             String
-  title                    String
-  challengeIds             Int[]
-  crestBorder              String
-  prestigeCrestBorderLevel Int
-  challengesDetails        ChallengesDetails @relation("Preferences_ChallengesDetails", fields: [challengesDetailsId], references: [puuid])
-  challengesDetailsId      String            @unique
+  bannerAccent        String
+  title               String
+  challengeIds        Int[]
+  challengesDetails   ChallengesDetails @relation("Preferences_ChallengesDetails", fields: [challengesDetailsId], references: [puuid])
+  challengesDetailsId String            @unique
 }
 
 model Challenge {
@@ -176,8 +172,6 @@ model Challenge {
   level               String?
   value               Int?
   achievedTime        DateTime?
-  position            Int?
-  playersInLevel      Int?
   challengesDetails   ChallengesDetails @relation(fields: [challengesDetailsId], references: [puuid])
   challengesDetailsId String
 

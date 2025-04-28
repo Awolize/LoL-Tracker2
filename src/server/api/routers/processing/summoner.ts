@@ -7,6 +7,7 @@ import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
 import { riotApi } from "~/server/riotApi";
+import type { AccountDto } from "twisted/dist/models-dto/account/account.dto";
 
 export const upsertSummoner = async (puuid: string, region: Regions) => {
 	const { account, summoner } = await getSummonerRateLimit(puuid, region);
@@ -16,13 +17,16 @@ export const upsertSummoner = async (puuid: string, region: Regions) => {
 		return;
 	}
 
-	const upsertedSummoner = await prisma.summoner.upsert({
+	return upsertSummonerBySummoner(summoner, region, account);
+};
+
+export const upsertSummonerBySummoner = async (summoner: Summoner, region: Regions, account: AccountDto) => {
+	const upsertedSummoner = prisma.summoner.upsert({
 		where: {
 			puuid: summoner.puuid,
 		},
 		update: {
-			summonerId: summoner.id,
-			region: region,
+			summonerId: summoner.summonerId,
 			profileIconId: summoner.profileIconId,
 			summonerLevel: summoner.summonerLevel,
 			revisionDate: new Date(summoner.revisionDate),
@@ -32,9 +36,8 @@ export const upsertSummoner = async (puuid: string, region: Regions) => {
 		},
 		create: {
 			puuid: summoner.puuid,
-			summonerId: summoner.id,
+			summonerId: summoner.summonerId,
 			region: region,
-			username: "deprecated",
 			profileIconId: summoner.profileIconId,
 			summonerLevel: summoner.summonerLevel,
 			revisionDate: new Date(summoner.revisionDate),
@@ -64,7 +67,6 @@ const createSummoner = async (puuid: string, region: Regions) => {
 		data: {
 			puuid: puuid,
 			region: region,
-			username: "deprecated",
 			accountId: "unknown",
 			profileIconId: 0,
 			revisionDate: new Date(0),
@@ -125,8 +127,7 @@ const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: an
 
 const riotApiAccountByUsername = async (gameName: string, tagLine: string, region: Regions) => {
 	const regionGroup = regionToRegionGroup(region);
-	return (await rateLimitWrapper(() => riotApi.Account.getByGameNameAndTagLine(gameName, tagLine, regionGroup)))
-		.response;
+	return (await rateLimitWrapper(() => riotApi.Account.getByRiotId(gameName, tagLine, regionGroup))).response;
 };
 
 const lolApiSummonerByPUUID = async (puuid: string, region: Regions) => {
@@ -140,7 +141,22 @@ const riotApiAccountByPUUID = async (puuid: string, region: Regions) => {
 
 const getSummonerRateLimit = async (puuid: string, region: Regions) => {
 	const account = await riotApiAccountByPUUID(puuid, region);
-	const summoner = await lolApiSummonerByPUUID(puuid, region);
+	const summonerV4DTO = await lolApiSummonerByPUUID(puuid, region);
+
+	const summoner: Summoner = {
+		summonerId: summonerV4DTO.id,
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		region: region,
+		profileIconId: summonerV4DTO.profileIconId,
+		puuid: summonerV4DTO.puuid,
+		summonerLevel: summonerV4DTO.summonerLevel,
+		revisionDate: new Date(summonerV4DTO.revisionDate),
+		accountId: summonerV4DTO.accountId,
+		gameName: account.gameName,
+		tagLine: account.tagLine,
+	};
+
 	return { account, summoner };
 };
 
@@ -204,138 +220,6 @@ export const masteryBySummoner = async (region: Regions, user: Summoner) => {
 		throw error;
 	}
 };
-
-export const updateSummoner = async (username: string, region: Regions) => {
-	const user = await getUserByNameAndRegion(username.toLowerCase(), region);
-
-	await updateMasteryBySummoner(user, region);
-};
-
-const updateMasteryBySummoner = async (user: Summoner, region: Regions) => {
-	try {
-		// Check if the summoner exists in the database
-		let dbUser = await prisma.summoner.findUnique({
-			where: { puuid: user.puuid },
-			include: {
-				championData: true,
-			},
-		});
-
-		console.log("Updating summoner in db with mastery scores");
-		try {
-			const masteryData = (await lolApi.Champion.masteryByPUUID(user.puuid, region)).response;
-			await updateSummonerMasteryDb(user, region, masteryData);
-			console.log("Done - Updating summoner in db with mastery scores");
-		} catch (error) {
-			console.error("Failed - Updating summoner in db with mastery scores");
-		}
-
-		// Now the user should exist in the db, fetch championData.
-		dbUser = await prisma.summoner.findUnique({
-			where: { puuid: user.puuid },
-			include: {
-				championData: true,
-			},
-		});
-
-		const championMasteryData = dbUser?.championData ?? [];
-
-		const championMastery: ChampionMasteryDTO[] = championMasteryData.map((mastery) => ({
-			summonerId: user.summonerId,
-			championId: mastery.championId,
-			championLevel: mastery.championLevel,
-			championPoints: mastery.championPoints,
-			lastPlayTime: new Date(mastery.lastPlayTime).getTime(),
-			championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
-			championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-			chestGranted: mastery.chestGranted,
-			tokensEarned: mastery.tokensEarned,
-		}));
-
-		return championMastery;
-	} catch (error) {
-		console.log(
-			`Error fetching champion mastery data for summoner ${user.gameName}#${user.tagLine} (${user.region}):`,
-			error,
-		);
-		throw error;
-	}
-};
-
-const updateSummonerMasteryDb = async (
-	user: Summoner,
-	region: Regions,
-	championMasteryData: ChampionMastery[] | ChampionMasteryDTO[],
-) => {
-	try {
-		// Step 1: Upsert Summoner
-		const upsertedSummoner = await prisma.summoner.upsert({
-			where: {
-				puuid: user.puuid,
-			},
-			update: {
-				summonerId: user.summonerId,
-				region: region,
-				profileIconId: user.profileIconId,
-				summonerLevel: user.summonerLevel,
-				revisionDate: new Date(user.revisionDate),
-				accountId: user.accountId,
-			},
-			create: {
-				puuid: user.puuid,
-				summonerId: user.summonerId,
-				region: region,
-				username: "deprecated",
-				profileIconId: user.profileIconId,
-				summonerLevel: user.summonerLevel,
-				revisionDate: new Date(user.revisionDate),
-				accountId: user.accountId,
-			},
-		});
-
-		console.log(`New summoner added/updated: ${upsertedSummoner.username}`);
-
-		// Step 2: Upsert Champion Mastery Data
-		const upsertedChampionMasteryData = await Promise.all(
-			championMasteryData.map((mastery) =>
-				prisma.championMastery.upsert({
-					where: {
-						championId_puuid: {
-							championId: mastery.championId,
-							puuid: user.puuid,
-						},
-					},
-					update: {
-						championLevel: mastery.championLevel,
-						championPoints: mastery.championPoints,
-						lastPlayTime: new Date(mastery.lastPlayTime),
-						championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
-						championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-						chestGranted: mastery.chestGranted ?? false,
-						tokensEarned: mastery.tokensEarned,
-					},
-					create: {
-						championId: mastery.championId,
-						puuid: user.puuid,
-						championLevel: mastery.championLevel,
-						championPoints: mastery.championPoints,
-						lastPlayTime: new Date(mastery.lastPlayTime),
-						championPointsSinceLastLevel: mastery.championPointsSinceLastLevel,
-						championPointsUntilNextLevel: mastery.championPointsUntilNextLevel,
-						chestGranted: mastery.chestGranted ?? false,
-						tokensEarned: mastery.tokensEarned,
-					},
-				}),
-			),
-		);
-
-		// Step 3: Logging
-		console.log(`New summoner ${upsertedSummoner.username}, updated: ${upsertedChampionMasteryData.length}`);
-	} catch (error) {
-		console.log("Error:", error);
-	}
-};
-
 export async function getUserByNameAndRegion(username: string, region: Regions) {
 	function isWithinThreshold(date: Date) {
 		const oneDayInMillis = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
@@ -343,15 +227,17 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 		return now.getTime() - date.getTime() <= oneDayInMillis;
 	}
 
+	const [gameName, tagLine] = username.split("#");
+
 	try {
 		const user = await prisma.summoner.findFirst({
 			where: {
 				gameName: {
-					equals: username.split("#")[0],
+					equals: gameName,
 					mode: "insensitive",
 				},
 				tagLine: {
-					equals: username.split("#")[1],
+					equals: tagLine,
 					mode: "insensitive",
 				},
 				region: region,
@@ -402,7 +288,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				summonerId: summoner.id,
 				updatedAt: new Date(),
 				region,
-				username: "deprecated",
 				gameName: account.gameName,
 				tagLine: account.tagLine,
 				profileIconId: summoner.profileIconId,
@@ -416,7 +301,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				region,
-				username: "deprecated",
 				gameName: account.gameName,
 				tagLine: account.tagLine,
 				profileIconId: summoner.profileIconId,

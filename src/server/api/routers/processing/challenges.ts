@@ -1,13 +1,10 @@
 import type { Challenge, Summoner } from "@prisma/client";
 import type { Regions } from "twisted/dist/constants";
-import type { ChallengeV1DTO } from "twisted/dist/models-dto";
-
 import { prisma } from "~/server/db";
 import { lolApi } from "~/server/lolApi";
-import { type ChallengeIds, isChallengeId } from "~/utils/champsUtils";
 
 export const upsertChallenges = async (region: Regions, user: Summoner) => {
-	const response = (await lolApi.Challenges.getPlayerData(user.puuid, region)).response;
+	const response = (await lolApi.Challenges.PlayerChallenges(user.puuid, region)).response;
 
 	const upsertedChallenges = await prisma.challengesDetails.upsert({
 		where: {
@@ -21,13 +18,11 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						current: response.totalPoints.current,
 						level: response.totalPoints.level,
 						max: response.totalPoints.max,
-						percentile: response.totalPoints.percentile,
 					},
 					create: {
 						current: response.totalPoints.current,
 						level: response.totalPoints.level,
 						max: response.totalPoints.max,
-						percentile: response.totalPoints.percentile,
 					},
 				},
 			},
@@ -38,14 +33,14 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						level: categoryData.level,
 						current: categoryData.current,
 						max: categoryData.max,
-						percentile: categoryData.percentile,
+						percentile: categoryData.percentile ?? -1,
 					},
 					create: {
 						category,
 						level: categoryData.level,
 						current: categoryData.current,
 						max: categoryData.max,
-						percentile: categoryData.percentile,
+						percentile: categoryData.percentile ?? -1,
 					},
 				})),
 			},
@@ -54,8 +49,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 					bannerAccent: response.preferences.bannerAccent,
 					title: response.preferences.title,
 					challengeIds: response.preferences.challengeIds,
-					crestBorder: response.preferences.crestBorder,
-					prestigeCrestBorderLevel: response.preferences.prestigeCrestBorderLevel,
 				},
 			},
 			challenges: {
@@ -71,8 +64,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						level: challenge.level,
 						value: challenge.value,
 						achievedTime: challenge.achievedTime ? new Date(challenge.achievedTime) : null,
-						position: challenge.position,
-						playersInLevel: challenge.playersInLevel,
 					},
 					create: {
 						challengeId: challenge.challengeId,
@@ -80,8 +71,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						level: challenge.level,
 						value: challenge.value,
 						achievedTime: challenge.achievedTime ? new Date(challenge.achievedTime) : null,
-						position: challenge.position,
-						playersInLevel: challenge.playersInLevel,
 					},
 				})),
 			},
@@ -93,7 +82,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 					current: response.totalPoints.current,
 					level: response.totalPoints.level,
 					max: response.totalPoints.max,
-					percentile: response.totalPoints.percentile,
 				},
 			},
 			categoryPoints: {
@@ -103,7 +91,7 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						level: categoryData.level,
 						current: categoryData.current,
 						max: categoryData.max,
-						percentile: categoryData.percentile,
+						percentile: categoryData.percentile ?? -1,
 					})),
 				},
 			},
@@ -112,8 +100,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 					bannerAccent: response.preferences.bannerAccent,
 					title: response.preferences.title,
 					challengeIds: response.preferences.challengeIds,
-					crestBorder: response.preferences.crestBorder,
-					prestigeCrestBorderLevel: response.preferences.prestigeCrestBorderLevel,
 				},
 			},
 			challenges: {
@@ -124,8 +110,6 @@ export const upsertChallenges = async (region: Regions, user: Summoner) => {
 						level: challenge.level,
 						value: challenge.value,
 						achievedTime: challenge.achievedTime ? new Date(challenge.achievedTime) : null,
-						position: challenge.position,
-						playersInLevel: challenge.playersInLevel,
 					})),
 				},
 			},

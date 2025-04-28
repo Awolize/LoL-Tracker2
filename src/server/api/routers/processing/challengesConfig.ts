@@ -3,9 +3,9 @@ import { lolApi } from "~/server/lolApi";
 
 import type { ChallengesConfig } from "@prisma/client";
 import type { Regions } from "twisted/dist/constants";
-import type { ChallengeConfigV1DTO } from "twisted/dist/models-dto";
+import type { ConfigDTO } from "twisted/dist/models-dto";
 
-const updateConfig = async (config: ChallengeConfigV1DTO): Promise<ChallengesConfig> => {
+const updateConfig = async (config: ConfigDTO.Config): Promise<ChallengesConfig> => {
 	const upsertedConfig = await prisma.challengesConfig.upsert({
 		where: { id: config.id },
 		update: {
@@ -23,7 +23,7 @@ const updateConfig = async (config: ChallengeConfigV1DTO): Promise<ChallengesCon
 		},
 	});
 
-	const localizedName = config.localizedNames.en_US;
+	const localizedName = config.localizedNames.en_US!;
 
 	await prisma.challengeLocalization.upsert({
 		where: { id_language: { id: config.id, language: "en_US" } },
@@ -45,7 +45,7 @@ const updateConfig = async (config: ChallengeConfigV1DTO): Promise<ChallengesCon
 };
 
 export const updateChallengesConfig = async (region: Regions) => {
-	const challengesConfig: ChallengeConfigV1DTO[] = (await lolApi.Challenges.getConfig(region)).response;
+	const challengesConfig: ConfigDTO.Config[] = (await lolApi.Challenges.Configs(region)).response;
 	const upsertedConfigs = await Promise.all(
 		challengesConfig.map(async (config) => {
 			return updateConfig(config);

@@ -1,6 +1,5 @@
 import { differentApiRouter } from "~/server/api/routers/differentApiRouter";
 import { processingApiRouter } from "~/server/api/routers/processingApiRouter";
-import { riotApiRouter } from "~/server/api/routers/riot";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -9,7 +8,6 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here
  */
 export const appRouter = createTRPCRouter({
-	riotApi: riotApiRouter,
 	differentApi: differentApiRouter,
 	processingApi: processingApiRouter,
 });

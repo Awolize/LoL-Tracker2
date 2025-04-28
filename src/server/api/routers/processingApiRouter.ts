@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
-import type { AccountDTO } from "twisted/dist/models-dto/accounts/account.dto";
+import type { AccountDto } from "twisted/dist/models-dto/account/account.dto";
 import { z } from "zod";
 
 import { prisma } from "~/server/db";
@@ -43,7 +43,7 @@ export const processingApiRouter = createTRPCRouter({
 		.input(z.object({ username: z.string(), region: z.string() }))
 		.mutation(async ({ input, ctx }) => {
 			const region = input.region as Regions;
-			const data = (await lolApi.Challenges.getConfig(region)).response;
+			const data = (await lolApi.Challenges.Configs(region)).response;
 
 			try {
 				await prisma.$transaction([
@@ -381,8 +381,7 @@ export const processingApiRouter = createTRPCRouter({
 			const region = input.region as Regions;
 			const regionGroup = regionToRegionGroup(region);
 
-			const user = (await riotApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
-				.response;
+			const user = (await riotApi.Account.getByRiotId(input.gameName, input.tagLine, regionGroup)).response;
 
 			if (!user.puuid) {
 				console.log("This user does not exist", user);
@@ -437,8 +436,7 @@ export const processingApiRouter = createTRPCRouter({
 				const region = input.region as Regions;
 				const regionGroup = regionToRegionGroup(region);
 
-				const user = (await riotApi.Account.getByGameNameAndTagLine(input.gameName, input.tagLine, regionGroup))
-					.response;
+				const user = (await riotApi.Account.getByRiotId(input.gameName, input.tagLine, regionGroup)).response;
 
 				if (!user.puuid) {
 					console.log("This user does not exist", user);
@@ -482,7 +480,7 @@ type AnyFunction = (...args: any[]) => Promise<any>;
 
 async function timeIt<T extends AnyFunction>(
 	functionName: string,
-	user: Pick<AccountDTO, "gameName" | "tagLine">,
+	user: Pick<AccountDto, "gameName" | "tagLine">,
 	func: T,
 	...args: Parameters<T>
 ): Promise<ReturnType<T>> {

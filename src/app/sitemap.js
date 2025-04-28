@@ -5,9 +5,7 @@ const SUMMONERS_PER_SITEMAP = 10000;
 
 export async function generateSitemaps() {
 	const prisma = new PrismaClient();
-	const summonersSize = await prisma.summoner.count({
-		where: { username: "deprecated" },
-	});
+	const summonersSize = await prisma.summoner.count();
 	const numberOfSitemaps = Math.ceil(summonersSize / SUMMONERS_PER_SITEMAP);
 	const resultArray = Array.from({ length: numberOfSitemaps }, (_, index) => ({
 		id: index,
@@ -46,9 +44,6 @@ async function getSummoners(sitemapId) {
 	const summoners = await prisma.summoner.findMany({
 		skip: 10000 * sitemapId,
 		take: 10000,
-		where: {
-			username: "deprecated",
-		},
 	});
 	return summoners;
 }
