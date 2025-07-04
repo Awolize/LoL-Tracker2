@@ -30,7 +30,6 @@ export const upsertSummonerBySummoner = async (summoner: Summoner, region: Regio
 			profileIconId: summoner.profileIconId,
 			summonerLevel: summoner.summonerLevel,
 			revisionDate: new Date(summoner.revisionDate),
-			accountId: summoner.accountId,
 			gameName: account.gameName,
 			tagLine: account.tagLine,
 		},
@@ -41,7 +40,6 @@ export const upsertSummonerBySummoner = async (summoner: Summoner, region: Regio
 			profileIconId: summoner.profileIconId,
 			summonerLevel: summoner.summonerLevel,
 			revisionDate: new Date(summoner.revisionDate),
-			accountId: summoner.accountId,
 			gameName: account.gameName,
 			tagLine: account.tagLine,
 		},
@@ -67,7 +65,6 @@ const createSummoner = async (puuid: string, region: Regions) => {
 		data: {
 			puuid: puuid,
 			region: region,
-			accountId: "unknown",
 			profileIconId: 0,
 			revisionDate: new Date(0),
 			summonerId: "unknown",
@@ -152,7 +149,6 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
 		puuid: summonerV4DTO.puuid,
 		summonerLevel: summonerV4DTO.summonerLevel,
 		revisionDate: new Date(summonerV4DTO.revisionDate),
-		accountId: summonerV4DTO.accountId,
 		gameName: account.gameName,
 		tagLine: account.tagLine,
 	};
@@ -293,7 +289,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				profileIconId: summoner.profileIconId,
 				summonerLevel: summoner.summonerLevel,
 				revisionDate: new Date(summoner.revisionDate),
-				accountId: summoner.accountId,
 			},
 			create: {
 				puuid: summoner.puuid,
@@ -306,7 +301,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				profileIconId: summoner.profileIconId,
 				summonerLevel: summoner.summonerLevel,
 				revisionDate: new Date(summoner.revisionDate),
-				accountId: summoner.accountId,
 			},
 		});
 

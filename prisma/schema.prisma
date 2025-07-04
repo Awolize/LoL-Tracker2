@@ -54,7 +54,6 @@ model Summoner {
   puuid             String             @id @unique
   summonerLevel     Int
   revisionDate      DateTime
-  accountId         String
   gameName          String?
   tagLine           String?
   challenges        Challenges?

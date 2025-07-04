@@ -54,7 +54,6 @@ model Summoner {
   profileIconId Int
   summonerLevel Int
   revisionDate  DateTime
-  accountId     String
   championData  ChampionMastery[]
   matches       Match[]           @relation("MatchSummoners")
   challenges    Challenges?
