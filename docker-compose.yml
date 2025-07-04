@@ -37,6 +37,7 @@ services:
   db:
     image: postgres:latest
     container_name: lol-db
+    pull_policy: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -53,6 +54,7 @@ services:
   minio:
     image: minio/minio:latest
     container_name: lol-minio
+    pull_policy: always
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
