@@ -1,6 +1,6 @@
 import assert from "node:assert";
-import type { ChampionMastery, Summoner } from "@prisma/client";
-import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
+import type { Summoner } from "@prisma/client";
+import { type Regions, regionToRegionGroupForAccountAPI } from "twisted/dist/constants";
 import type { RateLimitError } from "twisted/dist/errors";
 import type { ChampionMasteryDTO, MatchV5DTOs } from "twisted/dist/models-dto";
 
@@ -123,7 +123,7 @@ const rateLimitWrapper = async <T>(callback: RateLimitedCallback<T>, ...args: an
 };
 
 const riotApiAccountByUsername = async (gameName: string, tagLine: string, region: Regions) => {
-	const regionGroup = regionToRegionGroup(region);
+	const regionGroup = regionToRegionGroupForAccountAPI(region);
 	return (await rateLimitWrapper(() => riotApi.Account.getByRiotId(gameName, tagLine, regionGroup))).response;
 };
 
@@ -132,7 +132,7 @@ const lolApiSummonerByPUUID = async (puuid: string, region: Regions) => {
 };
 
 const riotApiAccountByPUUID = async (puuid: string, region: Regions) => {
-	const regionGroup = regionToRegionGroup(region);
+	const regionGroup = regionToRegionGroupForAccountAPI(region);
 	return (await rateLimitWrapper(() => riotApi.Account.getByPUUID(puuid, regionGroup))).response;
 };
 
@@ -142,6 +142,7 @@ const getSummonerRateLimit = async (puuid: string, region: Regions) => {
 
 	const summoner: Summoner = {
 		summonerId: summonerV4DTO.id,
+		accountId: null,
 		createdAt: new Date(),
 		updatedAt: new Date(),
 		region: region,
@@ -195,8 +196,7 @@ export const masteryBySummoner = async (region: Regions, user: Summoner) => {
 		if (!dbUser?.championData) return [];
 		// throw new Error(`Could not find championMasteryData, server: ${region}, accountId: ${user.summonerId}`);
 
-		const championMastery: ChampionMasteryDTO[] = dbUser.championData.map((mastery) => ({
-			summonerId: dbUser.summonerId,
+		const championMastery: ChampionMasteryDTOWithoutExtras[] = dbUser.championData.map((mastery) => ({
 			championId: mastery.championId,
 			championLevel: mastery.championLevel,
 			championPoints: mastery.championPoints,
@@ -216,6 +216,12 @@ export const masteryBySummoner = async (region: Regions, user: Summoner) => {
 		throw error;
 	}
 };
+
+type ChampionMasteryDTOWithoutExtras = Omit<
+	ChampionMasteryDTO,
+	"summonerId" | "puuid" | "markRequiredForNextLevel" | "championSeasonMilestone" | "nextSeasonMilestone"
+>;
+
 export async function getUserByNameAndRegion(username: string, region: Regions) {
 	function isWithinThreshold(date: Date) {
 		const oneDayInMillis = 24 * 60 * 60 * 1000; // Number of milliseconds in one day
@@ -281,7 +287,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 				puuid: summoner.puuid,
 			},
 			update: {
-				summonerId: summoner.id,
 				updatedAt: new Date(),
 				region,
 				gameName: account.gameName,
@@ -292,7 +297,6 @@ export async function getUserByNameAndRegion(username: string, region: Regions) 
 			},
 			create: {
 				puuid: summoner.puuid,
-				summonerId: summoner.id,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				region,

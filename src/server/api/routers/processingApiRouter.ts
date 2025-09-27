@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import { type Regions, regionToRegionGroup } from "twisted/dist/constants";
+import { type Regions, regionToRegionGroup, regionToRegionGroupForAccountAPI } from "twisted/dist/constants";
 import type { AccountDto } from "twisted/dist/models-dto/account/account.dto";
 import { z } from "zod";
 
@@ -379,7 +379,7 @@ export const processingApiRouter = createTRPCRouter({
 			console.time("updateSummoner");
 
 			const region = input.region as Regions;
-			const regionGroup = regionToRegionGroup(region);
+			const regionGroup = regionToRegionGroupForAccountAPI(region);
 
 			const user = (await riotApi.Account.getByRiotId(input.gameName, input.tagLine, regionGroup)).response;
 
@@ -434,7 +434,7 @@ export const processingApiRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			async function fullUpdateSummoner() {
 				const region = input.region as Regions;
-				const regionGroup = regionToRegionGroup(region);
+				const regionGroup = regionToRegionGroupForAccountAPI(region);
 
 				const user = (await riotApi.Account.getByRiotId(input.gameName, input.tagLine, regionGroup)).response;
 

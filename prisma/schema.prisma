@@ -46,7 +46,8 @@ model Challenges {
 }
 
 model Summoner {
-  summonerId        String
+  accountId         String?
+  summonerId        String?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   region            String
