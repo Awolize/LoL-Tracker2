@@ -5,7 +5,7 @@ import { useOptionsPersistentContext } from "~/components/stores/options-persist
 import { filteredOut, sortAlgorithm } from "~/utils/champsUtils";
 
 const ROLES = ["Top", "Jungle", "Mid", "Bottom", "Support"];
-const SortedChampionList = ({ champions }) => {
+const SortedChampionList = ({ champions }: { champions: CompleteChampionInfo[] }) => {
 	const {
 		showAvailableChests,
 		showLevels,

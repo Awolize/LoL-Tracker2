@@ -11,6 +11,9 @@ import { api } from "~/trpc/react";
 import { type Choice, Dropdown } from "./dropdown";
 import { FullSummonerUpdate } from "./full-summoner-update";
 import { ScaleSlider } from "./scale-slider";
+import { DifferentHeaderCounter } from "~/components/different/different-header-counter";
+import type { CompleteChampionInfo } from "~/app/[region]/[username]/mastery/page";
+import { filteredOut } from "~/utils/champsUtils";
 
 export enum SortOrder2 {
 	Points = 0,
@@ -18,7 +21,7 @@ export enum SortOrder2 {
 	Level = 2,
 }
 
-export default function Header() {
+export default function Header({ champions }: { champions: CompleteChampionInfo[] }) {
 	const {
 		showAvailableChests,
 		showLevels,
@@ -38,8 +41,6 @@ export default function Header() {
 	const toggleShowMatchHistory = useMatchHistoryStore((state) => state.toggleShowMatchHistory);
 
 	const user = useUserContext((s) => s.user);
-
-	const utils = api.useUtils();
 
 	const filteredChoices: Choice[] = [
 		{ text: "100", value: 100 },
@@ -65,46 +66,56 @@ export default function Header() {
 		{ text: "Level", value: SortOrder2.Level },
 	];
 
+	const filteredCount = champions.filter((c) => filteredOut(c, filterPoints)).length;
+
 	return (
-		<div className="flex flex-row items-center justify-center gap-4 px-4 py-2">
-			<FullSummonerUpdate user={user} />
-			<div className="h-8 w-[1px] bg-gray-500" />
-			<SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
-			<Dropdown
-				callback={(choice) => setFilterPoints(choice)}
-				menuLabel="Filter by"
-				// biome-ignore lint/style/noNonNullAssertion: This will always find a match
-				choice={filteredChoices.find((el) => el.value === filterPoints)!}
-				choices={filteredChoices}
-			/>
-			<Dropdown
-				choices={sortOrderChoices}
-				menuLabel="Sort by"
-				// biome-ignore lint/style/noNonNullAssertion: This will always find a match
-				choice={sortOrderChoices.find((el) => el.value === sortOrder)!}
-				callback={(value) => setSortOrder(value)}
-			/>
-			<ToggleEye
-				label="Hide selected champions"
-				checked={!showSelectedChampions}
-				onChange={toggleShowSelectedChampions}
-			/>
-			<div className="h-8 w-[1px] bg-gray-500" />
-			<SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
-			<SwitchWithLabel
-				label={"Available Chests"}
-				checked={showAvailableChests}
-				onChange={toggleAvailableChests}
-			/>
-			<SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
-			<div className="flex flex-col items-center gap-3">
-				<Label>Image size</Label>
-				<ScaleSlider />
+		<div className="flex w-full items-center justify-between px-4 py-2">
+			{/* Left */}
+			<div className="flex flex-1 justify-start">
+				<DifferentHeaderCounter finished={filteredCount} total={champions.length} version={0} />
 			</div>
-			<div className="h-8 w-[1px] bg-gray-500" />
-			<Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
-				Match history
-			</Button>
+			<div className="flex flex-row items-center justify-center gap-4 mx-auto">
+				<FullSummonerUpdate user={user} />
+				<div className="h-8 w-[1px] bg-gray-500" />
+				<SwitchWithLabel label={"By role"} checked={byRole} onChange={toggleSortedByRole} />
+				<Dropdown
+					callback={(choice) => setFilterPoints(choice)}
+					menuLabel="Filter by"
+					// biome-ignore lint/style/noNonNullAssertion: This will always find a match
+					choice={filteredChoices.find((el) => el.value === filterPoints)!}
+					choices={filteredChoices}
+				/>
+				<Dropdown
+					choices={sortOrderChoices}
+					menuLabel="Sort by"
+					// biome-ignore lint/style/noNonNullAssertion: This will always find a match
+					choice={sortOrderChoices.find((el) => el.value === sortOrder)!}
+					callback={(value) => setSortOrder(value)}
+				/>
+				<ToggleEye
+					label="Hide selected champions"
+					checked={!showSelectedChampions}
+					onChange={toggleShowSelectedChampions}
+				/>
+				<div className="h-8 w-[1px] bg-gray-500" />
+				<SwitchWithLabel label={"Mastery Points"} checked={showMasteryPoints} onChange={toggleMasteryPoints} />
+				<SwitchWithLabel
+					label={"Available Chests"}
+					checked={showAvailableChests}
+					onChange={toggleAvailableChests}
+				/>
+				<SwitchWithLabel label={"Levels"} checked={showLevels} onChange={toggleLevels} />
+				<div className="flex flex-col items-center gap-3">
+					<Label>Image size</Label>
+					<ScaleSlider />
+				</div>
+				<div className="h-8 w-[1px] bg-gray-500" />
+				<Button size={"sm"} variant="secondary" className="w-32" onClick={toggleShowMatchHistory}>
+					Match history
+				</Button>
+			</div>
+			{/* Right (optional, can be empty) */}
+			<div className="flex flex-1 justify-end" />
 		</div>
 	);
 }

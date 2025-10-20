@@ -46,7 +46,7 @@ function Main({
 
 	return (
 		<main className="flex flex-col">
-			<Header />
+			<Header champions={playerChampionInfo} />
 
 			{byRole ? (
 				<SortedChampionList champions={playerChampionInfo} />
